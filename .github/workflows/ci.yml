@@ -1,0 +1,40 @@
+name: "ci"
+
+on:
+- push
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ '3.10', '3.11' ]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - uses: cvxgrp/.github/actions/test@main
+        with:
+          os: ${{ matrix.os }}
+          python-version: ${{ matrix.python-version }}
+
+  jupyter:
+    runs-on: "ubuntu-latest"
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - uses: cvxgrp/.github/actions/book@main
+        with:
+          os: ${{ runner.os }}
+          python-version: "3.11"
+          sphinx-folder: "book/sphinx/"
+          source-folder: "cvx"
+          kernel: "covariance"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

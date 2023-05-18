@@ -1,0 +1,23 @@
+name: Upload Python Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: release
+
+    permissions:
+      # This permission is required for trusted publishing.
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: cvxgrp/.github/actions/release@main
+        with:
+          os: ${{ runner.os }}
+          python-version: "3.11"
