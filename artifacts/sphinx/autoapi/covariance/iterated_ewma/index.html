@@ -109,7 +109,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.iterated_ewma.ewma" title="covariance.iterated_ewma.ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma</span></code></a>(y, halflife)</p></td>
 <td><p>y: array with measurements for times t=1,2,...,T=len(y)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.iterated_ewma.iterated_ewma" title="covariance.iterated_ewma.iterated_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterated_ewma</span></code></a>(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods=20, mean=False)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.iterated_ewma.iterated_ewma" title="covariance.iterated_ewma.iterated_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterated_ewma</span></code></a>(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None)</p></td>
 <td><p>param returns: pandas dataframe with returns for each asset</p></td>
 </tr>
 </tbody>
@@ -158,14 +158,19 @@ This way we don’t get a “look-ahead bias” in the EWMA</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.iterated_ewma.iterated_ewma">
-<span class="sig-prename descclassname"><span class="pre">covariance.iterated_ewma.</span></span><span class="sig-name descname"><span class="pre">iterated_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vola_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/iterated_ewma.html#iterated_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.iterated_ewma.iterated_ewma" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.iterated_ewma.</span></span><span class="sig-name descname"><span class="pre">iterated_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vola_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/iterated_ewma.html#iterated_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.iterated_ewma.iterated_ewma" title="Permalink to this definition"></a></dt>
 <dd><p>param returns: pandas dataframe with returns for each asset
 param vola_halflife: half life for volatility
 param cov_halflife: half life for covariance
 param lower: lower bound for adjusted return cutoff
 param upper: upper bound for adjusted return cutoff
-param min_periods: minimum number of periods to use for EWMA
-param mean: whether to estimate mean; if False, assumes zero mean data</p>
+param min_preiods_vola: minimum number of periods to use for volatility
+EWMA estimate
+param min_periods_cov: minimum number of periods to use for covariance
+EWMA estimate
+param mean: whether to estimate mean; if False, assumes zero mean data
+param low_rank: rank of low rank component of correlation matrix
+approximation; if None, no low rank approximation component is performed</p>
 <dl class="simple">
 <dt>returns: dictionary with covariance matrix predictions for each day            each key (time step) in the dictionary corresponds to the</dt><dd><p>prediction for the following (next) key (time step)</p>
 </dd>
