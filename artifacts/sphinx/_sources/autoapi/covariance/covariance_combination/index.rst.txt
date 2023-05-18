@@ -1,0 +1,58 @@
+:py:mod:`covariance.covariance_combination`
+===========================================
+
+.. py:module:: covariance.covariance_combination
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   covariance.covariance_combination.CovarianceCombination
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.covariance_combination.Result
+
+
+.. py:data:: Result
+   
+
+   
+
+.. py:class:: CovarianceCombination(Sigmas, returns, means=None)
+
+   .. py:method:: K(self)
+      :property:
+
+
+   .. py:method:: index(self)
+      :property:
+
+
+   .. py:method:: assets(self)
+      :property:
+
+
+   .. py:method:: solve(self, time, window=10, **kwargs)
+
+      Solves the covariance combination problem at a given time, i.e.,
+      finds the prediction for the covariance matrix at 'time+1'
+
+
+   .. py:method:: solve_window(self, window=10, verbose=True, **kwargs)
+
+      Solves the covariance combination problem for all timesteps
+
+
+

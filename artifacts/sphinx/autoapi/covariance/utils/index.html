@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.utils &mdash; cvxsimulator Documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/logo.jpeg"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="covariance.trading_model" href="../trading_model/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> cvxsimulator
+            <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../covariance_combination/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iterated_ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.iterated_ewma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../log_likelihood/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../optimal_cov_pred/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.optimal_cov_pred</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../predictors/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.predictors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../trading_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.trading_model</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cvxsimulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/covariance/utils/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-covariance.utils">
+<span id="covariance-utils"></span><h1><a class="reference internal" href="#module-covariance.utils" title="covariance.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a><a class="headerlink" href="#module-covariance.utils" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.from_row_to_covariance" title="covariance.utils.from_row_to_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_row_to_covariance</span></code></a>(row, n)</p></td>
+<td><p>Convert upper diagonal part of covariance matrix to a covariance matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.from_row_matrix_to_covariance" title="covariance.utils.from_row_matrix_to_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_row_matrix_to_covariance</span></code></a>(M, n)</p></td>
+<td><p>Convert Tx(n(n+1)/2) matrix of upper diagonal parts of covariance matrices to a Txnxn matrix of covariance matrices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_turnover" title="covariance.utils.get_turnover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_turnover</span></code></a>(ws)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.Gaussian_likelihood" title="covariance.utils.Gaussian_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gaussian_likelihood</span></code></a>(x, Sigma, mu=None)</p></td>
+<td><p>Computes the Gaussian likelihood of x given mu and Sigma.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_posterior_probs" title="covariance.utils.get_posterior_probs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_posterior_probs</span></code></a>(x, Sigmas, mus=None, weights=None)</p></td>
+<td><p>Computes the posterior probabilities of each Gaussian distribution given x.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_frob_change" title="covariance.utils.get_frob_change"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_frob_change</span></code></a>(X)</p></td>
+<td><p>Computes frobenius norm of change in X and divides by number of rows</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_ar_format" title="covariance.utils.get_ar_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ar_format</span></code></a>(X, l)</p></td>
+<td><p>Returns AR(l) representation of X</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.plot_ewma_log_likelihoods" title="covariance.utils.plot_ewma_log_likelihoods"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ewma_log_likelihoods</span></code></a>(predictors, start_date, end_date=None, T_half=63, labels=None, with_opt=False)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.plot_ecdf" title="covariance.utils.plot_ecdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ecdf</span></code></a>(datas, labels=None)</p></td>
+<td><p>Compute ECDF for a one-dimensional array of measurements.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_metrics" title="covariance.utils.get_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metrics</span></code></a>(log_likelihoods)</p></td>
+<td><p>param log_likelihoods: list of log likelihoods</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_yearly_garch_params" title="covariance.utils.get_yearly_garch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_yearly_garch_params</span></code></a>(R, update_freq=2)</p></td>
+<td><p>returns a dict of &quot;yearly&quot; GARCH parameters for each asset,</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.moving_average" title="covariance.utils.moving_average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">moving_average</span></code></a>(X, n)</p></td>
+<td><p>param R: pd.DataFrame of shape (T, n) where T is the number of time steps and n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_hi" title="covariance.utils.get_hi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_hi</span></code></a>(X, sigmas)</p></td>
+<td><p>return hi feature</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_lo" title="covariance.utils.get_lo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_lo</span></code></a>(X, sigmas)</p></td>
+<td><p>return lo feature</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_pos" title="covariance.utils.get_pos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_pos</span></code></a>(X)</p></td>
+<td><p>return positive part</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_neg" title="covariance.utils.get_neg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_neg</span></code></a>(X)</p></td>
+<td><p>return negative part</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_features" title="covariance.utils.get_features"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_features</span></code></a>(R, val_end, n=8)</p></td>
+<td><p>feature engineers the data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_R" title="covariance.utils.get_R"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_R</span></code></a>(R_whitenened, Lt_invs)</p></td>
+<td><p>param R_whitenened: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_V_hats" title="covariance.utils.get_V_hats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_V_hats</span></code></a>(vols)</p></td>
+<td><p>param vols: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.cp_get_log_likelihood" title="covariance.utils.cp_get_log_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cp_get_log_likelihood</span></code></a>(r, Theta)</p></td>
+<td><p>param R: array of shape (n,1) where n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.max_log_likelihood_const_L" title="covariance.utils.max_log_likelihood_const_L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_log_likelihood_const_L</span></code></a>(prob, w, Lt_params, Lt_times_R_vec_params, Lt_hat, Lt_times_R_vec, prob_num, ignore_dpp=False)</p></td>
+<td><p>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.max_log_likelihood_varying_L" title="covariance.utils.max_log_likelihood_varying_L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_log_likelihood_varying_L</span></code></a>(prob, w, Lt_params, Lt_times_R_vec_params, Lt_hat, Lt_times_R_vec, prob_num, ignore_dpp=False)</p></td>
+<td><p>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.max_log_likelihood" title="covariance.utils.max_log_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_log_likelihood</span></code></a>(prob, w, prec_params, prec_at_cov_params, precisions, prec_at_covs, prob_num)</p></td>
+<td><p>param precisions: numpy array of shape (T, M, n, n) where T is the number of time steps, M is the number of predictor candidates, and n is the number of assets</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.max_log_likelihood_const_theta" title="covariance.utils.max_log_likelihood_const_theta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_log_likelihood_const_theta</span></code></a>(prob, w, prec_params, prec_at_cov_params, precisions, prec_at_covs, prob_num)</p></td>
+<td><p>param precisions: array of shape (M, n, n) M is the number of predictor candidates, and n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_overtriangular" title="covariance.utils.get_overtriangular"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_overtriangular</span></code></a>(M)</p></td>
+<td><p>returns the upper triangular part of a matrix M (including the diagonal)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_overtriangular_stack" title="covariance.utils.get_overtriangular_stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_overtriangular_stack</span></code></a>(Ms)</p></td>
+<td><p>returns the upper triangular part of a list of matrices Ms (including the diagonal)        upper diagonals are returned as rows in a matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_vectorform" title="covariance.utils.get_vectorform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vectorform</span></code></a>(R)</p></td>
+<td><p>returns the form of R that is used to compute L^T * R elementwise</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.max_log_likelihood_varying_L2" title="covariance.utils.max_log_likelihood_varying_L2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_log_likelihood_varying_L2</span></code></a>(prob, w, P_param, onest_A_param, P, onest_A, prob_num, ignore_dpp=False)</p></td>
+<td><p>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_opt_weights_new" title="covariance.utils.get_opt_weights_new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_opt_weights_new</span></code></a>(model, likelihood_window=10, w_init=None, const_theta=None, const_L=None, turnover_cons=None)</p></td>
+<td><p>param model: Covariance predictor model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_opt_weights_old" title="covariance.utils.get_opt_weights_old"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_opt_weights_old</span></code></a>(model, t, prob, w, theta_params, likelihood_window=10, w_init=None, const_theta=True)</p></td>
+<td><p>Choose the weights to combine the inverse covariance matrices by solving the following convex problem:  what (constant) weights would have maximized the log likelihood on the last 'likelihood_window' days? This is a convex problem, so we can solve it with cvxpy.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_realized_covs" title="covariance.utils.get_realized_covs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_realized_covs</span></code></a>(R)</p></td>
+<td><p>param R: numpy array where rows are vector of asset returns for t=0,1,...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_realized_vars" title="covariance.utils.get_realized_vars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_realized_vars</span></code></a>(R)</p></td>
+<td><p>param R: numpy array where rows are vector of asset returns for t=0,1,...</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.from_cov_to_corr" title="covariance.utils.from_cov_to_corr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_cov_to_corr</span></code></a>(Sigma)</p></td>
+<td><p>returns correlation matrix R corresponding to covariance matrix Sigma</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_realized_sizes" title="covariance.utils.get_realized_sizes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_realized_sizes</span></code></a>(R)</p></td>
+<td><p>param R: numpy array where rows are vector of asset returns for t=0,1,...</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_next_ewma" title="covariance.utils.get_next_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_next_ewma</span></code></a>(EWMA, y_last, t, beta)</p></td>
+<td><p>param EWMA: EWMA at time t-1</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_ewmas" title="covariance.utils.get_ewmas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ewmas</span></code></a>(y, T_half)</p></td>
+<td><p>y: array with measurements for times t=1,2,...,T=len(y)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_r_tildes" title="covariance.utils.get_r_tildes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_r_tildes</span></code></a>(R, Ws)</p></td>
+<td><p>param Ws: array of whitening matrices for t=1,2,..., (i.e. L^t, where LL^T=Sigma^-1)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_cholesky" title="covariance.utils.get_cholesky"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cholesky</span></code></a>(Sigma_hats)</p></td>
+<td><p>returns: Cholesky (transpose) decomposition of Sigma_hat^-1 for each Sigma_hat in Sigma_hats, i.e.,</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_log_likelihood" title="covariance.utils.get_log_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_log_likelihood</span></code></a>(x, Sigma, mu=None)</p></td>
+<td><p>param x: numpy array of shape (n,1)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.utils.get_avg_likelihood" title="covariance.utils.get_avg_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_avg_likelihood</span></code></a>(R, Sigma_hats)</p></td>
+<td><p>returns: (averaged) log-likelihood of observed returns R, under the Gaussian distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.utils.get_daily_likelihood" title="covariance.utils.get_daily_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_daily_likelihood</span></code></a>(R, Sigma_hats, in_parallel=False)</p></td>
+<td><p>returns: log-likelihood of observed returns R, under the Gaussian distribution</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.from_row_to_covariance">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">from_row_to_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#from_row_to_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.from_row_to_covariance" title="Permalink to this definition"></a></dt>
+<dd><p>Convert upper diagonal part of covariance matrix to a covariance matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.from_row_matrix_to_covariance">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">from_row_matrix_to_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#from_row_matrix_to_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.from_row_matrix_to_covariance" title="Permalink to this definition"></a></dt>
+<dd><p>Convert Tx(n(n+1)/2) matrix of upper diagonal parts of covariance matrices to a Txnxn matrix of covariance matrices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_turnover">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_turnover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_turnover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_turnover" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.Gaussian_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">Gaussian_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#Gaussian_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.Gaussian_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the Gaussian likelihood of x given mu and Sigma.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_posterior_probs">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_posterior_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_posterior_probs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_posterior_probs" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the posterior probabilities of each Gaussian distribution given x.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_frob_change">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_frob_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_frob_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_frob_change" title="Permalink to this definition"></a></dt>
+<dd><p>Computes frobenius norm of change in X and divides by number of rows</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_ar_format">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_ar_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_ar_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_ar_format" title="Permalink to this definition"></a></dt>
+<dd><p>Returns AR(l) representation of X</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.plot_ewma_log_likelihoods">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">plot_ewma_log_likelihoods</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_half</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">63</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_opt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#plot_ewma_log_likelihoods"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.plot_ewma_log_likelihoods" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.plot_ecdf">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">plot_ecdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#plot_ecdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.plot_ecdf" title="Permalink to this definition"></a></dt>
+<dd><p>Compute ECDF for a one-dimensional array of measurements.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_metrics">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_likelihoods</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_metrics" title="Permalink to this definition"></a></dt>
+<dd><p>param log_likelihoods: list of log likelihoods</p>
+<p>returns: metrics</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_yearly_garch_params">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_yearly_garch_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_yearly_garch_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_yearly_garch_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>returns a dict of “yearly” GARCH parameters for each asset,</dt><dd><p>strictly speaking updated every update_freq years</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.moving_average">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">moving_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#moving_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.moving_average" title="Permalink to this definition"></a></dt>
+<dd><p>param R: pd.DataFrame of shape (T, n) where T is the number of time steps and n is the number of assets
+param n: window size</p>
+<p>returns the moving average of X with window size n</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_hi">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_hi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_hi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_hi" title="Permalink to this definition"></a></dt>
+<dd><p>return hi feature</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_lo">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_lo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_lo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_lo" title="Permalink to this definition"></a></dt>
+<dd><p>return lo feature</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_pos">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_pos" title="Permalink to this definition"></a></dt>
+<dd><p>return positive part</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_neg">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_neg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_neg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_neg" title="Permalink to this definition"></a></dt>
+<dd><p>return negative part</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_features">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val_end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_features" title="Permalink to this definition"></a></dt>
+<dd><p>feature engineers the data</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_R">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_R</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R_whitenened</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_invs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_R"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_R" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param R_whitenened: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the realized returns over the T days</p>
+</dd>
+<dt>param Lt_invs: numpy array of shape (T, n, n) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the inverse of the whitening matrices</p>
+</dd>
+</dl>
+<p>returns: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_V_hats">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_V_hats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_V_hats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_V_hats" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param vols: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the predicted volatilities over the T days</p>
+</dd>
+<dt>returns: numpy array of shape (T, n, n) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the predicted diagonal volatility matrices over the T days</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.cp_get_log_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">cp_get_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Theta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#cp_get_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.cp_get_log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>param R: array of shape (n,1) where n is the number of assets
+param Theta: precision matrix of shape (n,n) where n is the number of assets</p>
+<p>returns: log likelihood of R given Theta</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.max_log_likelihood_const_L">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">max_log_likelihood_const_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_times_R_vec_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_times_R_vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_dpp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#max_log_likelihood_const_L"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.max_log_likelihood_const_L" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</dt><dd><p>whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</p>
+</dd>
+<dt>param R: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the realized returns over the T days</p>
+</dd>
+</dl>
+<p>returns the weights that maximize the log likelihood of the data given M constant whiteners</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.max_log_likelihood_varying_L">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">max_log_likelihood_varying_L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_times_R_vec_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_times_R_vec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_dpp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#max_log_likelihood_varying_L"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.max_log_likelihood_varying_L" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</dt><dd><p>whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</p>
+</dd>
+<dt>param R: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the realized returns over the T days</p>
+</dd>
+</dl>
+<p>returns the weights that maximize the log likelihood of the data given M constant whiteners</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.max_log_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">max_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_at_cov_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_at_covs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#max_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.max_log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>param precisions: numpy array of shape (T, M, n, n) where T is the number of time steps, M is the number of predictor candidates, and n is the number of assets
+param R: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</p>
+<blockquote>
+<div><p>these are the realized returns over the T days</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.max_log_likelihood_const_theta">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">max_log_likelihood_const_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_at_cov_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prec_at_covs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_num</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#max_log_likelihood_const_theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.max_log_likelihood_const_theta" title="Permalink to this definition"></a></dt>
+<dd><p>param precisions: array of shape (M, n, n) M is the number of predictor candidates, and n is the number of assets
+param R: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</p>
+<blockquote>
+<div><p>these are the realized returns over the T days</p>
+</div></blockquote>
+<dl class="simple">
+<dt>returns the weights that maximize the log likelihood of the data given M constant precision matrices</dt><dd><p>i.e., in comparison to max_log_likelihood, this function assumes that the precision matrices are constant over time t=1,2,…,T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_overtriangular">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_overtriangular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_overtriangular"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_overtriangular" title="Permalink to this definition"></a></dt>
+<dd><p>returns the upper triangular part of a matrix M (including the diagonal)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_overtriangular_stack">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_overtriangular_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_overtriangular_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_overtriangular_stack" title="Permalink to this definition"></a></dt>
+<dd><p>returns the upper triangular part of a list of matrices Ms (including the diagonal)        upper diagonals are returned as rows in a matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_vectorform">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_vectorform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_vectorform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_vectorform" title="Permalink to this definition"></a></dt>
+<dd><p>returns the form of R that is used to compute L^T * R elementwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.max_log_likelihood_varying_L2">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">max_log_likelihood_varying_L2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onest_A_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onest_A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_dpp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#max_log_likelihood_varying_L2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.max_log_likelihood_varying_L2" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</dt><dd><p>whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</p>
+</dd>
+<dt>param R: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</dt><dd><p>these are the realized returns over the T days</p>
+</dd>
+</dl>
+<p>returns the weights that maximize the log likelihood of the data given M constant whiteners</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_opt_weights_new">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_opt_weights_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const_theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const_L</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turnover_cons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_opt_weights_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_opt_weights_new" title="Permalink to this definition"></a></dt>
+<dd><p>param model: Covariance predictor model
+param likelihood_window: number of past days to use to compute the log likelihood
+param w_init: initial weights to use for the convex optimization problem
+param const_theta: whether the precision matrices are constant over time or not</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_opt_weights_old">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_opt_weights_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">const_theta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_opt_weights_old"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_opt_weights_old" title="Permalink to this definition"></a></dt>
+<dd><p>Choose the weights to combine the inverse covariance matrices by solving the following convex problem:  what (constant) weights would have maximized the log likelihood on the last ‘likelihood_window’ days? This is a convex problem, so we can solve it with cvxpy.</p>
+<p>param model: Covariance predictor model
+param t: time step (pandas date-time object) for which we want to compute the optimal weights
+param prob: cvxpy problem object
+param w: cvxpy variable object
+param theta_params: array of cvxpy parameters for the precision matrix
+param likelihood_window: number of past days to use to compute the log likelihood</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_realized_covs">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_realized_covs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_realized_covs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_realized_covs" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param R: numpy array where rows are vector of asset returns for t=0,1,…</dt><dd><p>R has shape (T, n) where T is the number of days and n is the number of assets</p>
+</dd>
+<dt>returns: (numpy array) list of r_t*r_t’ (matrix multiplication) for all days, i.e,</dt><dd><p>“daily realized covariances”</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_realized_vars">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_realized_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_realized_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_realized_vars" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>param R: numpy array where rows are vector of asset returns for t=0,1,…</dt><dd><p>R has shape (T, n) where T is the number of days and n is the number of assets</p>
+</dd>
+</dl>
+<p>returns: (numpy array) list of diag(r_t^2) for all days, i.e,        “daily realized variances”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.from_cov_to_corr">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">from_cov_to_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#from_cov_to_corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.from_cov_to_corr" title="Permalink to this definition"></a></dt>
+<dd><p>returns correlation matrix R corresponding to covariance matrix Sigma</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_realized_sizes">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_realized_sizes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_realized_sizes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_realized_sizes" title="Permalink to this definition"></a></dt>
+<dd><dl>
+<dt>param R: numpy array where rows are vector of asset returns for t=0,1,…</dt><dd><p>R has shape (T, n) where T is the number of days and n is the number of assets</p>
+<dl class="simple">
+<dt>returns: (numpy array) list of r_t^Tr_t for all days (t), i.e,</dt><dd><p>“daily realized sizes”</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_next_ewma">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_next_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EWMA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_last</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_next_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_next_ewma" title="Permalink to this definition"></a></dt>
+<dd><p>param EWMA: EWMA at time t-1
+param y_last: observation at time t-1
+param t: current time step
+param beta: EWMA exponential forgetting parameter</p>
+<p>returns: EWMA estimate at time t (note that this does not depend on y_t)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_ewmas">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_ewmas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T_half</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_ewmas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_ewmas" title="Permalink to this definition"></a></dt>
+<dd><p>y: array with measurements for times t=1,2,…,T=len(y)
+T_half: EWMA half life</p>
+<p>returns: list of EWMAs for times t=2,3,…,T+1 = len(y)</p>
+<p>Note: We define EWMA_t as a function of the
+observations up to time t-1. This means that
+y = [y_1,y_2,…,y_T] (for some T), while
+EWMA = [EWMA_2, EWMA_3, …, EWMA_{T+1}]
+This way we don’t get a “look-ahead bias” in the EWMA</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_r_tildes">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_r_tildes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ws</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_r_tildes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_r_tildes" title="Permalink to this definition"></a></dt>
+<dd><p>param Ws: array of whitening matrices for t=1,2,…, (i.e. L^t, where LL^T=Sigma^-1)
+param R: array of returns to whiten for t=1,2,…,</p>
+<p>returns numpy array with r_tilde_hats as rows</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_cholesky">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_cholesky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Sigma_hats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_cholesky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_cholesky" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>returns: Cholesky (transpose) decomposition of Sigma_hat^-1 for each Sigma_hat in Sigma_hats, i.e.,</dt><dd><p>LL^T = Sigma_hat^-1;
+Note: returns L^T</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_log_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>param x: numpy array of shape (n,1)
+param Sigma: numpy array of shape (n,n)
+param mu: numpy array of shape (n,1)</p>
+<blockquote>
+<div><p>if None, mu is set to zero vector</p>
+</div></blockquote>
+<p>returns: log-likelihood of x under multivariate normal distribution</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_avg_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_avg_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma_hats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_avg_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_avg_likelihood" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>returns: (averaged) log-likelihood of observed returns R, under the Gaussian distribution</dt><dd><p>with mean zero and covariances in Sigma_hats</p>
+</dd>
+</dl>
+<p>param R: rows are n-dimensinal return vectors for times t=1,…,T
+param Sigma_hats: array-like vector of corresponding covariance matrices</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.utils.get_daily_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.utils.</span></span><span class="sig-name descname"><span class="pre">get_daily_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma_hats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/utils.html#get_daily_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.utils.get_daily_likelihood" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>returns: log-likelihood of observed returns R, under the Gaussian distribution</dt><dd><p>with mean zero and covariances in Sigma_hats</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../trading_model/index.html" class="btn btn-neutral float-left" title="covariance.trading_model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

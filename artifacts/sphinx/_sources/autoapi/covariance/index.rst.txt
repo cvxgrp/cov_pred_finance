@@ -1,0 +1,22 @@
+:py:mod:`covariance`
+====================
+
+.. py:module:: covariance
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   covariance_combination/index.rst
+   ewma/index.rst
+   iterated_ewma/index.rst
+   log_likelihood/index.rst
+   optimal_cov_pred/index.rst
+   predictors/index.rst
+   trading_model/index.rst
+   utils/index.rst
+
+

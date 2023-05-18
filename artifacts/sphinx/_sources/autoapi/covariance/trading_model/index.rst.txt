@@ -1,0 +1,133 @@
+:py:mod:`covariance.trading_model`
+==================================
+
+.. py:module:: covariance.trading_model
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   covariance.trading_model.Trader
+
+
+
+
+.. py:class:: Trader(R, Lt_inv_hats=None, Sigma_hats=None, r_hats=None)
+
+   .. py:method:: solve_min_risk(self, prob, w, L_inv_param, Lt_inv, sigma_param=None, sigma=None)
+
+      Solves the minimum risk problem for a given whiteners.
+
+      param prob: cvxpy problem object
+      param w: cvxpy variable object
+      param Lt_inv_param: cvxpy parameter parameter
+      param Lt: whitener
+
+
+   .. py:method:: solve_risk_parity(self, prob, w, L_inv_param, Lt_inv)
+
+      Solves the risk parity problem for a given covariance matrix.
+
+      param prob: cvxpy problem object
+      param w: cvxpy variable object
+      param Sigma_t_param: cvxpy parameter parameter
+      param Sigma_t: covariance matrix
+
+
+   .. py:method:: solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, Lt_inv, r_hat)
+
+      Solves the mean variance problem.
+
+      param prob: cvxpy problem object
+      param w: cvxpy variable object
+      param Sigma_t_param: cvxpy parameter parameter
+      param Sigma_t: covariance matrix
+
+
+   .. py:method:: get_vol_cont_w(self, ws, obj, sigma_des)
+
+      Computes the weights of the volatility controlled portfolio.
+
+      param ws: list of weights of the minimum risk portfolios
+      param obj: list of objective values of the minimum risk portfolios
+      param sigma_des: desired volatility of the portfolio
+
+
+   .. py:method:: solve_max_diverse(self, prob, z, L_inv_param, sigma_param, L_inv, sigma)
+
+      Solves the maximum diversification optimization problem.
+
+      param prob: cvxpy problem object
+      param z: cvxpy variable object
+      param L_inv_param: cvxpy parameter parameter
+      param L_inv: inverse whitener
+      param sigma_param: cvxpy parameter parameter
+      param sigma: diagonal of the covariance matrix
+
+
+
+   .. py:method:: solve_max_sharpe(self, prob, z, L_inv_param, r_hat_param, L_inv, r_hat)
+
+      Solves the maximum diversification optimization problem.
+
+      param prob: cvxpy problem object
+      param z: cvxpy variable object
+      param L_inv_param: cvxpy parameter parameter
+      param L_inv: inverse whitener
+      param r_hat_param: cvxpy parameter parameter
+      param r_hat: return
+
+
+
+   .. py:method:: dilute_with_cash(self, sigma_des=0.1)
+
+      Dilutes the portfolio with cash to achieve a desired volatility.
+
+
+   .. py:method:: get_risk_adj_returns(self, sigma_des=0.1)
+
+      Scales returns to adjusted risk level sigma_des.
+
+
+   .. py:method:: get_risk_adj_portfolio_growth(self, sigma_des=0.1)
+
+      Computes the risk adjusted portfolio growth from the daily (total)  returns.
+
+
+   .. py:method:: backtest(self, portfolio_type='min_risk', cons=[], sigma_des=None, adjust_factor=1, additonal_cons={'short_lim': 1.6, 'upper_bound': 0.15, 'lower_bound': -0.1}, C_speedup=False, kappa=None)
+
+      param portfolio_type: type of portfolio to backtest. Options are "min_risk", "vol_cont", "risk_parity", "mean_variance".
+      param cons: list of constraints to impose on the optimization problem.
+
+
+   .. py:method:: get_total_returns(self, diluted_with_cash=False, sigma_des=None, rf=None)
+
+      Computes total daily returns of the portfolio from the weights and indivudal asset returns.
+
+
+   .. py:method:: get_portfolio_growth(self)
+
+      Computes the portfolio growth from the daily (total) returns.
+      Note: run get_total_returns() first.
+
+
+   .. py:method:: compute_max_drawdown(self)
+
+      Computes the maximum drawdown of the portfolio.
+
+
+   .. py:method:: get_metrics(self, diluted_with_cash=False, sigma_des=0.1, rf=None, excess=False)
+
+      param adjust_factor: factor to results by,             e.g., if we have a model for 100*r_daily, the volatility                should be adjusted by 1/sqrt(100)
+
+
+      Computes the avg return, stdev, sharpe ratio, and max drawdown of the portfolio.
+      Note: Run backtest first.
+
+
+

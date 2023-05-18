@@ -1,0 +1,73 @@
+:py:mod:`covariance.iterated_ewma`
+==================================
+
+.. py:module:: covariance.iterated_ewma
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.iterated_ewma.get_next_ewma
+   covariance.iterated_ewma.ewma
+   covariance.iterated_ewma.iterated_ewma
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.iterated_ewma.IEWMA
+
+
+.. py:data:: IEWMA
+   
+
+   
+
+.. py:function:: get_next_ewma(EWMA, y_last, t, beta)
+
+   param EWMA: EWMA at time t-1
+   param y_last: observation at time t-1
+   param t: current time step
+   param beta: EWMA exponential forgetting parameter
+
+   returns: EWMA estimate at time t (note that this does not depend on y_t)
+
+
+.. py:function:: ewma(y, halflife)
+
+   y: array with measurements for times t=1,2,...,T=len(y)
+   halflife: EWMA half life
+
+   returns: list of EWMAs for times t=2,3,...,T+1 = len(y)
+
+
+   Note: We define EWMA_t as a function of the
+   observations up to time t-1. This means that
+   y = [y_1,y_2,...,y_T] (for some T), while
+   EWMA = [EWMA_2, EWMA_3, ..., EWMA_{T+1}]
+   This way we don't get a "look-ahead bias" in the EWMA
+
+
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods=20, mean=False)
+
+   param returns: pandas dataframe with returns for each asset
+   param vola_halflife: half life for volatility
+   param cov_halflife: half life for covariance
+   param lower: lower bound for adjusted return cutoff
+   param upper: upper bound for adjusted return cutoff
+   param min_periods: minimum number of periods to use for EWMA
+   param mean: whether to estimate mean; if False, assumes zero mean data
+
+   returns: dictionary with covariance matrix predictions for each day            each key (time step) in the dictionary corresponds to the
+       prediction for the following (next) key (time step)
+
+

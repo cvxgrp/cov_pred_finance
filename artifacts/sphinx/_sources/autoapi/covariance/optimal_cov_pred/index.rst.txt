@@ -1,0 +1,36 @@
+:py:mod:`covariance.optimal_cov_pred`
+=====================================
+
+.. py:module:: covariance.optimal_cov_pred
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.optimal_cov_pred.get_Sigmas_from_Lts
+   covariance.optimal_cov_pred.get_l_multi
+   covariance.optimal_cov_pred.get_prob_multi
+
+
+
+.. py:function:: get_Sigmas_from_Lts(Lts, n)
+
+   Returns covariance matrices given array of overtriangular part of L^T
+       where L*L^T = Sigma^{-1}
+
+
+.. py:function:: get_l_multi(R, Lts)
+
+   param R: pandas dataframe of returns, T x n
+   param Lts: list of cvxpy transpose of Cholesky of precision matrix varbiables
+
+
+.. py:function:: get_prob_multi(T_half, R, lamda, monthly_update=False, quarterly_updates=False, frob_lim=1000)
+
+
