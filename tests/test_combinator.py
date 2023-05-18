@@ -12,6 +12,7 @@ def prices(prices):
 
 @pytest.fixture()
 def returns(prices):
+
     return prices.pct_change().dropna(axis=0, how="all")
 
 

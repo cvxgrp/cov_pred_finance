@@ -14,7 +14,7 @@ def returns(prices):
     return prices.pct_change().dropna(axis=0, how="all")
 
 def test_iterated_ewma(returns, Sigma_test_iewma):
-    iewma = iterated_ewma(returns, vola_halflife=10, cov_halflife=21, min_periods=40, lower=-4.2, upper=4.2)
+    iewma = iterated_ewma(returns, vola_halflife=10, cov_halflife=21, min_periods_vola=20, min_periods_cov=20, lower=-4.2, upper=4.2)
 
     Sigma_hat = iewma[returns.index[-1]]
 
