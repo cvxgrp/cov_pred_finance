@@ -1,4 +1,4 @@
-# [cvxcovariance](http://www.cvxgrp.org/covariance_prediction_finance/)
+# [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
 
 ## Poetry
 
