@@ -18,6 +18,5 @@ Submodules
    predictors/index.rst
    trading_model/index.rst
    utils/index.rst
-   utils_old/index.rst
 
 
