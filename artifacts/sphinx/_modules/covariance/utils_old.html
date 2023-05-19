@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.utils &mdash; cvxsimulator Documentation</title>
+  <title>covariance.utils_old &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -61,7 +61,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>covariance.utils</li>
+      <li>covariance.utils_old</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,7 +70,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for covariance.utils</h1><div class="highlight"><pre>
+  <h1>Source code for covariance.utils_old</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cp</span>
@@ -82,7 +82,7 @@
 
 
 
-<div class="viewcode-block" id="from_row_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.from_row_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_to_covariance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="from_row_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.from_row_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_to_covariance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert upper diagonal part of covariance matrix to a covariance matrix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -97,7 +97,7 @@
     <span class="n">Sigma</span><span class="p">[</span><span class="n">lower_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sigma</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">lower_mask</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">Sigma</span></div>
 
-<div class="viewcode-block" id="from_row_matrix_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.from_row_matrix_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_matrix_to_covariance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="from_row_matrix_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.from_row_matrix_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_matrix_to_covariance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert Tx(n(n+1)/2) matrix of upper diagonal parts of covariance matrices to a Txnxn matrix of covariance matrices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -107,7 +107,7 @@
         <span class="n">Sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">from_row_to_covariance</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">n</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_turnover"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_turnover">[docs]</a><span class="k">def</span> <span class="nf">get_turnover</span><span class="p">(</span><span class="n">ws</span><span class="p">):</span>
+<div class="viewcode-block" id="get_turnover"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_turnover">[docs]</a><span class="k">def</span> <span class="nf">get_turnover</span><span class="p">(</span><span class="n">ws</span><span class="p">):</span>
         <span class="n">turnovers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">ws</span><span class="p">)):</span>
             <span class="n">w_tm</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -116,7 +116,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">turnovers</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Gaussian_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.Gaussian_likelihood">[docs]</a><span class="k">def</span> <span class="nf">Gaussian_likelihood</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Gaussian_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.Gaussian_likelihood">[docs]</a><span class="k">def</span> <span class="nf">Gaussian_likelihood</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the Gaussian likelihood of x given mu and Sigma. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -125,7 +125,7 @@
     <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mu</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="get_posterior_probs"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_posterior_probs">[docs]</a><span class="k">def</span> <span class="nf">get_posterior_probs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigmas</span><span class="p">,</span> <span class="n">mus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_posterior_probs"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_posterior_probs">[docs]</a><span class="k">def</span> <span class="nf">get_posterior_probs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigmas</span><span class="p">,</span> <span class="n">mus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes the posterior probabilities of each Gaussian distribution given x. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -141,13 +141,13 @@
 
 <span class="c1"># def get_Lt()</span>
 
-<div class="viewcode-block" id="get_frob_change"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_frob_change">[docs]</a><span class="k">def</span> <span class="nf">get_frob_change</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="get_frob_change"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_frob_change">[docs]</a><span class="k">def</span> <span class="nf">get_frob_change</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes frobenius norm of change in X and divides by number of rows</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="get_ar_format"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_ar_format">[docs]</a><span class="k">def</span> <span class="nf">get_ar_format</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ar_format"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_ar_format">[docs]</a><span class="k">def</span> <span class="nf">get_ar_format</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns AR(l) representation of X</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -165,7 +165,7 @@
     <span class="k">return</span> <span class="n">X_ar</span><span class="p">,</span> <span class="n">y_ar</span></div>
 
 
-<div class="viewcode-block" id="plot_ewma_log_likelihoods"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.plot_ewma_log_likelihoods">[docs]</a><span class="k">def</span> <span class="nf">plot_ewma_log_likelihoods</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_opt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_ewma_log_likelihoods"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.plot_ewma_log_likelihoods">[docs]</a><span class="k">def</span> <span class="nf">plot_ewma_log_likelihoods</span><span class="p">(</span><span class="n">predictors</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="mi">63</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_opt</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">end_date</span> <span class="o">=</span> <span class="n">predictors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -195,7 +195,7 @@
         <span class="c1"># Make legend dots bigger</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper left&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">scatterpoints</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">markerscale</span><span class="o">=</span><span class="mi">5</span><span class="p">);</span></div>
 
-<div class="viewcode-block" id="plot_ecdf"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.plot_ecdf">[docs]</a><span class="k">def</span> <span class="nf">plot_ecdf</span><span class="p">(</span><span class="n">datas</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="plot_ecdf"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.plot_ecdf">[docs]</a><span class="k">def</span> <span class="nf">plot_ecdf</span><span class="p">(</span><span class="n">datas</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute ECDF for a one-dimensional array of measurements.&quot;&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">datas</span><span class="p">):</span>
@@ -222,7 +222,7 @@
     <span class="c1"># Put legend to right of plot</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center left&#39;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="get_metrics"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_metrics">[docs]</a><span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="n">log_likelihoods</span><span class="p">):</span>
+<div class="viewcode-block" id="get_metrics"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_metrics">[docs]</a><span class="k">def</span> <span class="nf">get_metrics</span><span class="p">(</span><span class="n">log_likelihoods</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param log_likelihoods: list of log likelihoods</span>
 
@@ -239,7 +239,7 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">avg</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">std</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">lowest</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">p5</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">p10</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_yearly_garch_params"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_yearly_garch_params">[docs]</a><span class="k">def</span> <span class="nf">get_yearly_garch_params</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">update_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="get_yearly_garch_params"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_yearly_garch_params">[docs]</a><span class="k">def</span> <span class="nf">get_yearly_garch_params</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">update_freq</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns a dict of &quot;yearly&quot; GARCH parameters for each asset,</span>
 <span class="sd">        strictly speaking updated every update_freq years</span>
@@ -271,7 +271,7 @@
     <span class="k">return</span> <span class="n">all_params</span></div>
 
 
-<div class="viewcode-block" id="moving_average"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.moving_average">[docs]</a><span class="k">def</span> <span class="nf">moving_average</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="moving_average"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.moving_average">[docs]</a><span class="k">def</span> <span class="nf">moving_average</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R: pd.DataFrame of shape (T, n) where T is the number of time steps and n is the number of assets</span>
 <span class="sd">    param n: window size</span>
@@ -283,33 +283,33 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">ret</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">ma_part</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_hi"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_hi">[docs]</a><span class="k">def</span> <span class="nf">get_hi</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+<div class="viewcode-block" id="get_hi"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_hi">[docs]</a><span class="k">def</span> <span class="nf">get_hi</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return hi feature</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">((</span><span class="n">X</span> <span class="o">-</span> <span class="n">sigmas</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_lo"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_lo">[docs]</a><span class="k">def</span> <span class="nf">get_lo</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+<div class="viewcode-block" id="get_lo"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_lo">[docs]</a><span class="k">def</span> <span class="nf">get_lo</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return lo feature</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">sigmas</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return positive part </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_neg"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_neg">[docs]</a><span class="k">def</span> <span class="nf">get_neg</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="get_neg"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_neg">[docs]</a><span class="k">def</span> <span class="nf">get_neg</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return negative part</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="o">-</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_features"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_features">[docs]</a><span class="k">def</span> <span class="nf">get_features</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">val_end</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+<div class="viewcode-block" id="get_features"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_features">[docs]</a><span class="k">def</span> <span class="nf">get_features</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">val_end</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    feature engineers the data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -376,7 +376,7 @@
 
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span></div>
 
-<div class="viewcode-block" id="get_R"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_R">[docs]</a><span class="k">def</span> <span class="nf">get_R</span><span class="p">(</span><span class="n">R_whitenened</span><span class="p">,</span> <span class="n">Lt_invs</span><span class="p">):</span>
+<div class="viewcode-block" id="get_R"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_R">[docs]</a><span class="k">def</span> <span class="nf">get_R</span><span class="p">(</span><span class="n">R_whitenened</span><span class="p">,</span> <span class="n">Lt_invs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R_whitenened: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</span>
 <span class="sd">        these are the realized returns over the T days</span>
@@ -392,7 +392,7 @@
     <span class="k">return</span> <span class="n">R</span></div>
 
 
-<div class="viewcode-block" id="get_V_hats"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_V_hats">[docs]</a><span class="k">def</span> <span class="nf">get_V_hats</span><span class="p">(</span><span class="n">vols</span><span class="p">):</span>
+<div class="viewcode-block" id="get_V_hats"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_V_hats">[docs]</a><span class="k">def</span> <span class="nf">get_V_hats</span><span class="p">(</span><span class="n">vols</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param vols: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</span>
 <span class="sd">        these are the predicted volatilities over the T days</span>
@@ -408,7 +408,7 @@
 
     <span class="k">return</span> <span class="n">V_hats</span></div>
 
-<div class="viewcode-block" id="cp_get_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.cp_get_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">cp_get_log_likelihood</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Theta</span><span class="p">):</span>
+<div class="viewcode-block" id="cp_get_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.cp_get_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">cp_get_log_likelihood</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Theta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R: array of shape (n,1) where n is the number of assets</span>
 <span class="sd">    param Theta: precision matrix of shape (n,n) where n is the number of assets</span>
@@ -418,7 +418,7 @@
     <span class="k">return</span> <span class="n">cp</span><span class="o">.</span><span class="n">log_det</span><span class="p">(</span><span class="n">Theta</span><span class="p">)</span> <span class="o">-</span> <span class="n">cp</span><span class="o">.</span><span class="n">quad_form</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Theta</span><span class="p">)</span> </div>
 
 
-<div class="viewcode-block" id="max_log_likelihood_const_L"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.max_log_likelihood_const_L">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_const_L</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">Lt_params</span><span class="p">,</span> <span class="n">Lt_times_R_vec_params</span><span class="p">,</span> <span class="n">Lt_hat</span><span class="p">,</span> <span class="n">Lt_times_R_vec</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="max_log_likelihood_const_L"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.max_log_likelihood_const_L">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_const_L</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">Lt_params</span><span class="p">,</span> <span class="n">Lt_times_R_vec_params</span><span class="p">,</span> <span class="n">Lt_hat</span><span class="p">,</span> <span class="n">Lt_times_R_vec</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</span>
 <span class="sd">        whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</span>
@@ -449,7 +449,7 @@
     <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span></div>
 
 
-<div class="viewcode-block" id="max_log_likelihood_varying_L"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.max_log_likelihood_varying_L">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_varying_L</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">Lt_params</span><span class="p">,</span> <span class="n">Lt_times_R_vec_params</span><span class="p">,</span> <span class="n">Lt_hat</span><span class="p">,</span> <span class="n">Lt_times_R_vec</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="max_log_likelihood_varying_L"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.max_log_likelihood_varying_L">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_varying_L</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">Lt_params</span><span class="p">,</span> <span class="n">Lt_times_R_vec_params</span><span class="p">,</span> <span class="n">Lt_hat</span><span class="p">,</span> <span class="n">Lt_times_R_vec</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</span>
 <span class="sd">        whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</span>
@@ -486,7 +486,7 @@
 
     
 
-<div class="viewcode-block" id="max_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.max_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">prec_params</span><span class="p">,</span> <span class="n">prec_at_cov_params</span><span class="p">,</span> <span class="n">precisions</span><span class="p">,</span> <span class="n">prec_at_covs</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">):</span>
+<div class="viewcode-block" id="max_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.max_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">prec_params</span><span class="p">,</span> <span class="n">prec_at_cov_params</span><span class="p">,</span> <span class="n">precisions</span><span class="p">,</span> <span class="n">prec_at_covs</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param precisions: numpy array of shape (T, M, n, n) where T is the number of time steps, M is the number of predictor candidates, and n is the number of assets</span>
 <span class="sd">    param R: numpy array of shape (T, n, 1) where T is the number of time steps and n is the number of assets</span>
@@ -514,7 +514,7 @@
     <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span></div>
 
 
-<div class="viewcode-block" id="max_log_likelihood_const_theta"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.max_log_likelihood_const_theta">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_const_theta</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">prec_params</span><span class="p">,</span> <span class="n">prec_at_cov_params</span><span class="p">,</span> <span class="n">precisions</span><span class="p">,</span> <span class="n">prec_at_covs</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">):</span> 
+<div class="viewcode-block" id="max_log_likelihood_const_theta"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.max_log_likelihood_const_theta">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_const_theta</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">prec_params</span><span class="p">,</span> <span class="n">prec_at_cov_params</span><span class="p">,</span> <span class="n">precisions</span><span class="p">,</span> <span class="n">prec_at_covs</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">):</span> 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param precisions: array of shape (M, n, n) M is the number of predictor candidates, and n is the number of assets</span>
 <span class="sd">    param R: numpy array of shape (T, n) where T is the number of time steps and n is the number of assets</span>
@@ -535,20 +535,20 @@
     <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;MOSEK&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span></div>
 
-<div class="viewcode-block" id="get_overtriangular"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_overtriangular">[docs]</a><span class="k">def</span> <span class="nf">get_overtriangular</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<div class="viewcode-block" id="get_overtriangular"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_overtriangular">[docs]</a><span class="k">def</span> <span class="nf">get_overtriangular</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the upper triangular part of a matrix M (including the diagonal)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">M</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_overtriangular_stack"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_overtriangular_stack">[docs]</a><span class="k">def</span> <span class="nf">get_overtriangular_stack</span><span class="p">(</span><span class="n">Ms</span><span class="p">):</span>
+<div class="viewcode-block" id="get_overtriangular_stack"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_overtriangular_stack">[docs]</a><span class="k">def</span> <span class="nf">get_overtriangular_stack</span><span class="p">(</span><span class="n">Ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the upper triangular part of a list of matrices Ms (including the diagonal)\</span>
 <span class="sd">        upper diagonals are returned as rows in a matrix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">get_overtriangular</span><span class="p">(</span><span class="n">M</span><span class="p">)</span> <span class="k">for</span> <span class="n">M</span> <span class="ow">in</span> <span class="n">Ms</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="get_vectorform"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_vectorform">[docs]</a><span class="k">def</span> <span class="nf">get_vectorform</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+<div class="viewcode-block" id="get_vectorform"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_vectorform">[docs]</a><span class="k">def</span> <span class="nf">get_vectorform</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the form of R that is used to compute L^T * R elementwise</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -558,7 +558,7 @@
         <span class="n">R_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">R_new</span><span class="p">,</span> <span class="n">R</span><span class="p">[:,</span><span class="n">i</span><span class="p">:]))</span>
     <span class="k">return</span> <span class="n">R_new</span></div>
 
-<div class="viewcode-block" id="max_log_likelihood_varying_L2"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.max_log_likelihood_varying_L2">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_varying_L2</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">P_param</span><span class="p">,</span> <span class="n">onest_A_param</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">onest_A</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="max_log_likelihood_varying_L2"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.max_log_likelihood_varying_L2">[docs]</a><span class="k">def</span> <span class="nf">max_log_likelihood_varying_L2</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">P_param</span><span class="p">,</span> <span class="n">onest_A_param</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">onest_A</span><span class="p">,</span> <span class="n">prob_num</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param whiteners: array of shape (M, n, n) where M is the number of predictor candidates, and n is the number of assets</span>
 <span class="sd">        whiteners[i] = Li^T, where Li*Li^T=Sigma_i, the precission matrix of the i-th predictor</span>
@@ -586,7 +586,7 @@
 
     <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span></div>
 
-<div class="viewcode-block" id="get_opt_weights_new"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_opt_weights_new">[docs]</a><span class="k">def</span> <span class="nf">get_opt_weights_new</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">likelihood_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">w_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_L</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">turnover_cons</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_opt_weights_new"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_opt_weights_new">[docs]</a><span class="k">def</span> <span class="nf">get_opt_weights_new</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">likelihood_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">w_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_L</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">turnover_cons</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param model: Covariance predictor model</span>
 <span class="sd">    param likelihood_window: number of past days to use to compute the log likelihood</span>
@@ -884,7 +884,7 @@
     <span class="k">return</span> <span class="n">ws</span></div>
 
 
-<div class="viewcode-block" id="get_opt_weights_old"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_opt_weights_old">[docs]</a><span class="k">def</span> <span class="nf">get_opt_weights_old</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">theta_params</span><span class="p">,</span> <span class="n">likelihood_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">w_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="get_opt_weights_old"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_opt_weights_old">[docs]</a><span class="k">def</span> <span class="nf">get_opt_weights_old</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">theta_params</span><span class="p">,</span> <span class="n">likelihood_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">w_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Choose the weights to combine the inverse covariance matrices by solving the following convex problem:  what (constant) weights would have maximized the log likelihood on the last &#39;likelihood_window&#39; days? This is a convex problem, so we can solve it with cvxpy.</span>
 
@@ -955,7 +955,7 @@
 
 
 
-<div class="viewcode-block" id="get_realized_covs"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_realized_covs">[docs]</a><span class="k">def</span> <span class="nf">get_realized_covs</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+<div class="viewcode-block" id="get_realized_covs"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_realized_covs">[docs]</a><span class="k">def</span> <span class="nf">get_realized_covs</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R: numpy array where rows are vector of asset returns for t=0,1,...</span>
 <span class="sd">        R has shape (T, n) where T is the number of days and n is the number of assets</span>
@@ -970,7 +970,7 @@
     <span class="k">return</span> <span class="n">R</span> <span class="o">@</span> <span class="n">R</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></div>
     
 
-<div class="viewcode-block" id="get_realized_vars"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_realized_vars">[docs]</a><span class="k">def</span> <span class="nf">get_realized_vars</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+<div class="viewcode-block" id="get_realized_vars"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_realized_vars">[docs]</a><span class="k">def</span> <span class="nf">get_realized_vars</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R: numpy array where rows are vector of asset returns for t=0,1,...</span>
 <span class="sd">        R has shape (T, n) where T is the number of days and n is the number of assets</span>
@@ -987,7 +987,7 @@
         <span class="n">variances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">r_t</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variances</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="from_cov_to_corr"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.from_cov_to_corr">[docs]</a><span class="k">def</span> <span class="nf">from_cov_to_corr</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="from_cov_to_corr"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.from_cov_to_corr">[docs]</a><span class="k">def</span> <span class="nf">from_cov_to_corr</span><span class="p">(</span><span class="n">Sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns correlation matrix R corresponding to covariance matrix Sigma</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -996,7 +996,7 @@
     <span class="n">corr</span> <span class="o">=</span> <span class="n">Sigma</span> <span class="o">/</span> <span class="n">outer_V</span>
     <span class="k">return</span> <span class="n">corr</span></div>
 
-<div class="viewcode-block" id="get_realized_sizes"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_realized_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_realized_sizes</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+<div class="viewcode-block" id="get_realized_sizes"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_realized_sizes">[docs]</a><span class="k">def</span> <span class="nf">get_realized_sizes</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param R: numpy array where rows are vector of asset returns for t=0,1,...</span>
 <span class="sd">        R has shape (T, n) where T is the number of days and n is the number of assets</span>
@@ -1010,7 +1010,7 @@
         <span class="n">sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_t</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">r_t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param EWMA: EWMA at time t-1</span>
 <span class="sd">    param y_last: observation at time t-1</span>
@@ -1025,7 +1025,7 @@
 
     <span class="k">return</span> <span class="n">old_weight</span><span class="o">*</span><span class="n">EWMA</span> <span class="o">+</span> <span class="n">new_weight</span><span class="o">*</span><span class="n">y_last</span></div>
 
-<div class="viewcode-block" id="get_ewmas"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_ewmas">[docs]</a><span class="k">def</span> <span class="nf">get_ewmas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">T_half</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ewmas"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_ewmas">[docs]</a><span class="k">def</span> <span class="nf">get_ewmas</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">T_half</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    y: array with measurements for times t=1,2,...,T=len(y)</span>
 <span class="sd">    T_half: EWMA half life</span>
@@ -1049,7 +1049,7 @@
         <span class="n">EWMAs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EWMA_t</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EWMAs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_r_tildes"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_r_tildes">[docs]</a><span class="k">def</span> <span class="nf">get_r_tildes</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Ws</span><span class="p">):</span>
+<div class="viewcode-block" id="get_r_tildes"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_r_tildes">[docs]</a><span class="k">def</span> <span class="nf">get_r_tildes</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Ws</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param Ws: array of whitening matrices for t=1,2,..., (i.e. L^t, where LL^T=Sigma^-1)</span>
 <span class="sd">    param R: array of returns to whiten for t=1,2,..., </span>
@@ -1061,7 +1061,7 @@
     <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Ws</span> <span class="o">@</span> <span class="n">R</span></div>
 
-<div class="viewcode-block" id="get_cholesky"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_cholesky">[docs]</a><span class="k">def</span> <span class="nf">get_cholesky</span><span class="p">(</span><span class="n">Sigma_hats</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cholesky"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_cholesky">[docs]</a><span class="k">def</span> <span class="nf">get_cholesky</span><span class="p">(</span><span class="n">Sigma_hats</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns: Cholesky (transpose) decomposition of Sigma_hat^-1 for each Sigma_hat in Sigma_hats, i.e.,</span>
 <span class="sd">        LL^T = Sigma_hat^-1;</span>
@@ -1077,7 +1077,7 @@
 
 <span class="c1">####### I think the folloiwng functions are not used anymore, but let&#39;s keep them for now ########</span>
 
-<div class="viewcode-block" id="get_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_log_likelihood</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_log_likelihood</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param x: numpy array of shape (n,1)</span>
 <span class="sd">    param Sigma: numpy array of shape (n,n)</span>
@@ -1101,7 +1101,7 @@
 
 
 
-<div class="viewcode-block" id="get_avg_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_avg_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_avg_likelihood</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">):</span>
+<div class="viewcode-block" id="get_avg_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_avg_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_avg_likelihood</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns: (averaged) log-likelihood of observed returns R, under the Gaussian distribution</span>
 <span class="sd">        with mean zero and covariances in Sigma_hats</span>
@@ -1114,7 +1114,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">daily_likelihoods</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_daily_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.get_daily_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_daily_likelihood</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">in_parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="get_daily_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils_old/index.html#covariance.utils_old.get_daily_likelihood">[docs]</a><span class="k">def</span> <span class="nf">get_daily_likelihood</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">in_parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns: log-likelihood of observed returns R, under the Gaussian distribution</span>
 <span class="sd">        with mean zero and covariances in Sigma_hats</span>

@@ -32,20 +32,22 @@ Attributes
 
    
 
-.. py:function:: get_next_ewma(EWMA, y_last, t, beta)
+.. py:function:: get_next_ewma(EWMA, y_last, t, beta, clip_at=None, min_periods=None)
 
    param EWMA: EWMA at time t-1
    param y_last: observation at time t-1
    param t: current time step
    param beta: EWMA exponential forgetting parameter
+   param clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
    returns: EWMA estimate at time t (note that this does not depend on y_t)
 
 
-.. py:function:: ewma(y, halflife)
+.. py:function:: ewma(y, halflife, clip_at=None, min_periods=None)
 
-   y: array with measurements for times t=1,2,...,T=len(y)
+   param y: array with measurements for times t=1,2,...,T=len(y)
    halflife: EWMA half life
+   param clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
    returns: list of EWMAs for times t=2,3,...,T+1 = len(y)
 
@@ -57,15 +59,23 @@ Attributes
    This way we don't get a "look-ahead bias" in the EWMA
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods=20, mean=False)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None)
 
    param returns: pandas dataframe with returns for each asset
    param vola_halflife: half life for volatility
    param cov_halflife: half life for covariance
    param lower: lower bound for adjusted return cutoff
    param upper: upper bound for adjusted return cutoff
-   param min_periods: minimum number of periods to use for EWMA
+   param min_preiods_vola: minimum number of periods to use for volatility
+   ewma estimate
+   param min_periods_cov: minimum number of periods to use for covariance
+   ewma estimate
    param mean: whether to estimate mean; if False, assumes zero mean data
+   param low_rank: rank of low rank component of correlation matrix
+   approximation; if None, no low rank approximation component is performed
+   param clip_at: clip volatility returns at clip_at*sigma_t in ewma
+   estimate of variance; i.e., clip_at is number of standard deviations to
+   clip at
 
    returns: dictionary with covariance matrix predictions for each day            each key (time step) in the dictionary corresponds to the
        prediction for the following (next) key (time step)
