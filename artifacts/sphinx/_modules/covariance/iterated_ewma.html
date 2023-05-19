@@ -175,57 +175,19 @@
     <span class="n">outer_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">Sigmas</span> <span class="o">/</span> <span class="n">outer_V</span>
 
-<span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    param Rs: Txnxn numpy array of correlation matrices</span>
-<span class="sd">    param r: float, rank of low rank component </span>
-
-<span class="sd">    returns: low rank + diag approximation of R\</span>
-<span class="sd">        R_hat = sum_i^r lambda_i q_i q_i&#39; + E, where E is diagonal,</span>
-<span class="sd">        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues</span>
-<span class="sd">        and eigenvectors of R (the r first, in descending order)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">eig_decomps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Sort eigenvalues in descending order</span>
-    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Make Lamdas diagonal</span>
-    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lamda</span><span class="p">)</span> <span class="k">for</span> <span class="n">lamda</span> <span class="ow">in</span> <span class="n">Lamda</span><span class="p">])</span>
-
-    <span class="c1"># Get low rank component</span>
-    <span class="n">Lamda_r</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">:</span><span class="n">r</span><span class="p">,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
-    <span class="n">Q_r</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
-    <span class="n">R_lo</span> <span class="o">=</span> <span class="n">Q_r</span> <span class="o">@</span> <span class="n">Lamda_r</span> <span class="o">@</span> <span class="n">Q_r</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="c1"># Get diagonal component </span>
-    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">-</span><span class="n">R_lo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
-    
-    <span class="c1"># Create low rank approximation</span>
-    <span class="k">return</span> <span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span>
-
-
 
 
 
 <div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
-    <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">low_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">min_periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        param returns: pandas dataframe with returns for each asset</span>
 <span class="sd">        param vola_halflife: half life for volatility</span>
 <span class="sd">        param cov_halflife: half life for covariance</span>
 <span class="sd">        param lower: lower bound for adjusted return cutoff</span>
 <span class="sd">        param upper: upper bound for adjusted return cutoff</span>
-<span class="sd">        param min_preiods_vola: minimum number of periods to use for volatility</span>
-<span class="sd">        EWMA estimate</span>
-<span class="sd">        param min_periods_cov: minimum number of periods to use for covariance</span>
-<span class="sd">        EWMA estimate</span>
+<span class="sd">        param min_periods: minimum number of periods to use for EWMA</span>
 <span class="sd">        param mean: whether to estimate mean; if False, assumes zero mean data</span>
-<span class="sd">        param low_rank: rank of low rank component of correlation matrix</span>
-<span class="sd">        approximation; if None, no low rank approximation component is performed</span>
 
 <span class="sd">        returns: dictionary with covariance matrix predictions for each day\</span>
 <span class="sd">            each key (time step) in the dictionary corresponds to the</span>
@@ -235,59 +197,63 @@
         <span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1000</span>
         <span class="n">upper</span> <span class="o">=</span> <span class="n">upper</span> <span class="ow">or</span> <span class="mi">1000</span>
 
-        <span class="c1"># Need at least one period for EWMA estimate</span>
-        <span class="n">min_periods_vola</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_periods_vola</span><span class="p">)</span>
-        <span class="n">min_periods_cov</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span> <span class="c1"># Need to remove one entry for each estimate</span>
-            <span class="n">min_periods_vola</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods_vola</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
-            <span class="n">min_periods_cov</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods_cov</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="n">min_periods</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c1"># Need to remove two entries</span>
             <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
 
 
 
-        <span class="c1">### Volatility estimation  </span>
+        <span class="c1">### Scaling  </span>
         <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">_get_realized_vars</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="c1"># The first entry contains zeros</span>
+            <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">realized_vars</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
         <span class="n">V</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">realized_vars</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">)</span>
-
-        <span class="c1"># Apply min_periods_vola</span>
-        <span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
         <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
         <span class="n">D_inv_diags</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">D_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">D_inv_diags</span><span class="p">])</span> <span class="c1"># Gets L^T s.t. LL^T = V_hat^{-1}</span>
         <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">_get_r_adj</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">,</span> <span class="n">D_inv</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">lower</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">upper</span><span class="p">)</span>
 
-        <span class="c1">### Correlation estimation</span>
+        <span class="c1">### Full whitening, outer products in T x n x n tensor</span>
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">returns_adj</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns_adj</span><span class="p">)</span>
         <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">_get_realized_covs</span><span class="p">(</span><span class="n">returns_adj</span><span class="o">-</span><span class="n">returns_adj_mean</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="c1"># The first entry contains zeros only</span>
+            <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">realized_covs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="c1"># Create correlation matrix</span>
         <span class="n">R_tilde</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">)</span>
-        
-        <span class="c1"># Apply min_periods_cov</span>
-        <span class="n">R_tilde</span> <span class="o">=</span> <span class="n">R_tilde</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
         <span class="n">R</span> <span class="o">=</span> <span class="n">_refactor_to_corr</span><span class="p">(</span><span class="n">R_tilde</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">low_rank</span><span class="p">:</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="n">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">low_rank</span><span class="p">)</span>
+
+        <span class="c1"># Remove first min_periods-1 entries</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
+            <span class="c1"># We already removed the first two entries</span>
+            <span class="n">burnin</span> <span class="o">=</span> <span class="n">min_periods</span><span class="o">-</span><span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>  
+            <span class="n">burnin</span> <span class="o">=</span> <span class="n">min_periods</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="c1"># returns_adj = returns_adj[burnin:, :, :]</span>
+        <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">burnin</span><span class="p">:]</span>
 
         <span class="c1"># Engle 2002 formula</span>
         <span class="n">Sigmas</span> <span class="o">=</span> <span class="n">D</span> <span class="o">@</span> <span class="n">R</span> <span class="o">@</span> <span class="n">D</span>
-
-        <span class="n">times</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span>
 
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="n">T</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>    

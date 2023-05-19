@@ -57,20 +57,15 @@ Attributes
    This way we don't get a "look-ahead bias" in the EWMA
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods=20, mean=False)
 
    param returns: pandas dataframe with returns for each asset
    param vola_halflife: half life for volatility
    param cov_halflife: half life for covariance
    param lower: lower bound for adjusted return cutoff
    param upper: upper bound for adjusted return cutoff
-   param min_preiods_vola: minimum number of periods to use for volatility
-   EWMA estimate
-   param min_periods_cov: minimum number of periods to use for covariance
-   EWMA estimate
+   param min_periods: minimum number of periods to use for EWMA
    param mean: whether to estimate mean; if False, assumes zero mean data
-   param low_rank: rank of low rank component of correlation matrix
-   approximation; if None, no low rank approximation component is performed
 
    returns: dictionary with covariance matrix predictions for each day            each key (time step) in the dictionary corresponds to the
        prediction for the following (next) key (time step)
