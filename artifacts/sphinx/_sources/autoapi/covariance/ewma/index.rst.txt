@@ -21,18 +21,31 @@ Functions
 
 
 
-.. py:function:: variance(returns, halflife, min_periods=0)
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.ewma.IEWMA
 
 
-.. py:function:: volatility(returns, halflife, min_periods=0)
+.. py:data:: IEWMA
+   
+
+   
+
+.. py:function:: variance(returns, halflife, min_periods=0, clip_at=None)
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20)
+.. py:function:: volatility(returns, halflife, min_periods=0, clip_at=None)
+
+
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None)
 
 
 .. py:function:: ewma_cov(data, halflife, min_periods=0)
 
 
-.. py:function:: ewma_mean(data, halflife, min_periods=0)
+.. py:function:: ewma_mean(data, halflife, min_periods=0, clip_at=None)
 
 

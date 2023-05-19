@@ -75,18 +75,22 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
+<span class="kn">from</span> <span class="nn">cvx.covariance.utils</span> <span class="kn">import</span> <span class="n">_regularize_correlation</span>
+
+
 <span class="c1">### This is vectorized iterated EWMA</span>
 
 <span class="c1"># named tuple</span>
 <div class="viewcode-block" id="IEWMA"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.IEWMA">[docs]</a><span class="n">IEWMA</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;IEWMA&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;covariance&#39;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param EWMA: EWMA at time t-1</span>
 <span class="sd">    param y_last: observation at time t-1</span>
 <span class="sd">    param t: current time step</span>
 <span class="sd">    param beta: EWMA exponential forgetting parameter</span>
+<span class="sd">    param clip_at: clip y_last at  +- clip_at*EWMA (optional)</span>
 
 <span class="sd">    returns: EWMA estimate at time t (note that this does not depend on y_t)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -94,12 +98,17 @@
     <span class="n">old_weight</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span><span class="o">-</span><span class="n">beta</span><span class="o">**</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>
     <span class="n">new_weight</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">min_periods</span><span class="p">,</span> <span class="s2">&quot;min_periods must be specified if clip_at is specified&quot;</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="n">min_periods</span><span class="o">+</span><span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">old_weight</span><span class="o">*</span><span class="n">EWMA</span> <span class="o">+</span> <span class="n">new_weight</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_last</span><span class="p">,</span> <span class="o">-</span><span class="n">clip_at</span><span class="o">*</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">*</span><span class="n">EWMA</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">old_weight</span><span class="o">*</span><span class="n">EWMA</span> <span class="o">+</span> <span class="n">new_weight</span><span class="o">*</span><span class="n">y_last</span></div>
 
-<div class="viewcode-block" id="ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.ewma">[docs]</a><span class="k">def</span> <span class="nf">ewma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">halflife</span><span class="p">):</span>
+<div class="viewcode-block" id="ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.ewma">[docs]</a><span class="k">def</span> <span class="nf">ewma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    y: array with measurements for times t=1,2,...,T=len(y)</span>
+<span class="sd">    param y: array with measurements for times t=1,2,...,T=len(y)</span>
 <span class="sd">    halflife: EWMA half life</span>
+<span class="sd">    param clip_at: clip y_last at  +- clip_at*EWMA (optional)</span>
 
 <span class="sd">    returns: list of EWMAs for times t=2,3,...,T+1 = len(y)</span>
 
@@ -114,10 +123,14 @@
     <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">halflife</span><span class="p">)</span>
     <span class="n">EWMA_t</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">EWMAs</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># First EWMA is for t=2 </span>
-        <span class="n">y_last</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Note zero-indexing</span>
-        <span class="n">EWMA_t</span> <span class="o">=</span> <span class="n">get_next_ewma</span><span class="p">(</span><span class="n">EWMA_t</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-        <span class="n">EWMAs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EWMA_t</span><span class="p">)</span>
+    <span class="n">EWMAs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">EWMAs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span> <span class="c1"># First EWMA is for t=2 </span>
+        <span class="c1"># y_last = y[t-1] # Note zero-indexing</span>
+        <span class="c1"># EWMA_t = get_next_ewma(EWMA_t, y_last, t, beta, clip_at, min_periods)</span>
+        <span class="n">EWMAs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_next_ewma</span><span class="p">(</span><span class="n">EWMAs</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">clip_at</span><span class="p">,</span> <span class="n">min_periods</span><span class="p">)</span>
+
+        <span class="c1"># EWMAs.append(EWMA_t)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">EWMAs</span><span class="p">)</span></div>
 
 
@@ -146,24 +159,28 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
-    <span class="n">variances</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># variances = []</span>
+    <span class="n">T</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">volatilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
     
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">r_t</span> <span class="o">=</span> <span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
-        <span class="n">variances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">r_t</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variances</span><span class="p">)</span>
+        <span class="n">volatilities</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_t</span><span class="o">**</span><span class="mi">2</span>
+        <span class="c1"># sp.diags(diagonal_elements, 0)</span>
+    <span class="k">return</span> <span class="n">volatilities</span>
 
-<span class="k">def</span> <span class="nf">_get_r_adj</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">D_inv</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices</span>
-<span class="sd">    param param returns: array of returns to whiten for t=1,2,..., </span>
 
-<span class="sd">    returns: numpy array with r_tilde_hats as rows</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">T</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">D_inv</span> <span class="o">@</span> <span class="n">returns</span>
+<span class="c1"># def _get_r_adj(returns, D_inv):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices</span>
+<span class="c1">#     param param returns: array of returns to whiten for t=1,2,..., </span>
+
+<span class="c1">#     returns: numpy array with r_tilde_hats as rows</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     T = returns.shape[0]</span>
+<span class="c1">#     n = returns.shape[1]</span>
+<span class="c1">#     returns = returns.reshape(T,n,1)</span>
+<span class="c1">#     return D_inv @ returns</span>
 
 <span class="k">def</span> <span class="nf">_refactor_to_corr</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -176,95 +193,102 @@
     <span class="k">return</span> <span class="n">Sigmas</span> <span class="o">/</span> <span class="n">outer_V</span>
 
 
-
-
 <div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
-    <span class="n">min_periods</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">low_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        param returns: pandas dataframe with returns for each asset</span>
 <span class="sd">        param vola_halflife: half life for volatility</span>
 <span class="sd">        param cov_halflife: half life for covariance</span>
 <span class="sd">        param lower: lower bound for adjusted return cutoff</span>
 <span class="sd">        param upper: upper bound for adjusted return cutoff</span>
-<span class="sd">        param min_periods: minimum number of periods to use for EWMA</span>
+<span class="sd">        param min_preiods_vola: minimum number of periods to use for volatility</span>
+<span class="sd">        ewma estimate</span>
+<span class="sd">        param min_periods_cov: minimum number of periods to use for covariance</span>
+<span class="sd">        ewma estimate</span>
 <span class="sd">        param mean: whether to estimate mean; if False, assumes zero mean data</span>
+<span class="sd">        param low_rank: rank of low rank component of correlation matrix</span>
+<span class="sd">        approximation; if None, no low rank approximation component is performed</span>
+<span class="sd">        param clip_at: clip volatility returns at clip_at*sigma_t in ewma</span>
+<span class="sd">        estimate of variance; i.e., clip_at is number of standard deviations to</span>
+<span class="sd">        clip at</span>
 
 <span class="sd">        returns: dictionary with covariance matrix predictions for each day\</span>
 <span class="sd">            each key (time step) in the dictionary corresponds to the</span>
 <span class="sd">            prediction for the following (next) key (time step)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO: How to handle lower=None, upper=None?</span>
-        <span class="n">lower</span> <span class="o">=</span> <span class="n">lower</span> <span class="ow">or</span> <span class="o">-</span><span class="mi">1000</span>
-        <span class="n">upper</span> <span class="o">=</span> <span class="n">upper</span> <span class="ow">or</span> <span class="mi">1000</span>
+        <span class="c1"># Need at least one period for EWMA estimate</span>
+        <span class="n">min_periods_vola</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_periods_vola</span><span class="p">)</span>
+        <span class="n">min_periods_cov</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-            <span class="n">min_periods</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c1"># Need to remove two entries</span>
+        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span> <span class="c1"># Need to remove one entry for each estimate</span>
+            <span class="n">min_periods_vola</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods_vola</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+            <span class="n">min_periods_cov</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods_cov</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  
             <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
 
-
-
-        <span class="c1">### Scaling  </span>
+        <span class="c1">### Volatility estimation  </span>
+        <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
+            <span class="n">clip_at_var</span> <span class="o">=</span> <span class="n">clip_at</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">clip_at_var</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">_get_realized_vars</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-            <span class="c1"># The first entry contains zeros</span>
-            <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">realized_vars</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">ewma</span><span class="p">(</span><span class="n">realized_vars</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at_var</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods_vola</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span> <span class="c1"># Clip returns</span>
+            <span class="n">returns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">returns_mean</span><span class="o">-</span><span class="n">clip_at</span><span class="o">*</span><span class="n">D</span><span class="p">,</span> <span class="n">returns_mean</span><span class="o">+</span><span class="n">clip_at</span><span class="o">*</span><span class="n">D</span><span class="p">)</span>
 
+        <span class="c1"># Apply min_periods_vola</span>
+        <span class="c1"># V = V[min_periods_vola-1:]</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">min_periods_vola</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
 
-        <span class="n">V</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">realized_vars</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">)</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
-        <span class="n">D_inv_diags</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">D_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">D_inv_diags</span><span class="p">])</span> <span class="c1"># Gets L^T s.t. LL^T = V_hat^{-1}</span>
-        <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">_get_r_adj</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">,</span> <span class="n">D_inv</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">lower</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">upper</span><span class="p">)</span>
+        <span class="c1"># Get adjusted returns</span>
+        <span class="n">D_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">D</span>
+        <span class="n">returns_adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span> <span class="o">*</span> <span class="n">D_inv</span>
 
-        <span class="c1">### Full whitening, outer products in T x n x n tensor</span>
+        <span class="c1"># Clip adjusted returns</span>
+        <span class="k">if</span> <span class="n">lower</span> <span class="ow">or</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">lower</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">upper</span><span class="p">)</span>
+
+        <span class="c1">### Correlation estimation</span>
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">returns_adj</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns_adj</span><span class="p">)</span>
         <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">_get_realized_covs</span><span class="p">(</span><span class="n">returns_adj</span><span class="o">-</span><span class="n">returns_adj_mean</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-            <span class="c1"># The first entry contains zeros only</span>
-            <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">realized_covs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
         <span class="c1"># Create correlation matrix</span>
         <span class="n">R_tilde</span> <span class="o">=</span> <span class="n">ewma</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">)</span>
+        
+        <span class="c1"># Apply min_periods_cov</span>
+        <span class="n">R_tilde</span> <span class="o">=</span> <span class="n">R_tilde</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">min_periods_cov</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
         <span class="n">R</span> <span class="o">=</span> <span class="n">_refactor_to_corr</span><span class="p">(</span><span class="n">R_tilde</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">low_rank</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">low_rank</span><span class="p">)</span>
 
-        <span class="c1"># Remove first min_periods-1 entries</span>
-        <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-            <span class="c1"># We already removed the first two entries</span>
-            <span class="n">burnin</span> <span class="o">=</span> <span class="n">min_periods</span><span class="o">-</span><span class="mi">3</span>
-        <span class="k">else</span><span class="p">:</span>  
-            <span class="n">burnin</span> <span class="o">=</span> <span class="n">min_periods</span><span class="o">-</span><span class="mi">1</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
-        <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">returns_mean</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:]</span>
-        <span class="c1"># returns_adj = returns_adj[burnin:, :, :]</span>
-        <span class="n">returns_adj_mean</span> <span class="o">=</span> <span class="n">returns_adj_mean</span><span class="p">[</span><span class="n">burnin</span><span class="p">:,</span> <span class="p">:]</span>
-        <span class="n">times</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">burnin</span><span class="p">:]</span>
+        <span class="c1">### Engle 2002 formula</span>
+        <span class="n">T</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">Sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">D</span>
 
-        <span class="c1"># Engle 2002 formula</span>
-        <span class="n">Sigmas</span> <span class="o">=</span> <span class="n">D</span> <span class="o">@</span> <span class="n">R</span> <span class="o">@</span> <span class="n">D</span>
-
+        <span class="n">times</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span> 
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
             <span class="n">T</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>    
+  
+            <span class="n">means</span> <span class="o">=</span> <span class="n">returns_mean</span> <span class="o">+</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">returns_adj_mean</span><span class="p">)</span>
 
-            <span class="n">means</span> <span class="o">=</span> <span class="n">returns_mean</span> <span class="o">+</span> <span class="p">(</span><span class="n">D</span> <span class="o">@</span> <span class="n">returns_adj_mean</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
             <span class="n">means</span> <span class="o">=</span> <span class="p">{</span><span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))}</span>
             <span class="n">covariances</span> <span class="o">=</span> <span class="p">{</span><span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))}</span>
 
             <span class="k">return</span> <span class="n">IEWMA</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">means</span><span class="p">,</span> <span class="n">covariance</span><span class="o">=</span><span class="n">covariances</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-
             <span class="k">return</span> <span class="p">{</span><span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">index</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))}</span></div>
 
     
