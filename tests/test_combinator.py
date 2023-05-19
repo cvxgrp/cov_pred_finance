@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 
 from cvx.covariance.covariance_combination import CovarianceCombination
-from cvx.covariance.iterated_ewma import iterated_ewma
+from cvx.covariance.ewma import iterated_ewma
 
 
 @pytest.fixture()

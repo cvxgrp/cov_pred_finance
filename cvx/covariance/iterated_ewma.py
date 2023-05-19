@@ -2,18 +2,22 @@ import numpy as np
 import pandas as pd
 from collections import namedtuple
 
+from cvx.covariance.utils import _regularize_correlation
+
+
 ### This is vectorized iterated EWMA
 
 # named tuple
 IEWMA = namedtuple('IEWMA', ['mean', 'covariance'])
 
 
-def get_next_ewma(EWMA, y_last, t, beta):
+def get_next_ewma(EWMA, y_last, t, beta, clip_at=None, min_periods=None):
     """
     param EWMA: EWMA at time t-1
     param y_last: observation at time t-1
     param t: current time step
     param beta: EWMA exponential forgetting parameter
+    param clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
     returns: EWMA estimate at time t (note that this does not depend on y_t)
     """
@@ -21,12 +25,17 @@ def get_next_ewma(EWMA, y_last, t, beta):
     old_weight = (beta-beta**t)/(1-beta**t)
     new_weight = (1-beta) / (1-beta**t)
 
+    if clip_at:
+        assert min_periods, "min_periods must be specified if clip_at is specified"
+        if t >= min_periods+2:
+            return old_weight*EWMA + new_weight*np.clip(y_last, -clip_at*EWMA, clip_at*EWMA)
     return old_weight*EWMA + new_weight*y_last
 
-def ewma(y, halflife):
+def ewma(y, halflife, clip_at=None, min_periods=None):
     """
-    y: array with measurements for times t=1,2,...,T=len(y)
+    param y: array with measurements for times t=1,2,...,T=len(y)
     halflife: EWMA half life
+    param clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
     returns: list of EWMAs for times t=2,3,...,T+1 = len(y)
 
@@ -41,10 +50,14 @@ def ewma(y, halflife):
     beta = np.exp(-np.log(2)/halflife)
     EWMA_t = 0
     EWMAs = []
-    for t in range(1,y.shape[0]+1): # First EWMA is for t=2 
-        y_last = y[t-1] # Note zero-indexing
-        EWMA_t = get_next_ewma(EWMA_t, y_last, t, beta)
-        EWMAs.append(EWMA_t)
+    EWMAs = np.zeros_like(y)
+    EWMAs[0] = y[0]
+    for t in range(1,y.shape[0]): # First EWMA is for t=2 
+        # y_last = y[t-1] # Note zero-indexing
+        # EWMA_t = get_next_ewma(EWMA_t, y_last, t, beta, clip_at, min_periods)
+        EWMAs[t] = get_next_ewma(EWMAs[t-1], y[t], t+1, beta, clip_at, min_periods)
+
+        # EWMAs.append(EWMA_t)
     return np.array(EWMAs)
 
 
@@ -73,24 +86,28 @@ def _get_realized_vars(returns):
     """
 
 
-    variances = []
+    # variances = []
+    T,n = returns.shape
+    volatilities = np.zeros((T, n))
     
     for t in range(returns.shape[0]):
         r_t = returns[t, :].reshape(-1,)
-        variances.append(np.diag(r_t**2))
-    return np.array(variances)
+        volatilities[t] = r_t**2
+        # sp.diags(diagonal_elements, 0)
+    return volatilities
 
-def _get_r_adj(returns, D_inv):
-    """
-    param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices
-    param param returns: array of returns to whiten for t=1,2,..., 
 
-    returns: numpy array with r_tilde_hats as rows
-    """
-    T = returns.shape[0]
-    n = returns.shape[1]
-    returns = returns.reshape(T,n,1)
-    return D_inv @ returns
+# def _get_r_adj(returns, D_inv):
+#     """
+#     param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices
+#     param param returns: array of returns to whiten for t=1,2,..., 
+
+#     returns: numpy array with r_tilde_hats as rows
+#     """
+#     T = returns.shape[0]
+#     n = returns.shape[1]
+#     returns = returns.reshape(T,n,1)
+#     return D_inv @ returns
 
 def _refactor_to_corr(Sigmas):
     """
@@ -102,44 +119,9 @@ def _refactor_to_corr(Sigmas):
     outer_V = np.array([np.outer(v, v) for v in V])
     return Sigmas / outer_V
 
-def _regularize_correlation(R, r):
-    """
-    param Rs: Txnxn numpy array of correlation matrices
-    param r: float, rank of low rank component 
-
-    returns: low rank + diag approximation of R\
-        R_hat = sum_i^r lambda_i q_i q_i' + E, where E is diagonal,
-        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues
-        and eigenvectors of R (the r first, in descending order)
-    """
-    eig_decomps = np.linalg.eigh(R)
-    Lamda = eig_decomps[0]
-    Q = eig_decomps[1]
-
-    # Sort eigenvalues in descending order
-    Lamda = Lamda[:, ::-1]
-    Q = Q[:, :, ::-1]
-
-    # Make Lamdas diagonal
-    Lamda = np.stack([np.diag(lamda) for lamda in Lamda])
-
-    # Get low rank component
-    Lamda_r = Lamda[:, :r, :r]
-    Q_r = Q[:, :, :r]
-    R_lo = Q_r @ Lamda_r @ Q_r.transpose(0, 2, 1)
-
-    # Get diagonal component 
-    D = np.stack([np.diag(np.diag(R[i, :, :]-R_lo[i, :, :])) for i in range(R.shape[0])])
-    
-    # Create low rank approximation
-    return R_lo + D
-
-
-
-
 
 def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
-    min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None):
+    min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None):
         """
         param returns: pandas dataframe with returns for each asset
         param vola_halflife: half life for volatility
@@ -147,21 +129,20 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
         param lower: lower bound for adjusted return cutoff
         param upper: upper bound for adjusted return cutoff
         param min_preiods_vola: minimum number of periods to use for volatility
-        EWMA estimate
+        ewma estimate
         param min_periods_cov: minimum number of periods to use for covariance
-        EWMA estimate
+        ewma estimate
         param mean: whether to estimate mean; if False, assumes zero mean data
         param low_rank: rank of low rank component of correlation matrix
         approximation; if None, no low rank approximation component is performed
+        param clip_at: clip volatility returns at clip_at*sigma_t in ewma
+        estimate of variance; i.e., clip_at is number of standard deviations to
+        clip at
 
         returns: dictionary with covariance matrix predictions for each day\
             each key (time step) in the dictionary corresponds to the
             prediction for the following (next) key (time step)
         """
-        # TODO: How to handle lower=None, upper=None?
-        lower = lower or -1000
-        upper = upper or 1000
-
         # Need at least one period for EWMA estimate
         min_periods_vola = max(1, min_periods_vola)
         min_periods_cov = max(1, min_periods_cov)
@@ -173,21 +154,29 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
         else:
             returns_mean = np.zeros_like(returns)
 
-
-
         ### Volatility estimation  
+        if clip_at:
+            clip_at_var = clip_at**2
+        else:
+            clip_at_var = None
         realized_vars = _get_realized_vars(returns.values-returns_mean)
-        V = ewma(realized_vars, halflife=vola_halflife)
+        D = np.sqrt(ewma(realized_vars, halflife=vola_halflife, clip_at=clip_at_var, min_periods=min_periods_vola))
+        if clip_at: # Clip returns
+            returns = np.clip(returns, returns_mean-clip_at*D, returns_mean+clip_at*D)
 
         # Apply min_periods_vola
-        V = V[min_periods_vola-1:]
+        # V = V[min_periods_vola-1:]
+        D = D[min_periods_vola-1:]
         returns_mean = returns_mean[min_periods_vola-1:]
-        returns = returns.iloc[min_periods_vola-1:].copy()
+        returns = returns.iloc[min_periods_vola-1:]
 
-        D = np.sqrt(V)
-        D_inv_diags = 1/np.diagonal(D, axis1=1, axis2=2)
-        D_inv = np.stack([np.diag(V) for V in D_inv_diags]) # Gets L^T s.t. LL^T = V_hat^{-1}
-        returns_adj = _get_r_adj(returns.values-returns_mean, D_inv).clip(min=lower, max=upper)
+        # Get adjusted returns
+        D_inv = 1 / D
+        returns_adj = (returns.values-returns_mean) * D_inv
+
+        # Clip adjusted returns
+        if lower or upper:
+            returns_adj = returns_adj.clip(min=lower, max=upper)
 
         ### Correlation estimation
         if mean:
@@ -211,21 +200,22 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
         if low_rank:
             R = _regularize_correlation(R, r=low_rank)
 
-        # Engle 2002 formula
-        Sigmas = D @ R @ D
+        ### Engle 2002 formula
+        T, n = D.shape
+        D = D.reshape(T,1,n)
+        Sigmas = np.transpose(D, axes=(0,2,1)) * R * D
 
-        times = returns.index
-
+        times = returns.index 
         if mean:
             T, n = R.shape[0], R.shape[1]    
+  
+            means = returns_mean + (D.reshape(T,n) * returns_adj_mean)
 
-            means = returns_mean + (D @ returns_adj_mean).reshape(T,n)
             means = {times[i]: pd.Series(means[i], index = returns.columns) for i in range(len(times))}
             covariances = {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
             return IEWMA(mean=means, covariance=covariances)
         else:
-
             return {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
     
