@@ -75,7 +75,6 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">from</span> <span class="nn">cvx.covariance.utils</span> <span class="kn">import</span> <span class="n">_regularize_correlation</span>
 
 
 <span class="c1">### This is vectorized iterated EWMA</span>
@@ -169,19 +168,6 @@
         <span class="c1"># sp.diags(diagonal_elements, 0)</span>
     <span class="k">return</span> <span class="n">volatilities</span>
 
-
-<span class="c1"># def _get_r_adj(returns, D_inv):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices</span>
-<span class="c1">#     param param returns: array of returns to whiten for t=1,2,..., </span>
-
-<span class="c1">#     returns: numpy array with r_tilde_hats as rows</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     T = returns.shape[0]</span>
-<span class="c1">#     n = returns.shape[1]</span>
-<span class="c1">#     returns = returns.reshape(T,n,1)</span>
-<span class="c1">#     return D_inv @ returns</span>
-
 <span class="k">def</span> <span class="nf">_refactor_to_corr</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns correlation matrices from covariance matrices</span>
@@ -192,6 +178,37 @@
     <span class="n">outer_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">Sigmas</span> <span class="o">/</span> <span class="n">outer_V</span>
 
+<span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param Rs: Txnxn numpy array of correlation matrices</span>
+<span class="sd">    param r: float, rank of low rank component </span>
+
+<span class="sd">    returns: low rank + diag approximation of R\</span>
+<span class="sd">        R_hat = sum_i^r lambda_i q_i q_i&#39; + E, where E is diagonal,</span>
+<span class="sd">        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues</span>
+<span class="sd">        and eigenvectors of R (the r first, in descending order)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">eig_decomps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort eigenvalues in descending order</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Make Lamdas diagonal</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lamda</span><span class="p">)</span> <span class="k">for</span> <span class="n">lamda</span> <span class="ow">in</span> <span class="n">Lamda</span><span class="p">])</span>
+
+    <span class="c1"># Get low rank component</span>
+    <span class="n">Lamda_r</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">:</span><span class="n">r</span><span class="p">,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
+    <span class="n">Q_r</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
+    <span class="n">R_lo</span> <span class="o">=</span> <span class="n">Q_r</span> <span class="o">@</span> <span class="n">Lamda_r</span> <span class="o">@</span> <span class="n">Q_r</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Get diagonal component </span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">-</span><span class="n">R_lo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+    
+    <span class="c1"># Create low rank approximation</span>
+    <span class="k">return</span> <span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span>
 
 <div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
     <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">low_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.utils &mdash; cvxsimulator Documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/logo.jpeg"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> cvxsimulator
+            <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cvxsimulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>covariance.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for covariance.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="log_likelihood"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.log_likelihood">[docs]</a><span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">Sigmas</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the log likelihhod assuming Gaussian returns with covariance matrix</span>
+<span class="sd">    Sigmas and mean vector means</span>
+
+<span class="sd">    param returns: numpy array where rows are vector of asset returns</span>
+<span class="sd">    param Sigmas: numpy array of covariance matrix</span>
+<span class="sd">    param means: numpy array of mean vector; if None, assumes zero mean</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">means</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+
+    <span class="n">T</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">means</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">dets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Sigma_invs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">returns</span><span class="o">-</span><span class="n">means</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">Sigma_invs</span> <span class="o">@</span> <span class="p">(</span><span class="n">returns</span><span class="o">-</span><span class="n">means</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="rolling_window"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.rolling_window">[docs]</a><span class="k">def</span> <span class="nf">rolling_window</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">min_periods</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_periods</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">times</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">assets</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
+
+    <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">values</span>
+
+
+    <span class="n">Sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">Sigmas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">returns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">returns</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">alpha_old</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">min</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
+        <span class="n">alpha_new</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">min</span><span class="p">(</span><span class="n">t</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">memory</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span><span class="o">&gt;=</span> <span class="n">memory</span><span class="p">:</span>
+            <span class="n">Sigmas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha_new</span><span class="o">/</span><span class="n">alpha_old</span> <span class="o">*</span> <span class="n">Sigmas</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alpha_new</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">memory</span><span class="p">],</span> <span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="n">memory</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Sigmas</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha_new</span><span class="o">/</span><span class="n">alpha_old</span> <span class="o">*</span> <span class="n">Sigmas</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">alpha_new</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">returns</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span>
+    
+    <span class="n">Sigmas</span> <span class="o">=</span> <span class="n">Sigmas</span><span class="p">[</span><span class="n">min_periods</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">min_periods</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        
+    <span class="k">return</span> <span class="p">{</span><span class="n">times</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">assets</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))}</span></div>
+
+
+<div class="viewcode-block" id="from_row_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.from_row_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_to_covariance</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert upper diagonal part of covariance matrix to a covariance matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="c1"># set upper triangular part</span>
+    <span class="n">upper_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">Sigma</span><span class="p">[</span><span class="n">upper_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
+
+    <span class="c1"># set lower triangular part</span>
+    <span class="n">lower_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">)),</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">Sigma</span><span class="p">[</span><span class="n">lower_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sigma</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="n">lower_mask</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Sigma</span></div>
+
+<div class="viewcode-block" id="from_row_matrix_to_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.from_row_matrix_to_covariance">[docs]</a><span class="k">def</span> <span class="nf">from_row_matrix_to_covariance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert Tx(n(n+1)/2) matrix of upper diagonal parts of covariance matrices to a Txnxn matrix of covariance matrices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Sigmas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">Sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">from_row_to_covariance</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">n</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="regularize_covariance"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.regularize_covariance">[docs]</a><span class="k">def</span> <span class="nf">regularize_covariance</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">,</span> <span class="n">lamda</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds lamda*diag(Sigma) to each covariance (Sigma) matrix in Sigmas</span>
+
+<span class="sd">    param Sigmas: dictionary of covariance matrices</span>
+<span class="sd">    param lamda: scalar</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">Sigmas</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">Sigmas</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sigmas</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">lamda</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">Sigmas</span></div>
+
+<div class="viewcode-block" id="ecdf"><a class="viewcode-back" href="../../autoapi/covariance/utils/index.html#covariance.utils.ecdf">[docs]</a><span class="k">def</span> <span class="nf">ecdf</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
