@@ -19,6 +19,7 @@ Functions
    covariance.utils.from_row_matrix_to_covariance
    covariance.utils.regularize_covariance
    covariance.utils.ecdf
+   covariance.utils.create_table
 
 
 
@@ -54,5 +55,8 @@ Functions
 
 
 .. py:function:: ecdf(data)
+
+
+.. py:function:: create_table(metrics)
 
 

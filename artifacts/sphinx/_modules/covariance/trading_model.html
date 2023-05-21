@@ -75,42 +75,68 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="k">def</span> <span class="nf">_get_L_inv</span><span class="p">(</span><span class="n">covariance</span><span class="p">):</span>
+    <span class="n">Theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">Theta</span><span class="p">))</span>
+
+<div class="viewcode-block" id="metrics"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.metrics">[docs]</a><span class="n">metrics</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;metrics&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mean_return&#39;</span><span class="p">,</span> <span class="s1">&#39;risk&#39;</span><span class="p">,</span> <span class="s1">&#39;sharpe&#39;</span><span class="p">,</span> <span class="s1">&#39;drawdown&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Trader"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader">[docs]</a><span class="k">class</span> <span class="nc">Trader</span><span class="p">():</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Lt_inv_hats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_hats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">r_hats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        param R: nxT pandas dataframe of T returns from n assets; index is date. </span>
-<span class="sd">        param Lt_inv_hats: dictionary of inverse whiteners, i.e., L^{-T}, where LL^T=Theta_hat.\</span>
-<span class="sd">            keys are dates, values are n x n arrays.</span>
+<span class="sd">        param R: nxT pandas dataframe of T returns from n assets; index is date.</span>
+<span class="sd">        param Sigma_hats: dictionary of causal covariance matrices; keys are</span>
+<span class="sd">        dates; values are n x n pandas dataframes. They are causal in the sense that</span>
+<span class="sd">        Sigma_hat[time] does NOT depend on returns[time]</span>
+<span class="sd">        param r_hats: dictionary of causal expected returns, i.e., r_hat[time]</span>
+<span class="sd">        does NOT depend on returns[time]</span>
+
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span> <span class="o">=</span> <span class="n">Lt_inv_hats</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span> <span class="o">=</span> <span class="n">r_hats</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">diluted</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="c1"># Make sure the dates are the same</span>
-        <span class="k">if</span> <span class="n">Lt_inv_hats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># TODO: hard coded</span>
-            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">Sigma_hats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="n">sigma_hats</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
-                <span class="n">Sigma_hat_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
-                <span class="n">sigma_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Sigma_hat_t</span><span class="p">))</span>
-                <span class="n">sigma_hats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigma_hat_t</span><span class="p">)</span>
-            <span class="n">sigma_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_hats</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sigma_hats</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>\
-                 <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">sigma_hats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">Sigma_hat_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">sigma_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Sigma_hat_t</span><span class="p">))</span>
+            <span class="n">sigma_hats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigma_hat_t</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">r_hats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Trader.solve_min_risk"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_min_risk">[docs]</a>    <span class="k">def</span> <span class="nf">solve_min_risk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">Lt_inv</span><span class="p">,</span>\
+        <span class="c1"># Generate dataframe of standard deviations</span>
+        <span class="n">sigma_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_hats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sigma_hats</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>\
+                <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="c1"># Generate Choleksy factors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_L_inv</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">time</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Trader.assets"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.assets">[docs]</a>    <span class="k">def</span> <span class="nf">assets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span></div>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Trader.n"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.n">[docs]</a>    <span class="k">def</span> <span class="nf">n</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Trader.T"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.T">[docs]</a>    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Trader.solve_min_risk"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_min_risk">[docs]</a>    <span class="k">def</span> <span class="nf">solve_min_risk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">L_inv</span><span class="p">,</span>\
         <span class="n">sigma_param</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solves the minimum risk problem for a given whiteners. </span>
@@ -120,7 +146,7 @@
 <span class="sd">        param Lt_inv_param: cvxpy parameter parameter</span>
 <span class="sd">        param Lt: whitener</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">Lt_inv</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">L_inv</span>
         <span class="k">if</span> <span class="n">sigma_param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sigma_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">sigma</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">C_speedup</span><span class="p">:</span>
@@ -131,7 +157,7 @@
 
         <span class="k">return</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">prob</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">value</span></div>
 
-<div class="viewcode-block" id="Trader.solve_risk_parity"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_risk_parity">[docs]</a>    <span class="k">def</span> <span class="nf">solve_risk_parity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">Lt_inv</span><span class="p">):</span>
+<div class="viewcode-block" id="Trader.solve_risk_parity"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_risk_parity">[docs]</a>    <span class="k">def</span> <span class="nf">solve_risk_parity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">L_inv</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solves the risk parity problem for a given covariance matrix. </span>
 
@@ -140,13 +166,13 @@
 <span class="sd">        param Sigma_t_param: cvxpy parameter parameter</span>
 <span class="sd">        param Sigma_t: covariance matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">Lt_inv</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">L_inv</span>
         <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
         <span class="n">w_normalized</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
      
         <span class="k">return</span> <span class="n">w_normalized</span></div>
 
-<div class="viewcode-block" id="Trader.solve_mean_variance"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_mean_variance">[docs]</a>    <span class="k">def</span> <span class="nf">solve_mean_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">r_hat_param</span><span class="p">,</span> <span class="n">Lt_inv</span><span class="p">,</span> <span class="n">r_hat</span><span class="p">):</span>
+<div class="viewcode-block" id="Trader.solve_mean_variance"><a class="viewcode-back" href="../../autoapi/covariance/trading_model/index.html#covariance.trading_model.Trader.solve_mean_variance">[docs]</a>    <span class="k">def</span> <span class="nf">solve_mean_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">L_inv_param</span><span class="p">,</span> <span class="n">r_hat_param</span><span class="p">,</span> <span class="n">L_inv</span><span class="p">,</span> <span class="n">r_hat</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solves the mean variance problem. </span>
 
@@ -156,7 +182,7 @@
 <span class="sd">        param Sigma_t: covariance matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">Lt_inv</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">L_inv</span>
         <span class="n">r_hat_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">r_hat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">])</span>
         <span class="n">r_hat_param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">r_hat_param</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -194,7 +220,7 @@
 <span class="sd">        param sigma: diagonal of the covariance matrix</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">L_inv</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">L_inv</span>
         <span class="n">sigma_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">sigma</span>
         <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;ECOS&quot;</span><span class="p">)</span>
 
@@ -238,7 +264,7 @@
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">ws_new</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
-            <span class="n">Sigma_hat_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">Sigma_hat_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
             <span class="n">w_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ws</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w_t</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Sigma_hat_t</span> <span class="o">@</span> <span class="n">w_t</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">])</span>
             
@@ -282,6 +308,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">additonal_cons</span> <span class="o">=</span> <span class="n">additonal_cons</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">C_speedup</span> <span class="o">=</span> <span class="n">C_speedup</span>
 
+        <span class="k">if</span> <span class="n">portfolio_type</span> <span class="o">==</span> <span class="s2">&quot;eq_weighted&quot;</span><span class="p">:</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+            
+
         <span class="k">if</span> <span class="n">portfolio_type</span> <span class="o">==</span> <span class="s2">&quot;min_risk&quot;</span> <span class="ow">or</span> <span class="n">portfolio_type</span> <span class="o">==</span> <span class="s2">&quot;vol_cont&quot;</span>\
              <span class="ow">or</span> <span class="n">portfolio_type</span> <span class="o">==</span> <span class="s2">&quot;robust_min_risk&quot;</span><span class="p">:</span>
             <span class="c1"># get the minimum risk portfolio</span>
@@ -322,7 +352,7 @@
                 <span class="c1"># add constraints</span>
                 <span class="n">cons</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="p">[</span><span class="o">*</span><span class="n">additonal_cons</span><span class="o">.</span><span class="n">keys</span><span class="p">()]:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding additional constraints&quot;</span><span class="p">)</span>
+                    <span class="c1"># print(&quot;Adding additional constraints&quot;)</span>
                     <span class="k">if</span> <span class="s2">&quot;short_lim&quot;</span> <span class="ow">in</span> <span class="n">additonal_cons</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                         <span class="n">cons</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cp</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">additonal_cons</span><span class="p">[</span><span class="s2">&quot;short_lim&quot;</span><span class="p">]]</span>
                     <span class="k">if</span> <span class="s2">&quot;upper_bound&quot;</span> <span class="ow">in</span> <span class="n">additonal_cons</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -342,7 +372,7 @@
                 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
 
                 <span class="c1"># Solve problem with random inputs once to speed up later solves</span>
-                <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">portfolio_type</span> <span class="o">==</span> <span class="s2">&quot;robust_min_risk&quot;</span><span class="p">:</span>
                     <span class="n">sigma_hat_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">all_sigma_hats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -359,7 +389,7 @@
   
             <span class="n">pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span>
             <span class="n">ws_and_obj</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_min_risk</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">all_prob</span><span class="p">,</span> <span class="n">all_w</span><span class="p">,</span>\
-                 <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>\
+                 <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>\
                     <span class="n">all_sigma_hat_param</span><span class="p">,</span> <span class="n">all_sigma_hats</span><span class="p">]))</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
@@ -404,7 +434,7 @@
             <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">cons</span><span class="p">)</span>
 
             <span class="c1"># Solve problem with random inputs once to speed up later solves</span>
-            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">r_hat_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="mi">0</span><span class="p">])</span>
             <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
@@ -417,7 +447,7 @@
   
             <span class="n">pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span>
             <span class="n">ws_and_obj</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_mean_variance</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">all_prob</span><span class="p">,</span> <span class="n">all_w</span><span class="p">,</span>\
-                 <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="n">all_r_hat_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+                 <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="n">all_r_hat_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
@@ -439,7 +469,7 @@
             <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">cons</span><span class="p">)</span>
 
             <span class="c1"># Solve problem once to speed up later solves</span>
-            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">sigma_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
             <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;ECOS&quot;</span><span class="p">)</span>  
 
@@ -452,7 +482,7 @@
             <span class="n">all_sigma_hats</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma_hats</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>\
                  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
             <span class="n">ws</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_max_diverse</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">all_prob</span><span class="p">,</span> <span class="n">all_z</span><span class="p">,</span> <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="n">all_sigma_param</span><span class="p">,</span> \
-                <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">all_sigma_hats</span><span class="p">))</span>
+                <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">all_sigma_hats</span><span class="p">))</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span> 
 
@@ -469,7 +499,7 @@
         
             <span class="c1"># Solve once for speedup later</span>
             <span class="c1"># Solve problem with random inputs once to speed up later solves</span>
-            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">L_inv_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
 
@@ -478,7 +508,7 @@
             <span class="n">all_prob</span> <span class="o">=</span> <span class="p">[</span><span class="n">prob</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span>
 
             <span class="n">pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">()</span>
-            <span class="n">ws</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_risk_parity</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">all_prob</span><span class="p">,</span> <span class="n">all_w</span><span class="p">,</span> <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+            <span class="n">ws</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">starmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solve_risk_parity</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">all_prob</span><span class="p">,</span> <span class="n">all_w</span><span class="p">,</span> <span class="n">all_L_inv_param</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">L_inv_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="n">ws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
@@ -599,10 +629,12 @@
             <span class="n">stdev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rets</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust_factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">252</span><span class="p">)</span> 
         <span class="n">sharpe_ratio</span> <span class="o">=</span> <span class="n">mean_return</span> <span class="o">/</span> <span class="n">stdev</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean annual return: </span><span class="si">{</span><span class="n">mean_return</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Annual risk: </span><span class="si">{</span><span class="n">stdev</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sharpe ratio: </span><span class="si">{</span><span class="n">sharpe_ratio</span><span class="si">:</span><span class="s2">.3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Maximum drawdown: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compute_max_drawdown</span><span class="p">()</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">metrics</span><span class="p">(</span><span class="n">mean_return</span><span class="p">,</span> <span class="n">stdev</span><span class="p">,</span> <span class="n">sharpe_ratio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_max_drawdown</span><span class="p">())</span></div></div>
+
+        <span class="c1"># print(f&quot;Mean annual return: {mean_return:.2%}&quot;)</span>
+        <span class="c1"># print(f&quot;Annual risk: {stdev:.2%}&quot;)</span>
+        <span class="c1"># print(f&quot;Sharpe ratio: {sharpe_ratio:.3}&quot;)</span>
+        <span class="c1"># print(f&quot;Maximum drawdown: {self.compute_max_drawdown():.2%}&quot;)</span>
 
 
 

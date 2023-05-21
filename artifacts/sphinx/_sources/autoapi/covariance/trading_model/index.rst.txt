@@ -17,9 +17,34 @@ Classes
 
 
 
-.. py:class:: Trader(R, Lt_inv_hats=None, Sigma_hats=None, r_hats=None)
+Attributes
+~~~~~~~~~~
 
-   .. py:method:: solve_min_risk(self, prob, w, L_inv_param, Lt_inv, sigma_param=None, sigma=None)
+.. autoapisummary::
+
+   covariance.trading_model.metrics
+
+
+.. py:data:: metrics
+   
+
+   
+
+.. py:class:: Trader(R, Sigma_hats, r_hats=None)
+
+   .. py:method:: assets(self)
+      :property:
+
+
+   .. py:method:: n(self)
+      :property:
+
+
+   .. py:method:: T(self)
+      :property:
+
+
+   .. py:method:: solve_min_risk(self, prob, w, L_inv_param, L_inv, sigma_param=None, sigma=None)
 
       Solves the minimum risk problem for a given whiteners.
 
@@ -29,7 +54,7 @@ Classes
       param Lt: whitener
 
 
-   .. py:method:: solve_risk_parity(self, prob, w, L_inv_param, Lt_inv)
+   .. py:method:: solve_risk_parity(self, prob, w, L_inv_param, L_inv)
 
       Solves the risk parity problem for a given covariance matrix.
 
@@ -39,7 +64,7 @@ Classes
       param Sigma_t: covariance matrix
 
 
-   .. py:method:: solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, Lt_inv, r_hat)
+   .. py:method:: solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, L_inv, r_hat)
 
       Solves the mean variance problem.
 
