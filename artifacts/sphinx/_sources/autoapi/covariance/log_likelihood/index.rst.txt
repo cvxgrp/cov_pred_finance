@@ -4,3 +4,26 @@
 .. py:module:: covariance.log_likelihood
 
 
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.log_likelihood.log_likelihood
+
+
+
+.. py:function:: log_likelihood(returns, Sigmas, means=None)
+
+   Computes the log likelihhod assuming Gaussian returns with covariance matrix
+   Sigmas and mean vector means
+
+   param returns: numpy array where rows are vector of asset returns
+   param Sigmas: numpy array of covariance matrix
+   param means: numpy array of mean vector; if None, assumes zero mean
+
+
