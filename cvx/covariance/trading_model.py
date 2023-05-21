@@ -2,42 +2,68 @@ import cvxpy as cp
 import numpy as np
 import multiprocessing as mp
 import pandas as pd
+from collections import namedtuple
+
+def _get_L_inv(covariance):
+    Theta = np.linalg.inv(covariance)
+    return np.linalg.inv(np.linalg.cholesky(Theta))
+
+metrics = namedtuple('metrics', ['mean_return', 'risk', 'sharpe', 'drawdown'])
 
 class Trader():
-    def __init__(self, R, Lt_inv_hats=None, Sigma_hats=None, r_hats=None):
+    def __init__(self, R, Sigma_hats, r_hats=None):
         """
-        param R: nxT pandas dataframe of T returns from n assets; index is date. 
-        param Lt_inv_hats: dictionary of inverse whiteners, i.e., L^{-T}, where LL^T=Theta_hat.\
-            keys are dates, values are n x n arrays.
+        param R: nxT pandas dataframe of T returns from n assets; index is date.
+        param Sigma_hats: dictionary of causal covariance matrices; keys are
+        dates; values are n x n pandas dataframes. They are causal in the sense that
+        Sigma_hat[time] does NOT depend on returns[time]
+        param r_hats: dictionary of causal expected returns, i.e., r_hat[time]
+        does NOT depend on returns[time]
+
+
         """
         self.R = R
-        self.Lt_inv_hats = Lt_inv_hats
         self.Sigma_hats = Sigma_hats
         self.r_hats = r_hats
-        self.n = R.shape[1]
-        self.T = R.shape[0]
         self.diluted = False
 
-        # Make sure the dates are the same
-        if Lt_inv_hats is not None: # TODO: hard coded
-            assert list(self.R.index) == list(self.Lt_inv_hats.keys())
-        if Sigma_hats is not None:
-            assert list(self.R.index) == list(self.Sigma_hats.keys())
-            sigma_hats = []
-            for t in self.R.index:
-                Sigma_hat_t = self.Sigma_hats[t]
-                sigma_hat_t = np.sqrt(np.diag(Sigma_hat_t))
-                sigma_hats.append(sigma_hat_t)
-            sigma_hats = np.array(sigma_hats)
-            self.sigma_hats = pd.DataFrame(sigma_hats, index=self.R.index,\
-                 columns=self.R.columns)
-            assert list(self.R.index) == list(self.sigma_hats.index)
-
+        assert list(self.R.index) == list(self.Sigma_hats.keys())
+        sigma_hats = []
+        for t in self.R.index:
+            Sigma_hat_t = self.Sigma_hats[t].values
+            sigma_hat_t = np.sqrt(np.diag(Sigma_hat_t))
+            sigma_hats.append(sigma_hat_t)
 
         if r_hats is not None:
             assert list(self.R.index) == list(self.r_hats.index)
+            assert list(self.R.columns) == list(self.r_hats.columns)
 
-    def solve_min_risk(self, prob, w, L_inv_param, Lt_inv,\
+        # Generate dataframe of standard deviations
+        sigma_hats = np.array(sigma_hats)
+        self.sigma_hats = pd.DataFrame(sigma_hats, index=self.R.index,\
+                columns=self.R.columns)
+        assert list(self.R.index) == list(self.sigma_hats.index)
+        assert list(self.R.columns) == list(self.sigma_hats.columns)
+
+        # Generate Choleksy factors
+        self.L_inv_hats = {}
+        for time in R.index:
+            self.L_inv_hats[time] = _get_L_inv(pd.DataFrame(self.Sigma_hats[time].values, index = self.assets, columns = self.assets))
+
+    @property
+    def assets(self):
+        return self.R.columns
+
+    @property
+    def n(self):
+        return self.R.shape[1]
+    
+    @property
+    def T(self):
+        return self.R.shape[0]
+
+
+    def solve_min_risk(self, prob, w, L_inv_param, L_inv,\
         sigma_param=None, sigma=None):
         """
         Solves the minimum risk problem for a given whiteners. 
@@ -47,7 +73,7 @@ class Trader():
         param Lt_inv_param: cvxpy parameter parameter
         param Lt: whitener
         """
-        L_inv_param.value = Lt_inv.T
+        L_inv_param.value = L_inv
         if sigma_param is not None and sigma is not None:
             sigma_param.value = sigma
         if self.C_speedup:
@@ -58,7 +84,7 @@ class Trader():
 
         return w.value, prob.objective.value
 
-    def solve_risk_parity(self, prob, w, L_inv_param, Lt_inv):
+    def solve_risk_parity(self, prob, w, L_inv_param, L_inv):
         """
         Solves the risk parity problem for a given covariance matrix. 
 
@@ -67,13 +93,13 @@ class Trader():
         param Sigma_t_param: cvxpy parameter parameter
         param Sigma_t: covariance matrix
         """
-        L_inv_param.value = Lt_inv.T
+        L_inv_param.value = L_inv
         prob.solve()
         w_normalized = w.value / np.sum(w.value)
      
         return w_normalized
 
-    def solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, Lt_inv, r_hat):
+    def solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, L_inv, r_hat):
         """
         Solves the mean variance problem. 
 
@@ -83,7 +109,7 @@ class Trader():
         param Sigma_t: covariance matrix
         """
 
-        L_inv_param.value = Lt_inv.T
+        L_inv_param.value = L_inv
         r_hat_param.value = np.vstack([r_hat.reshape(-1,1), 0])
         r_hat_param = np.zeros(r_hat_param.shape)
         prob.solve()
@@ -121,7 +147,7 @@ class Trader():
         param sigma: diagonal of the covariance matrix
 
         """
-        L_inv_param.value = L_inv.T
+        L_inv_param.value = L_inv
         sigma_param.value = sigma
         prob.solve(solver="ECOS")
 
@@ -165,7 +191,7 @@ class Trader():
             return None
         ws_new = []
         for i, t in enumerate(self.R.index):
-            Sigma_hat_t = self.Sigma_hats[t]
+            Sigma_hat_t = self.Sigma_hats[t].values
             w_t = self.ws[i].reshape(-1,1)
             sigma_hat = np.sqrt(w_t[:self.n].T @ Sigma_hat_t @ w_t[:self.n])
             
@@ -209,6 +235,10 @@ class Trader():
         self.additonal_cons = additonal_cons
         self.C_speedup = C_speedup
 
+        if portfolio_type == "eq_weighted":
+            ws = np.ones((self.T, self.n)) / self.n
+            
+
         if portfolio_type == "min_risk" or portfolio_type == "vol_cont"\
              or portfolio_type == "robust_min_risk":
             # get the minimum risk portfolio
@@ -249,7 +279,7 @@ class Trader():
                 # add constraints
                 cons += [cp.sum(w)==1]
                 if [*additonal_cons.keys()]:
-                    print("Adding additional constraints")
+                    # print("Adding additional constraints")
                     if "short_lim" in additonal_cons.keys():
                         cons += [cp.norm(w, 1) <= additonal_cons["short_lim"]]
                     if "upper_bound" in additonal_cons.keys():
@@ -269,7 +299,7 @@ class Trader():
                 for t in range(self.T)]
 
                 # Solve problem with random inputs once to speed up later solves
-                L_inv_param.value = [*self.Lt_inv_hats.values()][0].T
+                L_inv_param.value = [*self.L_inv_hats.values()][0]
                 if portfolio_type == "robust_min_risk":
                     sigma_hat_param.value = all_sigma_hats[0]
                 prob.solve()
@@ -286,7 +316,7 @@ class Trader():
   
             pool = mp.Pool()
             ws_and_obj = pool.starmap(self.solve_min_risk, zip(all_prob, all_w,\
-                 all_L_inv_param, [*self.Lt_inv_hats.values(),\
+                 all_L_inv_param, [*self.L_inv_hats.values(),\
                     all_sigma_hat_param, all_sigma_hats]))
             pool.close()
             pool.join()
@@ -331,7 +361,7 @@ class Trader():
             prob = cp.Problem(cp.Maximize(ret), cons)
 
             # Solve problem with random inputs once to speed up later solves
-            L_inv_param.value = [*self.Lt_inv_hats.values()][0].T
+            L_inv_param.value = [*self.L_inv_hats.values()][0]
             r_hat_param.value = np.vstack([self.r_hats.values[0].reshape(-1,1), 0])
             prob.solve()
 
@@ -344,7 +374,7 @@ class Trader():
   
             pool = mp.Pool()
             ws_and_obj = pool.starmap(self.solve_mean_variance, zip(all_prob, all_w,\
-                 all_L_inv_param, all_r_hat_param, [*self.Lt_inv_hats.values()], self.r_hats.values))
+                 all_L_inv_param, all_r_hat_param, [*self.L_inv_hats.values()], self.r_hats.values))
             pool.close()
             pool.join()
 
@@ -366,7 +396,7 @@ class Trader():
             prob = cp.Problem(cp.Minimize(obj), cons)
 
             # Solve problem once to speed up later solves
-            L_inv_param.value = [*self.Lt_inv_hats.values()][0].T
+            L_inv_param.value = [*self.L_inv_hats.values()][0]
             sigma_param.value = np.ones((self.n,1))
             prob.solve(solver="ECOS")  
 
@@ -379,7 +409,7 @@ class Trader():
             all_sigma_hats = [self.sigma_hats.values[t].reshape(-1,1)\
                  for t in range(self.T)]
             ws = pool.starmap(self.solve_max_diverse, zip(all_prob, all_z, all_L_inv_param, all_sigma_param, \
-                [*self.Lt_inv_hats.values()], all_sigma_hats))
+                [*self.L_inv_hats.values()], all_sigma_hats))
             pool.close()
             pool.join() 
 
@@ -396,7 +426,7 @@ class Trader():
         
             # Solve once for speedup later
             # Solve problem with random inputs once to speed up later solves
-            L_inv_param.value = [*self.Lt_inv_hats.values()][0].T
+            L_inv_param.value = [*self.L_inv_hats.values()][0]
             prob.solve()
 
 
@@ -405,7 +435,7 @@ class Trader():
             all_prob = [prob for _ in range(self.T)]
 
             pool = mp.Pool()
-            ws = pool.starmap(self.solve_risk_parity, zip(all_prob, all_w, all_L_inv_param, [*self.Lt_inv_hats.values()]))
+            ws = pool.starmap(self.solve_risk_parity, zip(all_prob, all_w, all_L_inv_param, [*self.L_inv_hats.values()]))
             pool.close()
             pool.join()
             ws = np.array(ws)
@@ -526,10 +556,12 @@ class Trader():
             stdev = np.std(self.rets / self.adjust_factor) * np.sqrt(252) 
         sharpe_ratio = mean_return / stdev
 
-        print(f"Mean annual return: {mean_return:.2%}")
-        print(f"Annual risk: {stdev:.2%}")
-        print(f"Sharpe ratio: {sharpe_ratio:.3}")
-        print(f"Maximum drawdown: {self.compute_max_drawdown():.2%}")
+        return metrics(mean_return, stdev, sharpe_ratio, self.compute_max_drawdown())
+
+        # print(f"Mean annual return: {mean_return:.2%}")
+        # print(f"Annual risk: {stdev:.2%}")
+        # print(f"Sharpe ratio: {sharpe_ratio:.3}")
+        # print(f"Maximum drawdown: {self.compute_max_drawdown():.2%}")
 
 
 

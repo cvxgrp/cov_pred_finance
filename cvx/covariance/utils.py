@@ -95,3 +95,22 @@ def ecdf(data):
     y = np.arange(1, n+1) / n
     return x, y
 
+def create_table(metrics):
+    print("\\begin{tabular}{lcccc}")
+    print("   \\toprule")
+    print("   {Predictor} & {Return} & {Risk} & {Sharpe} & {Drawdown} \\\\")
+    print("   \\midrule")
+
+    for name, metric in metrics.items():
+        if name != "PRESCIENT":
+            print("   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
+                name, metric.mean_return * 100, metric.risk * 100,
+                metric.sharpe, metric.drawdown * 100))
+    print("   \\hline")
+    metric = metrics["PRESCIENT"]
+    print("   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
+                name, metric.mean_return * 100, metric.risk * 100,
+                metric.sharpe, metric.drawdown * 100))
+    print("   \\bottomrule")
+    print("\\end{tabular}")
+
