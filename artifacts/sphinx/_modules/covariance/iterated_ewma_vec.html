@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.iterated_ewma &mdash; cvxsimulator Documentation</title>
+  <title>covariance.iterated_ewma_vec &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -61,7 +61,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>covariance.iterated_ewma</li>
+      <li>covariance.iterated_ewma_vec</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,21 +70,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for covariance.iterated_ewma</h1><div class="highlight"><pre>
+  <h1>Source code for covariance.iterated_ewma_vec</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">from</span> <span class="nn">cvx.covariance.utils</span> <span class="kn">import</span> <span class="n">_regularize_correlation</span>
 
 
 <span class="c1">### This is vectorized iterated EWMA</span>
 
 <span class="c1"># named tuple</span>
-<div class="viewcode-block" id="IEWMA"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.IEWMA">[docs]</a><span class="n">IEWMA</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;IEWMA&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;covariance&#39;</span><span class="p">])</span></div>
+<div class="viewcode-block" id="IEWMA"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma_vec/index.html#covariance.iterated_ewma_vec.IEWMA">[docs]</a><span class="n">IEWMA</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;IEWMA&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;covariance&#39;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_next_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma_vec/index.html#covariance.iterated_ewma_vec.get_next_ewma">[docs]</a><span class="k">def</span> <span class="nf">get_next_ewma</span><span class="p">(</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">y_last</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param EWMA: EWMA at time t-1</span>
 <span class="sd">    param y_last: observation at time t-1</span>
@@ -104,7 +103,7 @@
             <span class="k">return</span> <span class="n">old_weight</span><span class="o">*</span><span class="n">EWMA</span> <span class="o">+</span> <span class="n">new_weight</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">y_last</span><span class="p">,</span> <span class="o">-</span><span class="n">clip_at</span><span class="o">*</span><span class="n">EWMA</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">*</span><span class="n">EWMA</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">old_weight</span><span class="o">*</span><span class="n">EWMA</span> <span class="o">+</span> <span class="n">new_weight</span><span class="o">*</span><span class="n">y_last</span></div>
 
-<div class="viewcode-block" id="ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.ewma">[docs]</a><span class="k">def</span> <span class="nf">ewma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma_vec/index.html#covariance.iterated_ewma_vec.ewma">[docs]</a><span class="k">def</span> <span class="nf">ewma</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param y: array with measurements for times t=1,2,...,T=len(y)</span>
 <span class="sd">    halflife: EWMA half life</span>
@@ -169,19 +168,6 @@
         <span class="c1"># sp.diags(diagonal_elements, 0)</span>
     <span class="k">return</span> <span class="n">volatilities</span>
 
-
-<span class="c1"># def _get_r_adj(returns, D_inv):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices</span>
-<span class="c1">#     param param returns: array of returns to whiten for t=1,2,..., </span>
-
-<span class="c1">#     returns: numpy array with r_tilde_hats as rows</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     T = returns.shape[0]</span>
-<span class="c1">#     n = returns.shape[1]</span>
-<span class="c1">#     returns = returns.reshape(T,n,1)</span>
-<span class="c1">#     return D_inv @ returns</span>
-
 <span class="k">def</span> <span class="nf">_refactor_to_corr</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns correlation matrices from covariance matrices</span>
@@ -192,15 +178,44 @@
     <span class="n">outer_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">Sigmas</span> <span class="o">/</span> <span class="n">outer_V</span>
 
+<span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param Rs: Txnxn numpy array of correlation matrices</span>
+<span class="sd">    param r: float, rank of low rank component </span>
 
-<div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma/index.html#covariance.iterated_ewma.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
+<span class="sd">    returns: low rank + diag approximation of R\</span>
+<span class="sd">        R_hat = sum_i^r lambda_i q_i q_i&#39; + E, where E is diagonal,</span>
+<span class="sd">        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues</span>
+<span class="sd">        and eigenvectors of R (the r first, in descending order)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">eig_decomps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">eig_decomps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Sort eigenvalues in descending order</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Make Lamdas diagonal</span>
+    <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lamda</span><span class="p">)</span> <span class="k">for</span> <span class="n">lamda</span> <span class="ow">in</span> <span class="n">Lamda</span><span class="p">])</span>
+
+    <span class="c1"># Get low rank component</span>
+    <span class="n">Lamda_r</span> <span class="o">=</span> <span class="n">Lamda</span><span class="p">[:,</span> <span class="p">:</span><span class="n">r</span><span class="p">,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
+    <span class="n">Q_r</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">r</span><span class="p">]</span>
+    <span class="n">R_lo</span> <span class="o">=</span> <span class="n">Q_r</span> <span class="o">@</span> <span class="n">Lamda_r</span> <span class="o">@</span> <span class="n">Q_r</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Get diagonal component </span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">-</span><span class="n">R_lo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+    
+    <span class="c1"># Create low rank approximation</span>
+    <span class="k">return</span> <span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span>
+
+<div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/iterated_ewma_vec/index.html#covariance.iterated_ewma_vec.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span>\
     <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">low_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        param returns: pandas dataframe with returns for each asset</span>
 <span class="sd">        param vola_halflife: half life for volatility</span>
 <span class="sd">        param cov_halflife: half life for covariance</span>
-<span class="sd">        param lower: lower bound for adjusted return cutoff</span>
-<span class="sd">        param upper: upper bound for adjusted return cutoff</span>
 <span class="sd">        param min_preiods_vola: minimum number of periods to use for volatility</span>
 <span class="sd">        ewma estimate</span>
 <span class="sd">        param min_periods_cov: minimum number of periods to use for covariance</span>
@@ -248,8 +263,8 @@
         <span class="n">returns_adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">values</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span> <span class="o">*</span> <span class="n">D_inv</span>
 
         <span class="c1"># Clip adjusted returns</span>
-        <span class="k">if</span> <span class="n">lower</span> <span class="ow">or</span> <span class="n">upper</span><span class="p">:</span>
-            <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">lower</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">upper</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
+            <span class="n">returns_adj</span> <span class="o">=</span> <span class="n">returns_adj</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=-</span><span class="n">clip_at</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="n">clip_at</span><span class="p">)</span>
 
         <span class="c1">### Correlation estimation</span>
         <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
