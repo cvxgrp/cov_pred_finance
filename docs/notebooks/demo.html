@@ -392,28 +392,22 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">5</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">63</span><span class="p">)]</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># compute the covariance matrices, one time series for each pair</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="n">Sigmas</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cov_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lower</span><span class="o">=-</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">4.2</span><span class="p">)</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">}</span>
-
-<span class="nn">Cell In[4], line 5,</span> in <span class="ni">&lt;dictcomp&gt;</span><span class="nt">(.0)</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">63</span><span class="p">)]</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="c1"># compute the covariance matrices, one time series for each pair</span>
-<span class="ne">----&gt; </span><span class="mi">5</span> <span class="n">Sigmas</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span> <span class="n">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cov_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">lower</span><span class="o">=-</span><span class="mf">4.2</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">4.2</span><span class="p">)</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">}</span>
-
-<span class="ne">TypeError</span>: iterated_ewma() got an unexpected keyword argument &#39;lower&#39;
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># combination of covariance matrix valued time series</span>
 <span class="n">combination</span> <span class="o">=</span> <span class="n">CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">Sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># combination of covariance matrix valued time series</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">combination</span> <span class="o">=</span> <span class="n">CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">Sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">)</span>
+
+<span class="ne">TypeError</span>: CovarianceCombination.__init__() got an unexpected keyword argument &#39;sigmas&#39;
 </pre></div>
 </div>
 </div>

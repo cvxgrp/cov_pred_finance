@@ -15,7 +15,6 @@ Functions
 
    covariance.ewma.variance
    covariance.ewma.volatility
-   covariance.ewma.regularize_covariance
    covariance.ewma.iterated_ewma
    covariance.ewma.ewma_cov
    covariance.ewma.ewma_mean
@@ -41,16 +40,7 @@ Attributes
 .. py:function:: volatility(returns, halflife, min_periods=0, clip_at=None)
 
 
-.. py:function:: regularize_covariance(Sigmas, r)
-
-   param Sigmas: dictionary of covariance matrices
-   param r: float, rank of low rank component
-
-   returns: regularized covariance matrices according to "Factor form
-   regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
-
-
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None)
 
 
 .. py:function:: ewma_cov(data, halflife, min_periods=0)

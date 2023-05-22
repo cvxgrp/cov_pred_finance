@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.trading_model &mdash; cvxsimulator Documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../../_static/logo.jpeg"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="covariance.utils" href="../utils/index.html" />
+    <link rel="prev" title="covariance.predictors" href="../predictors/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> cvxsimulator
+            <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../license.html">License</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../covariance_combination/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../iterated_ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.iterated_ewma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../log_likelihood/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../optimal_cov_pred/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.optimal_cov_pred</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../predictors/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.predictors</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.trading_model</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils_old/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils_old</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">cvxsimulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API Reference</a> &raquo;</li>
+          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a> &raquo;</li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.trading_model</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/covariance/trading_model/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-covariance.trading_model">
+<span id="covariance-trading-model"></span><h1><a class="reference internal" href="#module-covariance.trading_model" title="covariance.trading_model"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.trading_model</span></code></a><a class="headerlink" href="#module-covariance.trading_model" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.trading_model.Trader" title="covariance.trading_model.Trader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Trader</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.trading_model.</span></span><span class="sig-name descname"><span class="pre">Trader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_inv_hats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigma_hats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_hats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.solve_min_risk">
+<span class="sig-name descname"><span class="pre">solve_min_risk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_inv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.solve_min_risk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.solve_min_risk" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the minimum risk problem for a given whiteners.</p>
+<p>param prob: cvxpy problem object
+param w: cvxpy variable object
+param Lt_inv_param: cvxpy parameter parameter
+param Lt: whitener</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.solve_risk_parity">
+<span class="sig-name descname"><span class="pre">solve_risk_parity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_inv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.solve_risk_parity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.solve_risk_parity" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the risk parity problem for a given covariance matrix.</p>
+<p>param prob: cvxpy problem object
+param w: cvxpy variable object
+param Sigma_t_param: cvxpy parameter parameter
+param Sigma_t: covariance matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.solve_mean_variance">
+<span class="sig-name descname"><span class="pre">solve_mean_variance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_hat_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Lt_inv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_hat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.solve_mean_variance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.solve_mean_variance" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the mean variance problem.</p>
+<p>param prob: cvxpy problem object
+param w: cvxpy variable object
+param Sigma_t_param: cvxpy parameter parameter
+param Sigma_t: covariance matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_vol_cont_w">
+<span class="sig-name descname"><span class="pre">get_vol_cont_w</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_vol_cont_w"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_vol_cont_w" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the weights of the volatility controlled portfolio.</p>
+<p>param ws: list of weights of the minimum risk portfolios
+param obj: list of objective values of the minimum risk portfolios
+param sigma_des: desired volatility of the portfolio</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.solve_max_diverse">
+<span class="sig-name descname"><span class="pre">solve_max_diverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.solve_max_diverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.solve_max_diverse" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the maximum diversification optimization problem.</p>
+<p>param prob: cvxpy problem object
+param z: cvxpy variable object
+param L_inv_param: cvxpy parameter parameter
+param L_inv: inverse whitener
+param sigma_param: cvxpy parameter parameter
+param sigma: diagonal of the covariance matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.solve_max_sharpe">
+<span class="sig-name descname"><span class="pre">solve_max_sharpe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_hat_param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L_inv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_hat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.solve_max_sharpe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.solve_max_sharpe" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the maximum diversification optimization problem.</p>
+<p>param prob: cvxpy problem object
+param z: cvxpy variable object
+param L_inv_param: cvxpy parameter parameter
+param L_inv: inverse whitener
+param r_hat_param: cvxpy parameter parameter
+param r_hat: return</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.dilute_with_cash">
+<span class="sig-name descname"><span class="pre">dilute_with_cash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.dilute_with_cash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.dilute_with_cash" title="Permalink to this definition"></a></dt>
+<dd><p>Dilutes the portfolio with cash to achieve a desired volatility.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_risk_adj_returns">
+<span class="sig-name descname"><span class="pre">get_risk_adj_returns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_risk_adj_returns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_risk_adj_returns" title="Permalink to this definition"></a></dt>
+<dd><p>Scales returns to adjusted risk level sigma_des.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_risk_adj_portfolio_growth">
+<span class="sig-name descname"><span class="pre">get_risk_adj_portfolio_growth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_risk_adj_portfolio_growth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_risk_adj_portfolio_growth" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the risk adjusted portfolio growth from the daily (total)  returns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.backtest">
+<span class="sig-name descname"><span class="pre">backtest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">portfolio_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'min_risk'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additonal_cons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'short_lim':</span> <span class="pre">1.6,</span> <span class="pre">'upper_bound':</span> <span class="pre">0.15,</span> <span class="pre">'lower_bound':</span> <span class="pre">-</span> <span class="pre">0.1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C_speedup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.backtest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.backtest" title="Permalink to this definition"></a></dt>
+<dd><p>param portfolio_type: type of portfolio to backtest. Options are “min_risk”, “vol_cont”, “risk_parity”, “mean_variance”.
+param cons: list of constraints to impose on the optimization problem.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_total_returns">
+<span class="sig-name descname"><span class="pre">get_total_returns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diluted_with_cash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_total_returns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_total_returns" title="Permalink to this definition"></a></dt>
+<dd><p>Computes total daily returns of the portfolio from the weights and indivudal asset returns.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_portfolio_growth">
+<span class="sig-name descname"><span class="pre">get_portfolio_growth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_portfolio_growth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_portfolio_growth" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the portfolio growth from the daily (total) returns.
+Note: run get_total_returns() first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.compute_max_drawdown">
+<span class="sig-name descname"><span class="pre">compute_max_drawdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.compute_max_drawdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.compute_max_drawdown" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the maximum drawdown of the portfolio.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.trading_model.Trader.get_metrics">
+<span class="sig-name descname"><span class="pre">get_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diluted_with_cash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_des</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/trading_model.html#Trader.get_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.trading_model.Trader.get_metrics" title="Permalink to this definition"></a></dt>
+<dd><p>param adjust_factor: factor to results by,             e.g., if we have a model for 100*r_daily, the volatility                should be adjusted by 1/sqrt(100)</p>
+<p>Computes the avg return, stdev, sharpe ratio, and max drawdown of the portfolio.
+Note: Run backtest first.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../predictors/index.html" class="btn btn-neutral float-left" title="covariance.predictors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utils/index.html" class="btn btn-neutral float-right" title="covariance.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

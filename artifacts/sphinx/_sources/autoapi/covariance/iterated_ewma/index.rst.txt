@@ -1,7 +1,7 @@
-:py:mod:`covariance.iterated_ewma_vec`
-======================================
+:py:mod:`covariance.iterated_ewma`
+==================================
 
-.. py:module:: covariance.iterated_ewma_vec
+.. py:module:: covariance.iterated_ewma
 
 
 Module Contents
@@ -13,9 +13,9 @@ Functions
 
 .. autoapisummary::
 
-   covariance.iterated_ewma_vec.get_next_ewma
-   covariance.iterated_ewma_vec.ewma
-   covariance.iterated_ewma_vec.iterated_ewma
+   covariance.iterated_ewma.get_next_ewma
+   covariance.iterated_ewma.ewma
+   covariance.iterated_ewma.iterated_ewma
 
 
 
@@ -24,7 +24,7 @@ Attributes
 
 .. autoapisummary::
 
-   covariance.iterated_ewma_vec.IEWMA
+   covariance.iterated_ewma.IEWMA
 
 
 .. py:data:: IEWMA
@@ -59,11 +59,13 @@ Attributes
    This way we don't get a "look-ahead bias" in the EWMA
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None, min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None)
 
    param returns: pandas dataframe with returns for each asset
    param vola_halflife: half life for volatility
    param cov_halflife: half life for covariance
+   param lower: lower bound for adjusted return cutoff
+   param upper: upper bound for adjusted return cutoff
    param min_preiods_vola: minimum number of periods to use for volatility
    ewma estimate
    param min_periods_cov: minimum number of periods to use for covariance

@@ -1,0 +1,183 @@
+:py:mod:`covariance.predictors`
+===============================
+
+.. py:module:: covariance.predictors
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   covariance.predictors.CovariancePredictor
+   covariance.predictors.MgarchPredictor
+   covariance.predictors.GoldStandard
+   covariance.predictors.ConstantPredictor
+   covariance.predictors.WeightedGMMPredictor
+   covariance.predictors.RollingWindowPredictor
+   covariance.predictors.EwmaPredictor
+   covariance.predictors.AlternatingPredictor
+   covariance.predictors.EnsemblePredictor
+   covariance.predictors.AlternatingIteratedEwmaPredictor
+   covariance.predictors.AlternatingEwmaPredictor
+   covariance.predictors.IteratedEwmaPredictor
+   covariance.predictors.IteratedGarchEwmaPredictor
+   covariance.predictors.AlternatingIteratedGarchEwmaPredictor
+   covariance.predictors.TrippleIteratedEwmaPredictor
+   covariance.predictors.AlternatingWeightedPredictor
+
+
+
+
+.. py:class:: CovariancePredictor
+
+   .. py:method:: whiten_returns(self)
+
+      
+
+
+   .. py:method:: get_Theta_hats(self, start_date=None, end_date=None)
+
+      creates dictionary of precision matrices, starting at time init_cutoff to avoid singularity problems
+      alternates the other dictionaries, like R, Sigma_hats, etc. to match the time-index of Theta_hats
+
+
+   .. py:method:: get_Lt_hats(self, start_date=None, end_date=None)
+
+      creates dictionary of (transpose of) Cholesky factors of precision matrices, starting at time init_cutoff to avoid singularity problems
+      alternates the other dictionaries, like R, Sigma_hats, etc. to match the time-index of Lt_hats
+      "on the way" also creates the Theta_hats dictionary
+
+
+   .. py:method:: get_log_likelihood_helper_(self, X, Sigmas, start, end, mus=None)
+
+      param X: numpy array of shape (batch_size, n, 1)
+      param Sigmas: numpy array of shape (batch_size, n, n)
+      param mus: numpy array of shape (batch_size, n, 1)
+          if None, mu is set to zero matrix
+
+      returns: log-likelihood for each day of X under multivariate normal distribution
+
+
+   .. py:method:: get_log_likelihoods(self, start=0, end=None, X=None, Sigmas=None)
+
+      param X: numpy array of shape (batch_size, n, 1)
+      param Sigmas: numpy array of shape (batch_size, n, n)
+      param start: start time (integer or pd.to_date_time object)
+
+      returns: log-likelihood of observed returns R, under the Gaussian distribution
+          starting at time start
+
+
+
+.. py:class:: MgarchPredictor(R)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: GoldStandard(R, method='sample_full', T_half=50, init_cutoff=20)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: ConstantPredictor(R, train_frac)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: WeightedGMMPredictor(R, n_gmm_comp, train_frac, l=10, ar=True, yearly_model=True)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+   .. py:method:: get_yearly_gmms(self, R, n_comps=5)
+
+      returns a dict of "yearly" GMMs for each asset
+
+
+   .. py:method:: get_markov_ar(X, y, l)
+      :staticmethod:
+
+      Creates Markov AR(l) for X and y, where X is the AR(l) representation of the data and y is the next time step.
+      Incoorporates probability constraints.
+
+
+
+.. py:class:: RollingWindowPredictor(R, memory, update_freq)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: EwmaPredictor(R, T_half, init_cutoff=0)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: AlternatingPredictor
+
+   Bases: :py:obj:`CovariancePredictor`
+
+   An alternating predictor is a predictor that alternates between several predictors
+   at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days
+
+   .. py:method:: get_optimal_predictors(self, init_cutoff, likelihood_memory, R, inds)
+
+
+
+.. py:class:: EnsemblePredictor(R, experts, pred_type='best', likelihood_memory=10)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: AlternatingIteratedEwmaPredictor(R, T_halfs, likelihood_memory, init_cutoff=20, lamdas=None)
+
+   Bases: :py:obj:`AlternatingPredictor`
+
+   An alternating predictor is a predictor that alternates between several predictors
+   at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days
+
+
+.. py:class:: AlternatingEwmaPredictor(R, T_halfs, likelihood_memory, init_cutoff=0, compute_opt_Sigmas=True)
+
+   Bases: :py:obj:`AlternatingPredictor`
+
+   An alternating predictor is a predictor that alternates between several predictors
+   at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days
+
+
+.. py:class:: IteratedEwmaPredictor(R, T_half_scale, T_half_full, init_cutoff=20, lamda=0)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: IteratedGarchEwmaPredictor(R, T_half, init_cutoff=20, cheat=False)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: AlternatingIteratedGarchEwmaPredictor(R, T_halfs, likelihood_memory, init_cutoff=20)
+
+   Bases: :py:obj:`AlternatingPredictor`
+
+   An alternating predictor is a predictor that alternates between several predictors
+   at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days
+
+
+.. py:class:: TrippleIteratedEwmaPredictor(R, T_half_scale, T_half_std, T_half_full, init_cutoff=20)
+
+   Bases: :py:obj:`CovariancePredictor`
+
+
+.. py:class:: AlternatingWeightedPredictor(alternating_type, R, T_halfs=None, likelihood_memory=10, init_cutoff=0, const_theta=None, const_L=None, experts=None, ignore_dpp=False, turnover_cons=None, lamdas=None)
+
+   Bases: :py:obj:`AlternatingPredictor`
+
+   An alternating predictor is a predictor that alternates between several predictors
+   at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days
+
+   .. py:method:: get_Sigma_hats(self, const_theta=None, const_L=None)
+
+
+

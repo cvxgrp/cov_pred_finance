@@ -12,7 +12,12 @@ Submodules
 
    covariance_combination/index.rst
    ewma/index.rst
-   iterated_ewma_vec/index.rst
+   iterated_ewma/index.rst
+   log_likelihood/index.rst
+   optimal_cov_pred/index.rst
+   predictors/index.rst
+   trading_model/index.rst
    utils/index.rst
+   utils_old/index.rst
 
 

@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.predictors &mdash; cvxsimulator Documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/logo.jpeg"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> cvxsimulator
+            <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cvxsimulator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>covariance.predictors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for covariance.predictors</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">cvx.covariance.utils_old</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.mixture</span> <span class="kn">import</span> <span class="n">GaussianMixture</span>
+
+
+<div class="viewcode-block" id="CovariancePredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor">[docs]</a><span class="k">class</span> <span class="nc">CovariancePredictor</span><span class="p">:</span>
+
+<div class="viewcode-block" id="CovariancePredictor.whiten_returns"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor.whiten_returns">[docs]</a>    <span class="k">def</span> <span class="nf">whiten_returns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if Lt_hats has been created</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Lt_hats&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_Lt_hats</span><span class="p">()</span>
+
+        <span class="n">Lt_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">R_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;R_whitened&quot;</span><span class="p">):</span>
+            <span class="c1"># Whiten returns</span>
+            <span class="n">R_whitened</span> <span class="o">=</span> <span class="n">Lt_array</span> <span class="o">@</span> <span class="n">R_array</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R_whitened</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">R_whitened</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="CovariancePredictor.get_Theta_hats"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor.get_Theta_hats">[docs]</a>    <span class="k">def</span> <span class="nf">get_Theta_hats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        creates dictionary of precision matrices, starting at time init_cutoff to avoid singularity problems</span>
+<span class="sd">        alternates the other dictionaries, like R, Sigma_hats, etc. to match the time-index of Theta_hats</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">end_date</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1"># +1 because of python indexing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span> <span class="c1"># +1 because of python indexing</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">()][</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Theta_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">()]}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Theta_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="CovariancePredictor.get_Lt_hats"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor.get_Lt_hats">[docs]</a>    <span class="k">def</span> <span class="nf">get_Lt_hats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        creates dictionary of (transpose of) Cholesky factors of precision matrices, starting at time init_cutoff to avoid singularity problems</span>
+<span class="sd">        alternates the other dictionaries, like R, Sigma_hats, etc. to match the time-index of Lt_hats</span>
+<span class="sd">        &quot;on the way&quot; also creates the Theta_hats dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_Theta_hats</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="n">end_date</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lt_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Theta_hats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Theta_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_hats</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Lt_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Theta_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lt_inv_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="CovariancePredictor.get_log_likelihood_helper_"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor.get_log_likelihood_helper_">[docs]</a>    <span class="k">def</span> <span class="nf">get_log_likelihood_helper_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Sigmas</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">mus</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param X: numpy array of shape (batch_size, n, 1)</span>
+<span class="sd">        param Sigmas: numpy array of shape (batch_size, n, n)</span>
+<span class="sd">        param mus: numpy array of shape (batch_size, n, 1)</span>
+<span class="sd">            if None, mu is set to zero matrix</span>
+
+<span class="sd">        returns: log-likelihood for each day of X under multivariate normal distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># x = x.reshape(-1,1)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">Sigmas</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">dets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Sigma_invs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigmas</span><span class="p">)</span>
+
+        <span class="n">log_likelihoods</span> <span class="o">=</span> <span class="o">-</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">mus</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="o">@</span> <span class="n">Sigma_invs</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">mus</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_likelihoods</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">log_likelihoods</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_likelihoods</span><span class="o">.</span><span class="n">values</span></div>
+
+<div class="viewcode-block" id="CovariancePredictor.get_log_likelihoods"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.CovariancePredictor.get_log_likelihoods">[docs]</a>    <span class="k">def</span> <span class="nf">get_log_likelihoods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Sigmas</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param X: numpy array of shape (batch_size, n, 1)</span>
+<span class="sd">        param Sigmas: numpy array of shape (batch_size, n, n)</span>
+<span class="sd">        param start: start time (integer or pd.to_date_time object)</span>
+
+<span class="sd">        returns: log-likelihood of observed returns R, under the Gaussian distribution</span>
+<span class="sd">            starting at time start</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">start</span><span class="p">)</span><span class="o">==</span><span class="nb">int</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">end</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span> <span class="c1"># because loc includes end_date</span>
+
+        <span class="k">if</span> <span class="n">X</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">Sigmas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+            <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigmas</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">Sigmas</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_log_likelihood_helper_</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span></div></div>
+
+
+
+<div class="viewcode-block" id="MgarchPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.MgarchPredictor">[docs]</a><span class="k">class</span> <span class="nc">MgarchPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="GoldStandard"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.GoldStandard">[docs]</a><span class="k">class</span> <span class="nc">GoldStandard</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;sample_full&quot;</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half</span> <span class="o">=</span> <span class="n">T_half</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;sample_full&quot;</span><span class="p">:</span>
+            <span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="n">R_sampled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],)),</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">Sigma</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">R_sampled</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;two_sided_ewma&quot;</span><span class="p">:</span>
+            <span class="n">realized_covs_forward</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">Sigma_hat_forward</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs_forward</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half</span><span class="p">)</span>
+
+            <span class="n">realized_covs_backward</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">Sigma_hat_backward</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs_backward</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half</span><span class="p">)</span>
+
+
+            <span class="c1"># Define two-sided EWMA covariance matrix as average of forward and backward</span>
+            <span class="c1"># First remove begining and end to avoid singularities</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:</span><span class="o">-</span><span class="n">init_cutoff</span><span class="p">]</span>
+            <span class="n">Sigma_hat_forward</span> <span class="o">=</span> <span class="n">Sigma_hat_forward</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:</span><span class="o">-</span><span class="n">init_cutoff</span><span class="p">]</span>
+            <span class="n">Sigma_hat_backward</span> <span class="o">=</span> <span class="n">Sigma_hat_backward</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:</span><span class="o">-</span><span class="n">init_cutoff</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="p">(</span><span class="n">Sigma_hat_forward</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">Sigma_hat_backward</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">))}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="ConstantPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.ConstantPredictor">[docs]</a><span class="k">class</span> <span class="nc">ConstantPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">train_frac</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+
+<span class="sd">        returns covariance matrix predictions using a constant covarince matrix,</span>
+<span class="sd">            defined as the sample covariance matrix of the training data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">train_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_frac</span><span class="o">*</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_frac</span> <span class="o">=</span> <span class="n">train_frac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_len</span> <span class="o">=</span> <span class="n">train_len</span>
+
+        <span class="c1"># Define mixture model</span>
+        <span class="n">R_train</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">train_len</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R_train</span> <span class="o">=</span> <span class="n">R_train</span>
+
+        <span class="c1"># Create weighted covaricance matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">R_train</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat</span>
+
+
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+        
+
+            
+
+
+<div class="viewcode-block" id="WeightedGMMPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.WeightedGMMPredictor">[docs]</a><span class="k">class</span> <span class="nc">WeightedGMMPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">n_gmm_comp</span><span class="p">,</span> <span class="n">train_frac</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">yearly_model</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+
+<span class="sd">        returns covariance matrix predictions using a weighted GMM approach.</span>
+<span class="sd">            A GMM is fit to the training data, and an AR(l) model is trained on the</span>
+<span class="sd">            GMM probabilities. The covariance matrix is then predicted as the weighted</span>
+<span class="sd">            sum of the covariance matrices of the GMM components.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">train_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_frac</span><span class="o">*</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_frac</span> <span class="o">=</span> <span class="n">train_frac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_len</span> <span class="o">=</span> <span class="n">train_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_gmm_comp</span> <span class="o">=</span> <span class="n">n_gmm_comp</span>
+
+        <span class="k">if</span> <span class="n">yearly_model</span><span class="p">:</span>
+            <span class="c1"># Define mixture model</span>
+            <span class="n">yearly_gmms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_yearly_gmms</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">n_comps</span><span class="o">=</span><span class="n">n_gmm_comp</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">yearly_gmms</span> <span class="o">=</span> <span class="n">yearly_gmms</span>
+            <span class="n">years</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+            <span class="c1"># Initialize weights (cheating first two year)</span>
+            <span class="n">R_0</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;=</span> <span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">gmm_0</span> <span class="o">=</span> <span class="n">yearly_gmms</span><span class="p">[</span><span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">gmm_probs_0</span> <span class="o">=</span> <span class="n">gmm_0</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">R_0</span><span class="p">)</span>
+            <span class="n">all_weights</span> <span class="o">=</span> <span class="n">gmm_probs_0</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">years</span><span class="p">)):</span>
+                <span class="n">year</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">year_prev</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">R_train</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;</span> <span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                <span class="n">R_test</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+                <span class="n">gmm</span> <span class="o">=</span> <span class="n">yearly_gmms</span><span class="p">[</span><span class="n">year_prev</span><span class="p">]</span>
+                <span class="n">gmm_probs_train</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">R_train</span><span class="p">)</span>
+
+                <span class="c1"># Build gmm probs AR model</span>
+                <span class="k">if</span> <span class="n">ar</span><span class="p">:</span>
+                    <span class="n">X_ar_train</span><span class="p">,</span> <span class="n">y_ar_train</span> <span class="o">=</span> <span class="n">get_ar_format</span><span class="p">(</span><span class="n">gmm_probs_train</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+                    <span class="n">A</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_markov_ar</span><span class="p">(</span><span class="n">X_ar_train</span><span class="p">,</span> <span class="n">y_ar_train</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+
+                    <span class="n">gmm_probs_test</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">R_train</span><span class="p">[</span><span class="o">-</span><span class="n">l</span><span class="p">:],</span> <span class="n">R_test</span><span class="p">]))</span>
+                    <span class="n">X_ar_test</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_ar_format</span><span class="p">(</span><span class="n">gmm_probs_test</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+                    <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">@</span> <span class="n">X_ar_test</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+                    <span class="n">all_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">all_weights</span><span class="p">,</span> <span class="n">weights</span><span class="p">])</span>
+
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># TODO</span>
+                    <span class="k">pass</span>
+                    <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">weights</span><span class="p">])</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">all_weights</span>
+
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">yearly_model</span><span class="p">:</span> <span class="c1"># Only use one GMM model trained on train set</span>
+            <span class="c1"># Define mixture model</span>
+            <span class="n">R_train</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">train_len</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R_train</span> <span class="o">=</span> <span class="n">R_train</span>
+            <span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_gmm_comp</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">R_train</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gmm</span> <span class="o">=</span> <span class="n">gmm</span>
+
+            <span class="c1"># Get GMM probabilities</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+            <span class="c1"># Build gmm probs AR model</span>
+            <span class="k">if</span> <span class="n">ar</span><span class="p">:</span>
+                <span class="n">X_ar_train</span><span class="p">,</span> <span class="n">y_ar_train</span> <span class="o">=</span> <span class="n">get_ar_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[:</span><span class="n">train_len</span><span class="p">],</span> <span class="n">l</span><span class="p">)</span>
+                <span class="n">A</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_markov_ar</span><span class="p">(</span><span class="n">X_ar_train</span><span class="p">,</span> <span class="n">y_ar_train</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+
+                <span class="c1"># ar_model = LinearRegression().fit(X_ar_train, y_ar_train)</span>
+
+                <span class="n">X_ar</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_ar_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">@</span> <span class="n">X_ar</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[:</span><span class="n">l</span><span class="p">],</span> <span class="n">weights</span><span class="p">])</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">gmm_probs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">weights</span><span class="p">])</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+
+        
+
+        <span class="c1"># Create weighted covaricance matrices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">yearly_model</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">year</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">year</span>
+                <span class="k">if</span> <span class="n">year</span> <span class="o">==</span> <span class="n">years</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">year</span> <span class="o">==</span> <span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="c1"># Cheating first two years</span>
+                    <span class="n">year_prev</span> <span class="o">=</span> <span class="n">years</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">year_prev</span> <span class="o">=</span> <span class="n">year</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="n">gmm</span> <span class="o">=</span> <span class="n">yearly_gmms</span><span class="p">[</span><span class="n">year_prev</span><span class="p">]</span>
+                <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">r_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_gmm_comp</span><span class="p">):</span>
+                    <span class="n">Sigma_hat</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">r_hat</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">r_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_gmm_comp</span><span class="p">):</span>
+                    <span class="n">Sigma_hat</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">gmm</span><span class="o">.</span><span class="n">covariances_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">r_hat</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                
+                <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span>
+                
+        <span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_hats</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WeightedGMMPredictor.get_yearly_gmms"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.WeightedGMMPredictor.get_yearly_gmms">[docs]</a>    <span class="k">def</span> <span class="nf">get_yearly_gmms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">n_comps</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns a dict of &quot;yearly&quot; GMMs for each asset</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="n">yearly_gmms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+            <span class="n">R_temp</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;=</span> <span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_comps</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">R_temp</span><span class="p">)</span>
+            <span class="n">yearly_gmms</span><span class="p">[</span><span class="n">year</span><span class="p">]</span> <span class="o">=</span> <span class="n">gmm</span>
+
+        <span class="k">return</span> <span class="n">yearly_gmms</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="WeightedGMMPredictor.get_markov_ar"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.WeightedGMMPredictor.get_markov_ar">[docs]</a>    <span class="k">def</span> <span class="nf">get_markov_ar</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates Markov AR(l) for X and y, where X is the AR(l) representation of the data and y is the next time step.</span>
+<span class="sd">        Incoorporates probability constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="n">l</span><span class="p">))</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">sum_squares</span><span class="p">(</span><span class="n">A</span><span class="nd">@X</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+        <span class="n">cons</span> <span class="o">=</span> <span class="p">[</span><span class="n">A</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">one_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+            <span class="n">cons</span> <span class="o">+=</span> <span class="p">[</span><span class="n">A</span><span class="p">[:,</span><span class="n">i</span><span class="o">*</span><span class="n">n</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">one_vec</span> <span class="o">==</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">one_vec</span><span class="p">]</span>
+
+        <span class="n">cons</span> <span class="o">+=</span> <span class="p">[</span><span class="n">cp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">cons</span><span class="p">)</span>   
+        <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">alpha</span><span class="o">.</span><span class="n">value</span></div></div>
+        
+    
+
+<div class="viewcode-block" id="RollingWindowPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.RollingWindowPredictor">[docs]</a><span class="k">class</span> <span class="nc">RollingWindowPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">update_freq</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="n">memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_freq</span> <span class="o">=</span> <span class="n">update_freq</span>
+
+        <span class="c1"># Update covariance matrix every update_freq days using the last memory days</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">memory</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">memory</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">memory</span> <span class="o">==</span> <span class="s2">&quot;full&quot;</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">t</span><span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">t</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># Don&#39;t include t; to avoid look-ahead bias</span>
+                <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">],</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>  
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span>
+        
+        <span class="c1"># Update variables to start at t=memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+                
+
+
+<div class="viewcode-block" id="EwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.EwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">EwmaPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half</span> <span class="o">=</span> <span class="n">T_half</span>
+
+        <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half</span><span class="p">)</span>
+
+        <span class="c1"># Remove first to remove look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span> <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)}</span>
+
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AlternatingPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingPredictor">[docs]</a><span class="k">class</span> <span class="nc">AlternatingPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An alternating predictor is a predictor that alternates between several predictors</span>
+<span class="sd">    at each time step the predictor is chosen based on the likelihood of the past likelihood_memory days</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="AlternatingPredictor.get_optimal_predictors"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingPredictor.get_optimal_predictors">[docs]</a>    <span class="k">def</span> <span class="nf">get_optimal_predictors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">inds</span><span class="p">):</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">inds_opt</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="n">init_cutoff</span><span class="o">+</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="c1"># Find bets covariance predictor based on likelihood on past likelihood_memory days</span>
+            <span class="n">R_temp</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="p">(</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="c1"># Don&#39;t include t; avoid look-ahead bias</span>
+            <span class="n">log_like</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">;</span> <span class="n">Sigma_hat_best</span> <span class="o">=</span> <span class="kc">None</span><span class="p">;</span> <span class="n">ind_best</span> <span class="o">=</span> <span class="kc">None</span><span class="p">;</span> <span class="c1"># Initialize</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds</span><span class="p">:</span>
+                <span class="n">Sigma_hats_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="p">(</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="c1"># Don&#39;t include t</span>
+                <span class="n">log_like_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_log_likelihoods</span><span class="p">(</span><span class="n">X</span> <span class="o">=</span> <span class="n">R_temp</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">Sigmas</span><span class="o">=</span><span class="n">Sigma_hats_temp</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">log_like_temp</span> <span class="o">&gt;</span> <span class="n">log_like</span><span class="p">:</span>
+                    <span class="n">log_like</span> <span class="o">=</span> <span class="n">log_like_temp</span>
+                    <span class="n">Sigma_hat_best</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+                    <span class="n">ind_best</span> <span class="o">=</span> <span class="n">ind</span>
+            <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat_best</span>
+            <span class="n">inds_opt</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ind_best</span>
+
+        <span class="k">return</span> <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">inds_opt</span></div></div>
+
+<div class="viewcode-block" id="EnsemblePredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.EnsemblePredictor">[docs]</a><span class="k">class</span> <span class="nc">EnsemblePredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">experts</span><span class="p">,</span> <span class="n">pred_type</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        param experts: list of CovariancePredictor objects</span>
+<span class="sd">        param pred_type: &quot;best&quot; or &quot;average&quot;</span>
+<span class="sd">        param likelihood_memory: number of days to use to compute likelihood when deciding which expert to use\</span>
+<span class="sd">            only used if pred_type=&quot;best&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experts</span> <span class="o">=</span> <span class="n">experts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">pred_type</span> <span class="o">==</span> <span class="s2">&quot;best&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">R_temp</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="p">(</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="c1"># Don&#39;t include t; avoid look-ahead bias</span>
+                <span class="n">log_like</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">;</span> <span class="n">Sigma_hat_best</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">expert</span> <span class="ow">in</span> <span class="n">experts</span><span class="p">:</span>
+                    <span class="n">Sigma_hats_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="p">(</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="c1"># Don&#39;t include t</span>
+                    <span class="n">log_like_temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_log_likelihoods</span><span class="p">(</span><span class="n">X</span> <span class="o">=</span> <span class="n">R_temp</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">Sigmas</span><span class="o">=</span><span class="n">Sigma_hats_temp</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">log_like_temp</span> <span class="o">&gt;</span> <span class="n">log_like</span><span class="p">:</span>
+                        <span class="n">log_like</span> <span class="o">=</span> <span class="n">log_like_temp</span>
+                        <span class="n">Sigma_hat_best</span> <span class="o">=</span> <span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+
+                <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat_best</span>
+
+            <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">pred_type</span> <span class="o">==</span> <span class="s2">&quot;average&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">Sigma_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">expert</span> <span class="ow">in</span> <span class="n">experts</span><span class="p">:</span>
+                    <span class="n">Sigma_hat</span> <span class="o">+=</span> <span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+                <span class="n">Sigma_hat</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">experts</span><span class="p">)</span>
+                <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Sigma_hat</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+
+
+        
+
+
+
+
+<div class="viewcode-block" id="AlternatingIteratedEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingIteratedEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">AlternatingIteratedEwmaPredictor</span><span class="p">(</span><span class="n">AlternatingPredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>\
+        <span class="n">lamdas</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        T_halfs: list of tuples of T_half=(T_scale, T_full) to use for alternating iterated EWMA</span>
+<span class="sd">        param likelihood_memory: number of days to use to compute likelihood when deciding which T_half to use</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+        <span class="k">if</span> <span class="n">lamdas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lamdas</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T_halfs</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lamdas</span> <span class="o">=</span> <span class="n">lamdas</span>
+
+        <span class="n">iterated_ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">T_halfs</span><span class="p">):</span>
+            <span class="n">iterated_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">IteratedEwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_half</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">init_cutoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lamdas</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> 
+        
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span> <span class="o">=</span> <span class="n">likelihood_memory</span>
+
+        <span class="c1"># Remove first to remove look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">iterated_ewma_predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">R</span>
+        <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterated_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Get optimal predictors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">iterated_ewma_predictors</span>
+
+        <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_optimal_predictors</span><span class="p">(</span><span class="n">init_cutoff</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span><span class="o">+</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="n">T_halfs_opt</span>
+        
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="AlternatingEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">AlternatingEwmaPredictor</span><span class="p">(</span><span class="n">AlternatingPredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compute_opt_Sigmas</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        T_halfs: list of T_halfs to use for alternating EWMA</span>
+<span class="sd">        param likelihood_memory: number of days to use to compute likelihood when deciding which T_half to use</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+
+        <span class="n">ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+            <span class="n">ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">EwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">)</span>
+        
+        
+        <span class="c1"># Remove first to remove look-ahead bias</span>
+        <span class="c1"># R = R.iloc[1:, :]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">ewma_predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">R</span>
+        <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Get optimal predictors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">ewma_predictors</span>
+
+        
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span><span class="o">+</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_optimal_predictors</span><span class="p">(</span><span class="n">init_cutoff</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="n">T_halfs_opt</span>
+        
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+        
+        
+<div class="viewcode-block" id="IteratedEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.IteratedEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">IteratedEwmaPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_half_scale</span><span class="p">,</span> <span class="n">T_half_full</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">lamda</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        param T_half_scale: half-life for scaling</span>
+<span class="sd">        param T_half_full: half-life for full whitening</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half_scale</span> <span class="o">=</span> <span class="n">T_half_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half_full</span> <span class="o">=</span> <span class="n">T_half_full</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+
+        <span class="c1">### Scaling  </span>
+        <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">get_realized_vars</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">V_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_vars</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half_scale</span><span class="p">)</span>
+        <span class="n">V_inv_diags</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">V_hats</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">V_inv_diags</span><span class="p">])</span> <span class="c1"># Gets L^T s.t. LL^T = V_hat^{-1}</span>
+        <span class="n">r_tilde_var</span> <span class="o">=</span> <span class="n">get_r_tildes</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">Ws_V</span><span class="p">)</span>
+
+        <span class="c1"># winsorizing ?</span>
+
+        <span class="c1">### Full whitening, outer products in T x n x n tensor</span>
+        <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">r_tilde_var</span><span class="p">)</span>
+
+        <span class="c1"># moving across first dimenison of Tensor</span>
+        <span class="n">Sigma_tilde_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half_full</span><span class="p">)</span>
+
+        <span class="c1"># Create correlation matrix</span>
+        <span class="c1"># refactor: separate function cov2corr</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">Sigma_tilde_hats</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">outer_V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">V</span><span class="p">])</span>
+        <span class="n">corr_tilde_hats</span> <span class="o">=</span> <span class="n">Sigma_tilde_hats</span> <span class="o">/</span> <span class="n">outer_V</span>
+
+        <span class="c1"># Remove first &#39;init_cutoff&#39; to avoid singularity</span>
+        <span class="n">corr_tilde_hats</span> <span class="o">=</span> <span class="n">corr_tilde_hats</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">Ws_V</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">V_hats</span> <span class="o">=</span> <span class="n">V_hats</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+
+
+        <span class="c1"># Engle 2002 formula</span>
+        <span class="n">sqrt_V_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">V_hats</span><span class="p">)</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">sqrt_V_hats</span> <span class="o">@</span> <span class="n">corr_tilde_hats</span> <span class="o">@</span> <span class="n">sqrt_V_hats</span>
+
+        <span class="c1"># Remove first asset to avoid look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span> <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)}</span>
+        <span class="c1"># wrong place</span>
+        <span class="c1"># Add regularization</span>
+        
+        <span class="k">if</span> <span class="n">lamda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">lamda</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="IteratedGarchEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.IteratedGarchEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">IteratedGarchEwmaPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">cheat</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        param T_half_scale: half-life for scaling</span>
+<span class="sd">        param T_half_full: half-life for full whitening</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half</span> <span class="o">=</span> <span class="n">T_half</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+
+        <span class="c1">### Scaling  </span>
+        <span class="n">arch_models</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">vols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cheat</span><span class="p">:</span>
+            <span class="n">all_arch_params</span> <span class="o">=</span> <span class="n">get_yearly_garch_params</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">update_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">vols_temp</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">asset</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+                    <span class="n">am</span> <span class="o">=</span> <span class="n">arch_model</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">fixed_res</span> <span class="o">=</span> <span class="n">am</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">all_arch_params</span><span class="p">[</span><span class="n">asset</span><span class="p">][</span><span class="n">year</span><span class="p">])</span> 
+                    <span class="n">vol_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fixed_res</span><span class="o">.</span><span class="n">conditional_volatility</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="n">vol_temp</span> <span class="o">=</span> <span class="n">vol_temp</span><span class="p">[</span><span class="n">vol_temp</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">year</span><span class="o">==</span><span class="n">year</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+                    <span class="n">vols_temp</span> <span class="o">+=</span> <span class="n">vol_temp</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">vols</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vols_temp</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">arch_models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arch_model</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">vol</span><span class="o">=</span><span class="s1">&#39;GARCH&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">arch_models</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">vols</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">conditional_volatility</span>
+
+        <span class="n">V_hats</span> <span class="o">=</span> <span class="n">get_V_hats</span><span class="p">(</span><span class="n">vols</span><span class="p">)</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">get_cholesky</span><span class="p">(</span><span class="n">V_hats</span><span class="p">)</span> 
+        <span class="n">r_tilde_var</span> <span class="o">=</span> <span class="n">get_r_tildes</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">Ws_V</span><span class="p">)</span>
+        
+
+        <span class="c1">### Full whitening</span>
+        <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">r_tilde_var</span><span class="p">)</span>
+        <span class="n">Sigma_tilde_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half</span><span class="p">)</span>
+
+        <span class="c1"># Remove first &#39;init_cutoff&#39; to avoid singularity</span>
+        <span class="n">Sigma_tilde_hats</span> <span class="o">=</span> <span class="n">Sigma_tilde_hats</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">Ws_V</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">Ws_S</span> <span class="o">=</span> <span class="n">get_cholesky</span><span class="p">(</span><span class="n">Sigma_tilde_hats</span><span class="p">)</span> 
+
+        <span class="c1">### Define covariance matrix</span>
+        <span class="n">Ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ws_S</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="nd">@Ws_V</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ws_S</span><span class="p">))]</span>
+        <span class="n">Sigma_inv_hats</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ws</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="nd">@Ws</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ws</span><span class="p">))]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigma_inv_hats</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Sigma_inv_hats</span><span class="p">))])</span>
+
+        <span class="c1"># Remove first asset to remove look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span> <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)}</span>
+
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="AlternatingIteratedGarchEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingIteratedGarchEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">AlternatingIteratedGarchEwmaPredictor</span><span class="p">(</span><span class="n">AlternatingPredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        T_halfs: list of tuples of T_half=(T_scale, T_full) to use for alternating iterated EWMA</span>
+<span class="sd">        param likelihood_memory: number of days to use to compute likelihood when deciding which T_half to use</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span> <span class="o">=</span> <span class="n">likelihood_memory</span>
+
+
+        <span class="n">it_garch_ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T_halfs</span><span class="p">)):</span>
+            <span class="n">T_half</span> <span class="o">=</span> <span class="n">T_halfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">it_garch_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">IteratedGarchEwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="p">)</span> 
+        
+        
+
+        <span class="c1"># Remove first to remove look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">it_garch_ewma_predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">R</span>
+        <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">it_garch_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Get optimal predictors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">it_garch_ewma_predictors</span>
+
+        <span class="n">Sigma_hats</span><span class="p">,</span> <span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_optimal_predictors</span><span class="p">(</span><span class="n">init_cutoff</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span><span class="o">+</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">;</span> <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span> <span class="o">=</span> <span class="n">T_halfs_opt</span>
+        
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T_halfs_opt</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+       
+
+        
+<div class="viewcode-block" id="TrippleIteratedEwmaPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.TrippleIteratedEwmaPredictor">[docs]</a><span class="k">class</span> <span class="nc">TrippleIteratedEwmaPredictor</span><span class="p">(</span><span class="n">CovariancePredictor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_half_scale</span><span class="p">,</span> <span class="n">T_half_std</span><span class="p">,</span> <span class="n">T_half_full</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        param T_half_scale: half-life for scaling</span>
+<span class="sd">        param T_half_std: half-life for standerdizing</span>
+<span class="sd">        param T_half_full: half-life for full whitening</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half_scale</span> <span class="o">=</span> <span class="n">T_half_scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half_std</span> <span class="o">=</span> <span class="n">T_half_std</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T_half_full</span> <span class="o">=</span> <span class="n">T_half_full</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+
+        <span class="c1">### Scaling</span>
+        <span class="n">realized_sizes</span> <span class="o">=</span> <span class="n">get_realized_sizes</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> 
+        <span class="n">size_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_sizes</span><span class="p">,</span> <span class="n">T_half_scale</span><span class="p">)</span>
+        <span class="n">Ws_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">size_hats</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">r_tildes_size</span> <span class="o">=</span> <span class="n">Ws_size</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1">### Standerdizing  </span>
+        <span class="n">realized_vars</span> <span class="o">=</span> <span class="n">get_realized_vars</span><span class="p">(</span><span class="n">r_tildes_size</span><span class="p">)</span>
+        <span class="n">V_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_vars</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half_scale</span><span class="p">)</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">get_cholesky</span><span class="p">(</span><span class="n">V_hats</span><span class="p">)</span> 
+        <span class="n">r_tilde_var</span> <span class="o">=</span> <span class="n">get_r_tildes</span><span class="p">(</span><span class="n">r_tildes_size</span><span class="p">,</span> <span class="n">Ws_V</span><span class="p">)</span>
+
+        <span class="c1">### Full whitening</span>
+        <span class="n">realized_covs</span> <span class="o">=</span> <span class="n">get_realized_covs</span><span class="p">(</span><span class="n">r_tilde_var</span><span class="p">)</span>
+        <span class="n">Sigma_tilde_hats</span> <span class="o">=</span> <span class="n">get_ewmas</span><span class="p">(</span><span class="n">realized_covs</span><span class="p">,</span> <span class="n">T_half</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">T_half_full</span><span class="p">)</span>
+
+        <span class="c1"># Remove first &#39;init_cutoff&#39; to avoid singularity</span>
+        <span class="n">Sigma_tilde_hats</span> <span class="o">=</span> <span class="n">Sigma_tilde_hats</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">Ws_V</span> <span class="o">=</span> <span class="n">Ws_V</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:]</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">init_cutoff</span><span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="n">Ws_S</span> <span class="o">=</span> <span class="n">get_cholesky</span><span class="p">(</span><span class="n">Sigma_tilde_hats</span><span class="p">)</span> 
+
+        <span class="c1">### Define covariance matrix</span>
+        <span class="n">Ws</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ws_size</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">Ws_S</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="nd">@Ws_V</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ws_S</span><span class="p">))]</span>
+        <span class="n">Sigma_inv_hats</span> <span class="o">=</span> <span class="p">[</span><span class="n">Ws</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="nd">@Ws</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ws</span><span class="p">))]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sigma_inv_hats</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Sigma_inv_hats</span><span class="p">))])</span>
+
+        <span class="c1"># Remove first asset to remove look-ahead bias</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">]:</span> <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">)}</span>
+
+        <span class="c1"># Make sure that times are consistent between R and Sigma_hats</span>
+        <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+       
+
+<div class="viewcode-block" id="AlternatingWeightedPredictor"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingWeightedPredictor">[docs]</a><span class="k">class</span> <span class="nc">AlternatingWeightedPredictor</span><span class="p">(</span><span class="n">AlternatingPredictor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alternating_type</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">T_halfs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">likelihood_memory</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_L</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">experts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_dpp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>\
+        <span class="n">turnover_cons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lamdas</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        param alternating_type: &quot;ewma&quot;, &quot;iterated_ewma&quot; or &quot;garch_ewma&quot;</span>
+<span class="sd">        param R: pandas dataframe where rows are vector of asset returns for t=1,2,...</span>
+<span class="sd">            R has shape (T, n) where T is the number of days and n is the number of assets</span>
+<span class="sd">        param T_halfs: list of half-lives for ewma or iterated ewma predictors</span>
+<span class="sd">        param likelihood_memory: number of days to look back when computing likelihood</span>
+<span class="sd">        param init_cutoff: number of days to remove from beginning to avoid singularity</span>
+<span class="sd">        param const_theta: constant theta in lookback period for log-likelihood</span>
+<span class="sd">        param const_L: constant L in lookback period for log-likelihood</span>
+<span class="sd">        param experts: list of experts to use in alternating predictor</span>
+<span class="sd">        param ignore_dpp: if True, ignore the DPP when solving convex problem</span>
+<span class="sd">        param turnover_cons: weight to put on turnover constraint, if None, no turnover constraint</span>
+<span class="sd">        param lamdas: regularization weight. Currently only applicable to alternating_type=&quot;iterated_ewma&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span> <span class="o">=</span> <span class="n">likelihood_memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_cutoff</span> <span class="o">=</span> <span class="n">init_cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">experts</span> <span class="o">=</span> <span class="n">experts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alternating_type</span> <span class="o">=</span> <span class="n">alternating_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_dpp</span> <span class="o">=</span> <span class="n">ignore_dpp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">turnover_cons</span> <span class="o">=</span> <span class="n">turnover_cons</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lamdas</span> <span class="o">=</span> <span class="n">lamdas</span>
+
+        <span class="k">if</span> <span class="n">alternating_type</span> <span class="o">==</span> <span class="s2">&quot;ewma&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+
+            <span class="n">ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+                <span class="n">ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">EwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="n">init_cutoff</span><span class="p">)</span>
+            
+            <span class="n">R</span> <span class="o">=</span> <span class="n">ewma_predictors</span><span class="p">[</span><span class="n">T_halfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">ewma_predictors</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">alternating_type</span> <span class="o">==</span> <span class="s2">&quot;iterated_ewma&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+
+            <span class="n">iterated_ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">T_halfs</span><span class="p">):</span>
+                <span class="n">iterated_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">IteratedEwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">T_half</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="n">init_cutoff</span><span class="p">,</span> <span class="n">lamda</span><span class="o">=</span><span class="n">lamdas</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            
+            <span class="n">R</span> <span class="o">=</span> <span class="n">iterated_ewma_predictors</span><span class="p">[</span><span class="n">T_halfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterated_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">iterated_ewma_predictors</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">elif</span> <span class="n">alternating_type</span> <span class="o">==</span> <span class="s2">&quot;iterated_garch_ewma&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T_halfs</span> <span class="o">=</span> <span class="n">T_halfs</span>
+
+            <span class="n">it_garch_ewma_predictors</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">trange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T_halfs</span><span class="p">)):</span>
+                <span class="n">T_half</span> <span class="o">=</span> <span class="n">T_halfs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">it_garch_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span> <span class="o">=</span> <span class="n">IteratedGarchEwmaPredictor</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">T_half</span><span class="p">,</span> <span class="n">init_cutoff</span><span class="o">=</span><span class="n">init_cutoff</span><span class="p">)</span> 
+
+            <span class="n">R</span> <span class="o">=</span> <span class="n">it_garch_ewma_predictors</span><span class="p">[</span><span class="n">T_halfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">it_garch_ewma_predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="n">it_garch_ewma_predictors</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">alternating_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">experts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">expert</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">experts</span><span class="p">):</span>
+                <span class="c1"># Add expert to predictors</span>
+                <span class="n">expert</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span>
+                <span class="n">expert</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span> <span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">expert</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">expert</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">expert</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;expert_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expert</span>
+
+        
+        <span class="c1"># Get precison matrices and Cholesky factors</span>
+        <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">predictor</span><span class="o">.</span><span class="n">get_Lt_hats</span><span class="p">()</span> <span class="c1"># This also gets Theta_hats</span>
+
+        <span class="c1"># Update model&#39;s parameters as well</span>
+        <span class="k">if</span> <span class="n">alternating_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="n">T_halfs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">R</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="n">R</span>
+            <span class="k">for</span> <span class="n">T_half</span> <span class="ow">in</span> <span class="n">T_halfs</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">[</span><span class="n">T_half</span><span class="p">]</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_Sigma_hats</span><span class="p">(</span><span class="n">const_theta</span><span class="p">,</span> <span class="n">const_L</span><span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="AlternatingWeightedPredictor.get_Sigma_hats"><a class="viewcode-back" href="../../autoapi/covariance/predictors/index.html#covariance.predictors.AlternatingWeightedPredictor.get_Sigma_hats">[docs]</a>    <span class="k">def</span> <span class="nf">get_Sigma_hats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_L</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Sigma_hats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="p">)</span>
+
+        <span class="n">ws</span> <span class="o">=</span> <span class="n">get_opt_weights_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">likelihood_window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span><span class="p">,</span> <span class="n">w_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">const_theta</span><span class="o">=</span><span class="n">const_theta</span><span class="p">,</span> <span class="n">const_L</span><span class="o">=</span><span class="n">const_L</span><span class="p">,</span>\
+             <span class="n">turnover_cons</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">turnover_cons</span><span class="p">)</span>
+
+        <span class="n">Theta_hats_for_all_t</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">Lt_hats_for_all_t</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">Sigma_hats_for_all_t</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">Theta_hats_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">predictor</span><span class="o">.</span><span class="n">Theta_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> <span class="c1"># available &quot;experts&quot; at time t</span>
+            <span class="n">Theta_hats_for_all_t</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">Theta_hats_t</span>
+
+            <span class="n">Lt_hats_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">predictor</span><span class="o">.</span><span class="n">Lt_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> <span class="c1"># available &quot;experts&quot; at time t</span>
+            <span class="n">Lt_hats_for_all_t</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">Lt_hats_t</span>
+
+
+            <span class="n">Sigma_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">predictor</span><span class="o">.</span><span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+            <span class="n">Sigma_hats_for_all_t</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sigma_hat_t</span>
+
+
+        <span class="c1"># Store in Sigma_hats and weights dictionaries</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">wt</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+            <span class="k">if</span> <span class="n">const_L</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Theta_hats_t</span> <span class="o">=</span> <span class="n">Theta_hats_for_all_t</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                <span class="n">Theta_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+                    <span class="n">Theta_hat_t</span> <span class="o">+=</span> <span class="n">wt</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">Theta_hats_t</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                
+            <span class="k">elif</span> <span class="n">const_theta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Lt_hats_t</span> <span class="o">=</span> <span class="n">Lt_hats_for_all_t</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+                <span class="n">Lt_hat_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+                    <span class="n">Lt_hat_t</span> <span class="o">+=</span> <span class="n">wt</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">Lt_hats_t</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">Theta_hat_t</span> <span class="o">=</span> <span class="n">Lt_hat_t</span><span class="o">.</span><span class="n">T</span><span class="nd">@Lt_hat_t</span>
+
+            <span class="n">Sigma_hats</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">Theta_hat_t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_memory</span><span class="o">+</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma_hats</span> <span class="o">=</span> <span class="n">Sigma_hats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">ws</span></div></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

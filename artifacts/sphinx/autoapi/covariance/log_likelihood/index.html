@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.utils &mdash; cvxsimulator Documentation</title>
+  <title>covariance.log_likelihood &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="covariance.utils_old" href="../utils_old/index.html" />
-    <link rel="prev" title="covariance.trading_model" href="../trading_model/index.html" /> 
+    <link rel="next" title="covariance.optimal_cov_pred" href="../optimal_cov_pred/index.html" />
+    <link rel="prev" title="covariance.iterated_ewma" href="../iterated_ewma/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,11 +52,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../covariance_combination/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../iterated_ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.iterated_ewma</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../log_likelihood/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../optimal_cov_pred/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.optimal_cov_pred</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../predictors/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.predictors</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../trading_model/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.trading_model</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../utils_old/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils_old</span></code></a></li>
 </ul>
 </li>
@@ -82,9 +82,9 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">API Reference</a> &raquo;</li>
           <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a> &raquo;</li>
-      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/autoapi/covariance/utils/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/autoapi/covariance/log_likelihood/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -92,16 +92,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-covariance.utils">
-<span id="covariance-utils"></span><h1><a class="reference internal" href="#module-covariance.utils" title="covariance.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.utils</span></code></a><a class="headerlink" href="#module-covariance.utils" title="Permalink to this heading"></a></h1>
+  <section id="module-covariance.log_likelihood">
+<span id="covariance-log-likelihood"></span><h1><a class="reference internal" href="#module-covariance.log_likelihood" title="covariance.log_likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.log_likelihood</span></code></a><a class="headerlink" href="#module-covariance.log_likelihood" title="Permalink to this heading"></a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.log_likelihood.log_likelihood" title="covariance.log_likelihood.log_likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_likelihood</span></code></a>(returns, Sigmas, means=None)</p></td>
+<td><p>Computes the log likelihhod assuming Gaussian returns with covariance matrix</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.log_likelihood.log_likelihood">
+<span class="sig-prename descclassname"><span class="pre">covariance.log_likelihood.</span></span><span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/log_likelihood.html#log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.log_likelihood.log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the log likelihhod assuming Gaussian returns with covariance matrix
+Sigmas and mean vector means</p>
+<p>param returns: numpy array where rows are vector of asset returns
+param Sigmas: numpy array of covariance matrix
+param means: numpy array of mean vector; if None, assumes zero mean</p>
+</dd></dl>
+
+</section>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../trading_model/index.html" class="btn btn-neutral float-left" title="covariance.trading_model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../utils_old/index.html" class="btn btn-neutral float-right" title="covariance.utils_old" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../iterated_ewma/index.html" class="btn btn-neutral float-left" title="covariance.iterated_ewma" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../optimal_cov_pred/index.html" class="btn btn-neutral float-right" title="covariance.optimal_cov_pred" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
