@@ -4,7 +4,7 @@ from pandas._typing import TimedeltaConvertibleTypes
 from typing import Union
 from collections import namedtuple
 
-IEWMA = namedtuple('IEWMA', ['mean', 'covariance'])
+IEWMA = namedtuple('IEWMA', ['time', 'mean', 'covariance'])
 
 
 def _generator2frame(generator):
@@ -28,12 +28,11 @@ def _regularize_correlation(R, r):
         defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues
         and eigenvectors of R (the r first, in descending order)
     """
-    eig_decomps = np.linalg.eigh(R)
-    Lamda = eig_decomps[0]
-    Q = eig_decomps[1]
+    Lamda, Q = np.linalg.eigh(R)
 
     # Sort eigenvalues in descending order
     Lamda = np.diag(Lamda[::-1])
+    # reshuffle the eigenvectors accordingly
     Q = Q[ :, ::-1]
 
     # Get low rank component
@@ -47,9 +46,23 @@ def _regularize_correlation(R, r):
     # Create low rank approximation
     return R_lo + D
 
+def regularize_covariance(Sigmas, r):
+    """
+    param Sigmas: dictionary of covariance matrices
+    param r: float, rank of low rank component 
 
-def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
-    min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None):
+    returns: regularized covariance matrices according to "Factor form
+    regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
+    """
+    for time, Sigma in Sigmas.items():
+        vola = np.sqrt(np.diag(Sigma))
+        R = Sigma / np.outer(vola, vola)
+        R = _regularize_correlation(R, r)
+        cov = vola.reshape(-1,1) * R * vola.reshape(1,-1)
+        yield time, pd.DataFrame(cov, index=Sigma.columns, columns=Sigma.columns)
+
+def iterated_ewma(returns, vola_halflife, cov_halflife,\
+    min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None):
     def scale_cov(vola, matrix):
         index = matrix.index
         columns = matrix.columns
@@ -58,9 +71,6 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
         # Convert (covariance) matrix to correlation matrix
         v = np.sqrt(np.diagonal(matrix))
         matrix = matrix / np.outer(v,v)
-
-        if low_rank: # low rank approximation
-            matrix = _regularize_correlation(matrix, low_rank)
 
         cov = vola.reshape(-1,1) * matrix * vola.reshape(1,-1)
 
@@ -71,7 +81,7 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
     if mean:
         returns_mean = _generator2frame(ewma_mean(data=returns, halflife=vola_halflife, min_periods=0))
     else:
-        returns_mean = pd.DataFrame(np.zeros_like(returns), index=returns.index, columns=returns.columns)
+        returns_mean = 0.0*returns
     if clip_at:
         clip_at_var = clip_at**2
     else:
@@ -84,25 +94,32 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
 
 
     # adj the returns
-    adj = ((returns-returns_mean) / vola).clip(lower=lower, upper=upper)
+    if clip_at:
+        adj = ((returns-returns_mean) / vola).clip(lower=-clip_at, upper=clip_at)
+    else:
+        adj = (returns-returns_mean) / vola
     # remove all the leading NaNs
     adj = adj.dropna(axis=0, how="all")
 
     if mean:
         adj_mean = _generator2frame(ewma_mean(data=adj, halflife=cov_halflife, min_periods=0))
     else:
-        adj_mean = pd.DataFrame(np.zeros_like(adj), index=adj.index, columns=adj.columns)
+        adj_mean = 0.0*adj
 
     if mean:
+
         covs = {t: scale_cov(vola=vola.loc[t].values, matrix=matrix) for t, matrix in ewma_cov(data=adj-adj_mean, halflife=cov_halflife, min_periods=min_periods_cov)}
 
         means = {t: scale_mean(vola=vola.loc[t].values, vec1=returns_mean.loc[t], vec2=adj_mean.loc[t]) for t in covs.keys()}
 
-
-        return IEWMA(mean=means,covariance=covs)
+        for time in covs.keys():
+            yield IEWMA(time=time, mean=means[time], covariance=covs[time]) 
 
     else:
-        return {t: scale_cov(vola=vola.loc[t].values, matrix=matrix) for t, matrix in ewma_cov(data=adj-adj_mean, halflife=cov_halflife, min_periods=min_periods_cov)}
+        zero_mean = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
+
+        for t, matrix in ewma_cov(data=adj-adj_mean, halflife=cov_halflife, min_periods=min_periods_cov):
+            yield IEWMA(time=t, mean=zero_mean, covariance=scale_cov(vola=vola.loc[t].values, matrix=matrix))
 
 
 def ewma_cov(data, halflife, min_periods=0):

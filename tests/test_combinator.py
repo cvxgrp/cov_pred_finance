@@ -22,7 +22,8 @@ def combinator(returns):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     # compute the covariance matrices, one time series for each pair
-    Sigmas = {f"{pair[0]}-{pair[1]}": iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], lower=-4.2, upper=4.2) for pair in pairs}
+    iewmas = {f"{pair[0]}-{pair[1]}": list(iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=4.2)) for pair in pairs}
+    Sigmas = {key: {item.time: item.covariance for item in iewma} for key, iewma in iewmas.items()}
 
 
     # combination of covariance matrix valued time series

@@ -153,6 +153,7 @@ class CovarianceCombination:
 
         ### Conditioning
         mean = np.linalg.inv(L.T)@nu # / 100
+        mean = pd.Series(index=self.assets, data=mean)
         Sigma = np.linalg.inv(L @ L.T) # / 10000
         Sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=Sigma)
         weights = pd.Series(index=self.__Sigmas.keys(), data=self.__weight.value)

@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from scipy.stats import multivariate_normal
 
-from cvx.covariance.utils import log_likelihood
+from experiments.experiment_utils import log_likelihood
 
 
 @pytest.fixture
