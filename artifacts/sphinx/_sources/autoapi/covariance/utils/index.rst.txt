@@ -1,6 +1,0 @@
-:py:mod:`covariance.utils`
-==========================
-
-.. py:module:: covariance.utils
-
-

@@ -13,7 +13,5 @@ Submodules
    covariance_combination/index.rst
    ewma/index.rst
    iterated_ewma_vec/index.rst
-   utils/index.rst
-   utils_old/index.rst
 
 
