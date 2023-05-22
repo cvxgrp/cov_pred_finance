@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cvxcovariance"
+name = "cov_pred_finance"
 version = "0.0.0"             # Don't touch, leave at 0.0.0
 description = "..."
 authors = ["Kasper", "Thomas"]
