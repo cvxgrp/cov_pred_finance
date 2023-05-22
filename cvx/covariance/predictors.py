@@ -1,4 +1,4 @@
-from cvx.covariance.utils import *
+from cvx.covariance.utils_old import *
 import numpy as np
 from tqdm import trange
 
