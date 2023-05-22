@@ -18,16 +18,25 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-# combination of covariance matrix valued time series
-combination = CovarianceCombination(sigmas=Sigmas, returns=returns)
+# Pairs of halflife volatility vs halflife covariances
+pairs = [(10, 10), (21, 21), (21, 63)]
+
+# compute the covariance matrices, one time series for each pair
+Sigmas = {f"{pair[0]}-{pair[1]}": iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], lower=-4.2, upper=4.2) for pair in pairs}
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
 [0;31mTypeError[0m                                 Traceback (most recent call last)
-Cell [0;32mIn[5], line 2[0m
-[1;32m      1[0m [38;5;66;03m# combination of covariance matrix valued time series[39;00m
-[0;32m----> 2[0m combination [38;5;241m=[39m [43mCovarianceCombination[49m[43m([49m[43msigmas[49m[38;5;241;43m=[39;49m[43mSigmas[49m[43m,[49m[43m [49m[43mreturns[49m[38;5;241;43m=[39;49m[43mreturns[49m[43m)[49m
+Cell [0;32mIn[4], line 5[0m
+[1;32m      2[0m pairs [38;5;241m=[39m [([38;5;241m10[39m, [38;5;241m10[39m), ([38;5;241m21[39m, [38;5;241m21[39m), ([38;5;241m21[39m, [38;5;241m63[39m)]
+[1;32m      4[0m [38;5;66;03m# compute the covariance matrices, one time series for each pair[39;00m
+[0;32m----> 5[0m Sigmas [38;5;241m=[39m [43m{[49m[38;5;124;43mf[39;49m[38;5;124;43m"[39;49m[38;5;132;43;01m{[39;49;00m[43mpair[49m[43m[[49m[38;5;241;43m0[39;49m[43m][49m[38;5;132;43;01m}[39;49;00m[38;5;124;43m-[39;49m[38;5;132;43;01m{[39;49;00m[43mpair[49m[43m[[49m[38;5;241;43m1[39;49m[43m][49m[38;5;132;43;01m}[39;49;00m[38;5;124;43m"[39;49m[43m:[49m[43m [49m[43miterated_ewma[49m[43m([49m[43mreturns[49m[43m,[49m[43m [49m[43mvola_halflife[49m[38;5;241;43m=[39;49m[43mpair[49m[43m[[49m[38;5;241;43m0[39;49m[43m][49m[43m,[49m[43m [49m[43mcov_halflife[49m[38;5;241;43m=[39;49m[43mpair[49m[43m[[49m[38;5;241;43m1[39;49m[43m][49m[43m,[49m[43m [49m[43mlower[49m[38;5;241;43m=[39;49m[38;5;241;43m-[39;49m[38;5;241;43m4.2[39;49m[43m,[49m[43m [49m[43mupper[49m[38;5;241;43m=[39;49m[38;5;241;43m4.2[39;49m[43m)[49m[43m [49m[38;5;28;43;01mfor[39;49;00m[43m [49m[43mpair[49m[43m [49m[38;5;129;43;01min[39;49;00m[43m [49m[43mpairs[49m[43m}[49m
 
-[0;31mTypeError[0m: CovarianceCombination.__init__() got an unexpected keyword argument 'sigmas'
+Cell [0;32mIn[4], line 5[0m, in [0;36m<dictcomp>[0;34m(.0)[0m
+[1;32m      2[0m pairs [38;5;241m=[39m [([38;5;241m10[39m, [38;5;241m10[39m), ([38;5;241m21[39m, [38;5;241m21[39m), ([38;5;241m21[39m, [38;5;241m63[39m)]
+[1;32m      4[0m [38;5;66;03m# compute the covariance matrices, one time series for each pair[39;00m
+[0;32m----> 5[0m Sigmas [38;5;241m=[39m {[38;5;124mf[39m[38;5;124m"[39m[38;5;132;01m{[39;00mpair[[38;5;241m0[39m][38;5;132;01m}[39;00m[38;5;124m-[39m[38;5;132;01m{[39;00mpair[[38;5;241m1[39m][38;5;132;01m}[39;00m[38;5;124m"[39m: [43miterated_ewma[49m[43m([49m[43mreturns[49m[43m,[49m[43m [49m[43mvola_halflife[49m[38;5;241;43m=[39;49m[43mpair[49m[43m[[49m[38;5;241;43m0[39;49m[43m][49m[43m,[49m[43m [49m[43mcov_halflife[49m[38;5;241;43m=[39;49m[43mpair[49m[43m[[49m[38;5;241;43m1[39;49m[43m][49m[43m,[49m[43m [49m[43mlower[49m[38;5;241;43m=[39;49m[38;5;241;43m-[39;49m[38;5;241;43m4.2[39;49m[43m,[49m[43m [49m[43mupper[49m[38;5;241;43m=[39;49m[38;5;241;43m4.2[39;49m[43m)[49m [38;5;28;01mfor[39;00m pair [38;5;129;01min[39;00m pairs}
+
+[0;31mTypeError[0m: iterated_ewma() got an unexpected keyword argument 'lower'
 
