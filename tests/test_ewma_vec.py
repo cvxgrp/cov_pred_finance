@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from cvx.covariance.iterated_ewma import ewma
+from cvx.covariance.iterated_ewma_vec import ewma
 
 @pytest.fixture()
 def prices(prices):

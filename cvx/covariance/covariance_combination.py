@@ -48,7 +48,7 @@ def _nu(Ls, means):
     return {time:  L.T @ means[time] for time, L in Ls.items()}  
 
 # Declaring namedtuple()
-Result = namedtuple('Result', ['time', 'window', 'mean', 'Sigma', 'weights'])
+Result = namedtuple('Result', ['time', 'window', 'mean', 'covariance', 'weights'])
 
 
 class CovarianceCombination:
@@ -153,10 +153,11 @@ class CovarianceCombination:
 
         ### Conditioning
         mean = np.linalg.inv(L.T)@nu # / 100
+        mean = pd.Series(index=self.assets, data=mean)
         Sigma = np.linalg.inv(L @ L.T) # / 10000
         Sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=Sigma)
         weights = pd.Series(index=self.__Sigmas.keys(), data=self.__weight.value)
-        return Result(time=time, window=window, mean=mean, Sigma=Sigma, weights=weights)
+        return Result(time=time, window=window, mean=mean, covariance=Sigma, weights=weights)
 
     def solve_window(self, window=10, verbose=True, **kwargs):
         """

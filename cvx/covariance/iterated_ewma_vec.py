@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from collections import namedtuple
 
-from cvx.covariance.utils import _regularize_correlation
 
 
 ### This is vectorized iterated EWMA
@@ -96,19 +95,6 @@ def _get_realized_vars(returns):
         # sp.diags(diagonal_elements, 0)
     return volatilities
 
-
-# def _get_r_adj(returns, D_inv):
-#     """
-#     param D_inv: Txnxn numpy array of inverse of diagonal volatility matrices
-#     param param returns: array of returns to whiten for t=1,2,..., 
-
-#     returns: numpy array with r_tilde_hats as rows
-#     """
-#     T = returns.shape[0]
-#     n = returns.shape[1]
-#     returns = returns.reshape(T,n,1)
-#     return D_inv @ returns
-
 def _refactor_to_corr(Sigmas):
     """
     Returns correlation matrices from covariance matrices
@@ -119,15 +105,44 @@ def _refactor_to_corr(Sigmas):
     outer_V = np.array([np.outer(v, v) for v in V])
     return Sigmas / outer_V
 
+def _regularize_correlation(R, r):
+    """
+    param Rs: Txnxn numpy array of correlation matrices
+    param r: float, rank of low rank component 
 
-def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
+    returns: low rank + diag approximation of R\
+        R_hat = sum_i^r lambda_i q_i q_i' + E, where E is diagonal,
+        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues
+        and eigenvectors of R (the r first, in descending order)
+    """
+    eig_decomps = np.linalg.eigh(R)
+    Lamda = eig_decomps[0]
+    Q = eig_decomps[1]
+
+    # Sort eigenvalues in descending order
+    Lamda = Lamda[:, ::-1]
+    Q = Q[:, :, ::-1]
+
+    # Make Lamdas diagonal
+    Lamda = np.stack([np.diag(lamda) for lamda in Lamda])
+
+    # Get low rank component
+    Lamda_r = Lamda[:, :r, :r]
+    Q_r = Q[:, :, :r]
+    R_lo = Q_r @ Lamda_r @ Q_r.transpose(0, 2, 1)
+
+    # Get diagonal component 
+    D = np.stack([np.diag(np.diag(R[i, :, :]-R_lo[i, :, :])) for i in range(R.shape[0])])
+    
+    # Create low rank approximation
+    return R_lo + D
+
+def iterated_ewma(returns, vola_halflife, cov_halflife,\
     min_periods_vola=20, min_periods_cov=20, mean=False, low_rank=None, clip_at=None):
         """
         param returns: pandas dataframe with returns for each asset
         param vola_halflife: half life for volatility
         param cov_halflife: half life for covariance
-        param lower: lower bound for adjusted return cutoff
-        param upper: upper bound for adjusted return cutoff
         param min_preiods_vola: minimum number of periods to use for volatility
         ewma estimate
         param min_periods_cov: minimum number of periods to use for covariance
@@ -175,8 +190,8 @@ def iterated_ewma(returns, vola_halflife, cov_halflife, lower=None, upper=None,\
         returns_adj = (returns.values-returns_mean) * D_inv
 
         # Clip adjusted returns
-        if lower or upper:
-            returns_adj = returns_adj.clip(min=lower, max=upper)
+        if clip_at:
+            returns_adj = returns_adj.clip(min=-clip_at, max=clip_at)
 
         ### Correlation estimation
         if mean:
