@@ -2,7 +2,7 @@
 name = "cvxcovariance"
 version = "0.0.0"             # Don't touch, leave at 0.0.0
 description = "..."
-authors = ["Kasper", "Thomas"]
+authors = ["Kasper Johansson", "Thomas Schmelzer"]
 readme = "README.md"
 repository = "https://github.com/cvxgrp/cov_pred_finance"
 packages = [{include = "cvx"}]
