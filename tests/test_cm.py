@@ -74,14 +74,14 @@ def benchmark_weights(N, returns, Sigmas):
 
     return pd.DataFrame(ws, index=LLL.index, columns=[0,1,2])
 
-def my_weights(N, returns, Sigmas):
+def my_weights(returns, Sigmas):
 
     #Sigmas = {i: Sigmas[i] for i in Sigmas.keys()}
-    cm = CovarianceCombination(sigmas=Sigmas, returns=returns, window=10)
+    cm = CovarianceCombination(sigmas=Sigmas, returns=returns)
     #results = list(cm.solve(verbose=True))
 
     #covariance = {result.time: result.covariance for result in results}
-    weights = {result.time: result.weights for result in cm.solve(verbose=True)}
+    weights = {result.time: result.weights for result in cm.solve(window=10, verbose=True)}
 
     return pd.DataFrame(weights).T
 
@@ -95,7 +95,7 @@ def test_cm_predictor(returns):
     Sigmas = predictors(returns)
 
     ws_benchmark = benchmark_weights(N, returns, Sigmas)
-    ws_mine = my_weights(N, returns, Sigmas)
+    ws_mine = my_weights(returns, Sigmas)
 
 
     # Solutions are not very precise, hence atol=1e-3

@@ -41,10 +41,13 @@ def test_combine_all(combinator, returns, weights_test_combinator, Sigma_test_co
     """
     Tests the covariance combination function
     """
-    time = returns.index[-1]
-    results = combinator._solve(time=time)
+    r = None
 
-    pd.testing.assert_series_equal(results.weights, weights_test_combinator, check_names=False, atol=1e-6)
-    pd.testing.assert_frame_equal(results.covariance, Sigma_test_combinator, rtol=1e-2)
+    for results in combinator.solve(window=None):
+        assert returns.index[-1] == results.time
+        r = results
+
+    pd.testing.assert_series_equal(r.weights, weights_test_combinator, check_names=False, atol=1e-6)
+    pd.testing.assert_frame_equal(r.covariance, Sigma_test_combinator, rtol=1e-2)
     
 
