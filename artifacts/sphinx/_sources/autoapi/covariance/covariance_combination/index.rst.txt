@@ -30,18 +30,12 @@ Attributes
 
    
 
-.. py:class:: CovarianceCombination(sigmas, returns, means=None, window=None)
+.. py:class:: CovarianceCombination(sigmas, returns, means=None)
 
    .. py:method:: K(self)
       :property:
 
       Returns the number of expert predictors
-
-
-   .. py:method:: index(self)
-      :property:
-
-      Returns the index of the covariance combination problem, e.g. the timestamps
 
 
    .. py:method:: assets(self)
@@ -50,7 +44,7 @@ Attributes
       Returns the assets in the covariance combination problem
 
 
-   .. py:method:: solve(self, **kwargs)
+   .. py:method:: solve(self, window=None, **kwargs)
 
       Solves the covariance combination problem at a given time, i.e.,
       finds the prediction for the covariance matrix at 'time+1'
