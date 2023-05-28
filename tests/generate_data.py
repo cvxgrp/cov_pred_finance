@@ -16,8 +16,8 @@ Sigma.to_csv("resources/Sigma_iewma.csv")
 pairs = [(10, 10), (21, 21), (21, 63)]
 Sigmas = {f"{pair[0]}-{pair[1]}": iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=4.2) for pair in pairs}
 
-combinator = CovarianceCombination(Sigmas=Sigmas, returns=returns)
-results = combinator.solve(time=returns.index[-1], window=10000)
+combinator = CovarianceCombination(sigmas=Sigmas, returns=returns)
+results = combinator.solve(time=returns.index[-1])
 weights = results.weights
 print(weights)
 Sigma = results.covariance
