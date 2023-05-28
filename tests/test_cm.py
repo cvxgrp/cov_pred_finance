@@ -76,11 +76,11 @@ def benchmark_weights(N, returns, Sigmas):
 
 def my_weights(N, returns, Sigmas):
 
-    Sigmas = {i: Sigmas[i] for i in Sigmas.keys()}
-    cm = CovarianceCombination(Sigmas=Sigmas, returns=returns)
-    results = list(cm.solve_window(window=10, verbose=True))
+    #Sigmas = {i: Sigmas[i] for i in Sigmas.keys()}
+    cm = CovarianceCombination(sigmas=Sigmas, returns=returns, window=10)
+    results = list(cm.solve_window(verbose=True))
 
-    covariance = {result.time: result.covariance for result in results}
+    #covariance = {result.time: result.covariance for result in results}
     weights = {result.time: result.weights for result in results}
 
     return pd.DataFrame(weights).T
@@ -88,6 +88,9 @@ def my_weights(N, returns, Sigmas):
 
 
 def test_cm_predictor(returns):
+    """
+    Tests the covariance combination function
+    """
     N = 10
     Sigmas = predictors(returns)
 

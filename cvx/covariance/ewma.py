@@ -63,6 +63,7 @@ def regularize_covariance(Sigmas, r):
 
 def iterated_ewma(returns, vola_halflife, cov_halflife,\
     min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None):
+
     def scale_cov(vola, matrix):
         index = matrix.index
         columns = matrix.columns
@@ -75,6 +76,7 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
         cov = vola.reshape(-1,1) * matrix * vola.reshape(1,-1)
 
         return pd.DataFrame(cov, index=index, columns=columns)
+
     def scale_mean(vola, vec1, vec2):
         return vec1 + vola * vec2
 
@@ -123,6 +125,10 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
 
 
 def ewma_cov(data, halflife, min_periods=0):
+    """
+    param data: Txn pandas DataFrame of returns
+    param halflife: float, halflife of the EWMA
+    """
     for t, ewma in _general(data.values, times=data.index, halflife=halflife, fct=lambda x: np.outer(x,x),\
          min_periods=min_periods):
         if not np.isnan(ewma).all():
