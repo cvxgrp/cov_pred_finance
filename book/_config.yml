@@ -1,8 +1,8 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: cvxsimulator
-author: Thomas Schmelzer
+title: cvxcovariance
+author: Stanford University Convex Optimization Group
 only_build_toc_files: true
 
 execute:
@@ -27,7 +27,7 @@ sphinx:
     
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/cvxgrp/simulator
+  url: https://github.com/cvxgrp/cov_pred_finance
   path_to_book: book
   branch: main
 
