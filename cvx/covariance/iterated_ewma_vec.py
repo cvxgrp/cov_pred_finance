@@ -229,8 +229,11 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
             means = {times[i]: pd.Series(means[i], index = returns.columns) for i in range(len(times))}
             covariances = {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
+            # todo: bad style. Function should always return the same type
+            # here it returns a tuple
             return IEWMA(mean=means, covariance=covariances)
         else:
+            # here it returns a dictionary
             return {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
     
