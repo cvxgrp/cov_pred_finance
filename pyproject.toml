@@ -11,6 +11,7 @@ packages = [{include = "cvx"}]
 python = ">=3.8.0"
 pandas = "<2.0.0"
 cvxpy = "*"
+scipy = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.1.3"
