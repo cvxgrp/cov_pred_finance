@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def test_division():
     x = pd.Series(index=[1,2,3,4], data=[10,11,12,14])
     y = pd.Series(index=[3,4],data=[6,7])

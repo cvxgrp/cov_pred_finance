@@ -12,11 +12,34 @@ def _generator2frame(generator):
 
 
 def variance(returns, halflife, min_periods=0, clip_at=None):
+    """
+    Estimate variance from returns using an exponentially weighted moving average (EWMA)
+
+    param returns: 1 dim. numpy array of returns
+    param halflife: EWMA half life
+    param min_periods: minimum number of observations to start EWMA (optional)
+    param clip_at: clip y_last at  +- clip_at*EWMA (optional)
+    """
     for time, variance in ewma_mean(np.power(returns, 2), halflife=halflife, min_periods=min_periods, clip_at=clip_at):
         yield time, variance
 
+
 def volatility(returns, halflife, min_periods=0, clip_at=None):
-    return np.sqrt(_generator2frame(variance(returns, halflife, min_periods=min_periods, clip_at=clip_at)))
+    """
+    Estimate volatility from returns using an exponentially weighted moving average (EWMA)
+
+    param returns: 1 dim. numpy array of returns
+    param halflife: EWMA half life
+    param min_periods: minimum number of observations to start EWMA (optional)
+    param clip_at: clip y_last at  +- clip_at*EWMA (optional)
+    """
+    if clip_at:
+        clip_at_var = clip_at**2
+    else:
+        clip_at_var = None
+
+    return np.sqrt(_generator2frame(variance(returns, halflife, min_periods=min_periods, clip_at=clip_at_var)))
+
 
 def _regularize_correlation(R, r):
     """
@@ -80,26 +103,32 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
     def scale_mean(vola, vec1, vec2):
         return vec1 + vola * vec2
 
+    # compute the moving mean of the returns
     if mean:
         returns_mean = _generator2frame(ewma_mean(data=returns, halflife=vola_halflife, min_periods=0))
     else:
         returns_mean = 0.0*returns
-    if clip_at:
-        clip_at_var = clip_at**2
-    else:
-        clip_at_var = None
+
+    # prepare clipping constant for the variance
+    #if clip_at:
+    #    clip_at_var = clip_at**2
+    #else:
+    #    clip_at_var = None
+
+    # estimate the volatility, clip some returns before they enter the estimation
     vola = volatility(returns=returns-returns_mean, halflife=vola_halflife,\
-         min_periods=min_periods_vola, clip_at=clip_at_var)
+         min_periods=min_periods_vola, clip_at=clip_at)
 
-    if clip_at: # Clip returns
-        returns = returns.clip(returns_mean-clip_at*vola, returns_mean+clip_at*vola) 
-
+    # clip the returns
+    #if clip_at:
+    #    returns = returns.clip(returns_mean-clip_at*vola, returns_mean+clip_at*vola)
 
     # adj the returns
     if clip_at:
         adj = ((returns-returns_mean) / vola).clip(lower=-clip_at, upper=clip_at)
     else:
         adj = (returns-returns_mean) / vola
+
     # remove all the leading NaNs
     adj = adj.dropna(axis=0, how="all")
 
@@ -122,6 +151,10 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
 
         for t, matrix in ewma_cov(data=adj-adj_mean, halflife=cov_halflife, min_periods=min_periods_cov):
             yield IEWMA(time=t, mean=zero_mean, covariance=scale_cov(vola=vola.loc[t].values, matrix=matrix))
+
+
+def cov(**kwargs):
+    return {result.time: result.covariance for result in iterated_ewma(**kwargs)}
 
 
 def ewma_cov(data, halflife, min_periods=0):

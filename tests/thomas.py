@@ -1,17 +1,17 @@
 import pandas as pd
 
-from cvx.covariance.ewma import iterated_ewma
+from cvx.covariance.ewma import iterated_ewma, cov
 from cvx.covariance.covariance_combination import CovarianceCombination
 
 
 def f(returns, pairs, clip_at=None, window=10, **kwargs):
     # compute the covariance matrices, one time series for each pair
-    Sigmas = {f"{pair[0]}-{pair[1]}": {i.time: i.covariance for i in iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=clip_at)} for pair in pairs}
+    Sigmas = {f"{pair[0]}-{pair[1]}": cov(returns=returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=clip_at) for pair in pairs}
 
     # combination of covariance matrix valued time series
     combination = CovarianceCombination(sigmas=Sigmas, returns=returns, window=window)
 
-    for result in combination.solve_window(**kwargs):
+    for result in combination.solve(**kwargs):
         yield result
 
 if __name__ == '__main__':
@@ -25,24 +25,19 @@ if __name__ == '__main__':
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     # compute the covariance matrices, one time series for each pair
-    Sigmas = {pair: {i.time: i.covariance for i in iterated_ewma(returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=4.2)} for pair in pairs}
+    sigmas = {f"{pair[0]}-{pair[1]}": cov(returns=returns, vola_halflife=pair[0], cov_halflife=pair[1], clip_at=4.2) for pair in pairs}
 
     # combination of covariance matrix valued time series
-    combination = CovarianceCombination(sigmas=Sigmas, returns=returns)
+    combination = CovarianceCombination(sigmas=sigmas, returns=returns, window=10)
 
     # Here we just combine all available matrices in one optimization problem
-    for result in  combination.solve_window():
+    for result in combination.solve():
+        print(result)
+        print(dir(result))
         print(result.time)
-        #print(result.t_end)
         print(result.covariance)
         print(result.weights)
 
-    # Here we iterate through time in windows of constant length
-    #for result in combination.solve_window(solver=cvxpy.ECOS):
-    #    print(result.t_start)
-    #    print(result.t_end)
-    #    print(result.Sigma)
-    #    print(result.weights)
 
     # one function rule them all...
     for result in f(returns, pairs, window=10):

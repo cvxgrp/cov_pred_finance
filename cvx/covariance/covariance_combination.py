@@ -153,11 +153,16 @@ class CovarianceCombination:
         """
         return self.__returns.columns
 
-    def solve(self, time, **kwargs):
+    def solve(self, **kwargs):
         """
         Solves the covariance combination problem at a given time, i.e.,
         finds the prediction for the covariance matrix at 'time+1'
         """
+        for time in self.index:
+            yield self._solve(time=time, **kwargs)
+
+
+    def _solve(self, time, **kwargs):
         # Update parameters and solve problem
         self.__problem.A_param.value = self.__A[time]
         self.__problem.P_chol_param.value = self.__P_chol[time]
@@ -171,9 +176,9 @@ class CovarianceCombination:
         sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T))
         return Result(time=time, window=self.window, mean=mean, covariance=sigma, weights=weights)
 
-    def solve_window(self, **kwargs):
-        """
-        Solves the covariance combination problem for all time steps
-        """
-        for time in self.index:
-            yield self.solve(time, **kwargs)
+    #def solve_window(self, **kwargs):
+    #    """
+    #    Solves the covariance combination problem for all time steps
+    #    """
+    #    for time in self.index:
+    #        yield self.solve(time, **kwargs)

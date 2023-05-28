@@ -78,10 +78,10 @@ def my_weights(N, returns, Sigmas):
 
     #Sigmas = {i: Sigmas[i] for i in Sigmas.keys()}
     cm = CovarianceCombination(sigmas=Sigmas, returns=returns, window=10)
-    results = list(cm.solve_window(verbose=True))
+    #results = list(cm.solve(verbose=True))
 
     #covariance = {result.time: result.covariance for result in results}
-    weights = {result.time: result.weights for result in results}
+    weights = {result.time: result.weights for result in cm.solve(verbose=True)}
 
     return pd.DataFrame(weights).T
 
