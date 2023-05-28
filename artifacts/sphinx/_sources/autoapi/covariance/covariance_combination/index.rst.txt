@@ -50,15 +50,10 @@ Attributes
       Returns the assets in the covariance combination problem
 
 
-   .. py:method:: solve(self, time, **kwargs)
+   .. py:method:: solve(self, **kwargs)
 
       Solves the covariance combination problem at a given time, i.e.,
       finds the prediction for the covariance matrix at 'time+1'
-
-
-   .. py:method:: solve_window(self, **kwargs)
-
-      Solves the covariance combination problem for all time steps
 
 
 

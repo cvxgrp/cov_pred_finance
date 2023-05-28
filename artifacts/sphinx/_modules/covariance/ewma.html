@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.ewma &mdash; cvxcovariance Documentation</title>
+  <title>covariance.ewma &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -28,7 +28,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> cvxcovariance
+            <a href="../../index.html" class="icon icon-home"> cvxsimulator
             <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
@@ -52,7 +52,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">cvxcovariance</a>
+          <a href="../../index.html">cvxsimulator</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,11 +85,34 @@
 
 
 <div class="viewcode-block" id="variance"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.variance">[docs]</a><span class="k">def</span> <span class="nf">variance</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate variance from returns using an exponentially weighted moving average (EWMA)</span>
+
+<span class="sd">    param returns: 1 dim. numpy array of returns</span>
+<span class="sd">    param halflife: EWMA half life</span>
+<span class="sd">    param min_periods: minimum number of observations to start EWMA (optional)</span>
+<span class="sd">    param clip_at: clip y_last at  +- clip_at*EWMA (optional)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">variance</span> <span class="ow">in</span> <span class="n">ewma_mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">halflife</span><span class="o">=</span><span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">):</span>
         <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">variance</span></div>
 
+
 <div class="viewcode-block" id="volatility"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.volatility">[docs]</a><span class="k">def</span> <span class="nf">volatility</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">_generator2frame</span><span class="p">(</span><span class="n">variance</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">)))</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate volatility from returns using an exponentially weighted moving average (EWMA)</span>
+
+<span class="sd">    param returns: 1 dim. numpy array of returns</span>
+<span class="sd">    param halflife: EWMA half life</span>
+<span class="sd">    param min_periods: minimum number of observations to start EWMA (optional)</span>
+<span class="sd">    param clip_at: clip y_last at  +- clip_at*EWMA (optional)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
+        <span class="n">clip_at_var</span> <span class="o">=</span> <span class="n">clip_at</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">clip_at_var</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">_generator2frame</span><span class="p">(</span><span class="n">variance</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at_var</span><span class="p">)))</span></div>
+
 
 <span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -153,26 +176,32 @@
     <span class="k">def</span> <span class="nf">scale_mean</span><span class="p">(</span><span class="n">vola</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">vec1</span> <span class="o">+</span> <span class="n">vola</span> <span class="o">*</span> <span class="n">vec2</span>
 
+    <span class="c1"># compute the moving mean of the returns</span>
     <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
         <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">_generator2frame</span><span class="p">(</span><span class="n">ewma_mean</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">returns_mean</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">*</span><span class="n">returns</span>
-    <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
-        <span class="n">clip_at_var</span> <span class="o">=</span> <span class="n">clip_at</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">clip_at_var</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># prepare clipping constant for the variance</span>
+    <span class="c1">#if clip_at:</span>
+    <span class="c1">#    clip_at_var = clip_at**2</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    clip_at_var = None</span>
+
+    <span class="c1"># estimate the volatility, clip some returns before they enter the estimation</span>
     <span class="n">vola</span> <span class="o">=</span> <span class="n">volatility</span><span class="p">(</span><span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">,</span>\
-         <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods_vola</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at_var</span><span class="p">)</span>
+         <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods_vola</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span> <span class="c1"># Clip returns</span>
-        <span class="n">returns</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">returns_mean</span><span class="o">-</span><span class="n">clip_at</span><span class="o">*</span><span class="n">vola</span><span class="p">,</span> <span class="n">returns_mean</span><span class="o">+</span><span class="n">clip_at</span><span class="o">*</span><span class="n">vola</span><span class="p">)</span> 
-
+    <span class="c1"># clip the returns</span>
+    <span class="c1">#if clip_at:</span>
+    <span class="c1">#    returns = returns.clip(returns_mean-clip_at*vola, returns_mean+clip_at*vola)</span>
 
     <span class="c1"># adj the returns</span>
     <span class="k">if</span> <span class="n">clip_at</span><span class="p">:</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="p">((</span><span class="n">returns</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">vola</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lower</span><span class="o">=-</span><span class="n">clip_at</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">clip_at</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">returns</span><span class="o">-</span><span class="n">returns_mean</span><span class="p">)</span> <span class="o">/</span> <span class="n">vola</span>
+
     <span class="c1"># remove all the leading NaNs</span>
     <span class="n">adj</span> <span class="o">=</span> <span class="n">adj</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 
@@ -195,6 +224,10 @@
 
         <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">ewma_cov</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">adj</span><span class="o">-</span><span class="n">adj_mean</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods_cov</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">IEWMA</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">zero_mean</span><span class="p">,</span> <span class="n">covariance</span><span class="o">=</span><span class="n">scale_cov</span><span class="p">(</span><span class="n">vola</span><span class="o">=</span><span class="n">vola</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">matrix</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="cov"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.cov">[docs]</a><span class="k">def</span> <span class="nf">cov</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">time</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">covariance</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">iterated_ewma</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)}</span></div>
 
 
 <div class="viewcode-block" id="ewma_cov"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.ewma_cov">[docs]</a><span class="k">def</span> <span class="nf">ewma_cov</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>

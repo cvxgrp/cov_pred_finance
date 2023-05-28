@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.ewma &mdash; cvxcovariance Documentation</title>
+  <title>covariance.ewma &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> cvxcovariance
+            <a href="../../../index.html" class="icon icon-home"> cvxsimulator
             <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
@@ -66,7 +66,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">cvxcovariance</a>
+          <a href="../../../index.html">cvxsimulator</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -99,10 +99,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.variance" title="covariance.ewma.variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variance</span></code></a>(returns, halflife, min_periods=0, clip_at=None)</p></td>
-<td><p></p></td>
+<td><p>Estimate variance from returns using an exponentially weighted moving average (EWMA)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.volatility" title="covariance.ewma.volatility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volatility</span></code></a>(returns, halflife, min_periods=0, clip_at=None)</p></td>
-<td><p></p></td>
+<td><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.regularize_covariance" title="covariance.ewma.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(Sigmas, r)</p></td>
 <td><p>param Sigmas: dictionary of covariance matrices</p></td>
@@ -110,10 +110,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.iterated_ewma" title="covariance.ewma.iterated_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterated_ewma</span></code></a>(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.ewma_cov" title="covariance.ewma.ewma_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_cov</span></code></a>(data, halflife, min_periods=0)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.cov" title="covariance.ewma.cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.ewma_cov" title="covariance.ewma.ewma_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_cov</span></code></a>(data, halflife, min_periods=0)</p></td>
 <td><p>param data: Txn pandas DataFrame of returns</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.ewma_mean" title="covariance.ewma.ewma_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_mean</span></code></a>(data, halflife, min_periods=0, clip_at=None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.ewma_mean" title="covariance.ewma.ewma_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_mean</span></code></a>(data, halflife, min_periods=0, clip_at=None)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -140,12 +143,22 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.variance">
 <span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">variance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#variance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.variance" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Estimate variance from returns using an exponentially weighted moving average (EWMA)</p>
+<p>param returns: 1 dim. numpy array of returns
+param halflife: EWMA half life
+param min_periods: minimum number of observations to start EWMA (optional)
+param clip_at: clip y_last at  +- clip_at*EWMA (optional)</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.volatility">
 <span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">volatility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#volatility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.volatility" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p>
+<p>param returns: 1 dim. numpy array of returns
+param halflife: EWMA half life
+param min_periods: minimum number of observations to start EWMA (optional)
+param clip_at: clip y_last at  +- clip_at*EWMA (optional)</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.regularize_covariance">
@@ -159,6 +172,11 @@ regularization.” of Section 7.2 in the paper “A Simple Method for Predicting
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.iterated_ewma">
 <span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">iterated_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vola_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#iterated_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.iterated_ewma" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.ewma.cov">
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">cov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#cov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.cov" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
