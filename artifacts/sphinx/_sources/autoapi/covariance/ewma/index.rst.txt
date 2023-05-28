@@ -55,6 +55,9 @@ Attributes
 
 .. py:function:: ewma_cov(data, halflife, min_periods=0)
 
+   param data: Txn pandas DataFrame of returns
+   param halflife: float, halflife of the EWMA
+
 
 .. py:function:: ewma_mean(data, halflife, min_periods=0, clip_at=None)
 

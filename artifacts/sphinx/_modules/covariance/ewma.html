@@ -136,6 +136,7 @@
 
 <div class="viewcode-block" id="iterated_ewma"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.iterated_ewma">[docs]</a><span class="k">def</span> <span class="nf">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">vola_halflife</span><span class="p">,</span> <span class="n">cov_halflife</span><span class="p">,</span>\
     <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
     <span class="k">def</span> <span class="nf">scale_cov</span><span class="p">(</span><span class="n">vola</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">index</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">columns</span>
@@ -148,6 +149,7 @@
         <span class="n">cov</span> <span class="o">=</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">matrix</span> <span class="o">*</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">scale_mean</span><span class="p">(</span><span class="n">vola</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">vec1</span> <span class="o">+</span> <span class="n">vola</span> <span class="o">*</span> <span class="n">vec2</span>
 
@@ -196,6 +198,10 @@
 
 
 <div class="viewcode-block" id="ewma_cov"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.ewma_cov">[docs]</a><span class="k">def</span> <span class="nf">ewma_cov</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param data: Txn pandas DataFrame of returns</span>
+<span class="sd">    param halflife: float, halflife of the EWMA</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">ewma</span> <span class="ow">in</span> <span class="n">_general</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">halflife</span><span class="p">,</span> <span class="n">fct</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">),</span>\
          <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ewma</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>

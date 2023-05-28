@@ -111,7 +111,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.ewma_cov" title="covariance.ewma.ewma_cov"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_cov</span></code></a>(data, halflife, min_periods=0)</p></td>
-<td><p></p></td>
+<td><p>param data: Txn pandas DataFrame of returns</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.ewma_mean" title="covariance.ewma.ewma_mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ewma_mean</span></code></a>(data, halflife, min_periods=0, clip_at=None)</p></td>
 <td><p></p></td>
@@ -164,7 +164,9 @@ regularization.” of Section 7.2 in the paper “A Simple Method for Predicting
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.ewma_cov">
 <span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">ewma_cov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#ewma_cov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.ewma_cov" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>param data: Txn pandas DataFrame of returns
+param halflife: float, halflife of the EWMA</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.ewma_mean">
