@@ -25,3 +25,5 @@ pandas 1.5.3 Powerful data structures for data analysis, time series, and statis
 ├── python-dateutil >=2.8.1
 │   └── six >=1.5 
 └── pytz >=2020.1
+scipy 1.9.3 Fundamental algorithms for scientific computing in Python
+└── numpy >=1.18.5,<1.26.0
