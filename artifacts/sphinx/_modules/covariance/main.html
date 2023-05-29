@@ -71,25 +71,50 @@
            <div itemprop="articleBody">
              
   <h1>Source code for covariance.main</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">cvx.covariance.covariance_combination</span> <span class="kn">import</span> <span class="n">CovarianceCombination</span>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">from</span> <span class="nn">cvx.covariance.covariance_combination</span> <span class="kn">import</span> <span class="n">CovarianceCombination</span>
 <span class="kn">from</span> <span class="nn">cvx.covariance.ewma</span> <span class="kn">import</span> <span class="n">iterated_ewma</span>
 
 
+<span class="k">def</span> <span class="nf">_map_nested_dicts</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively applies a function to a nested dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_map_nested_dicts</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ob</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="covariance_estimator"><a class="viewcode-back" href="../../autoapi/covariance/main/index.html#covariance.main.covariance_estimator">[docs]</a><span class="k">def</span> <span class="nf">covariance_estimator</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate a series of covariance matrices using the iterated EWMA method</span>
+
+<span class="sd">    param returns: Frame of returns</span>
+<span class="sd">    param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],</span>
+<span class="sd">                 pair[0] is the half life for volatility estimation</span>
+<span class="sd">                 pair[1] is the half life for covariance estimation</span>
+<span class="sd">    param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)</span>
+<span class="sd">    param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)</span>
+<span class="sd">    param clip_at: clip volatility adjusted returns at +- clip_at (optional)</span>
+<span class="sd">    param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)</span>
+
+<span class="sd">    return: Yields tuples with time, mean, covariance matrix, weights</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># compute the covariance matrices, one time series for each pair</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span>
                  <span class="p">{</span><span class="n">result</span><span class="o">.</span><span class="n">time</span><span class="p">:</span> <span class="n">result</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">iterated_ewma</span><span class="p">(</span><span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span>
-                                                                 <span class="n">vola_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                                                 <span class="n">cov_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                                                 <span class="n">min_periods_vola</span><span class="o">=</span><span class="n">min_periods_vola</span><span class="p">,</span>
-                                                                 <span class="n">min_periods_cov</span><span class="o">=</span><span class="n">min_periods_cov</span><span class="p">,</span>
-                                                                 <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">,</span>
-                                                                 <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">)}</span>
+                                                                  <span class="n">vola_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                                  <span class="n">cov_halflife</span><span class="o">=</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                                                  <span class="n">min_periods_vola</span><span class="o">=</span><span class="n">min_periods_vola</span><span class="p">,</span>
+                                                                  <span class="n">min_periods_cov</span><span class="o">=</span><span class="n">min_periods_cov</span><span class="p">,</span>
+                                                                  <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">,</span>
+                                                                  <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">)}</span>
               <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">}</span>
 
-    <span class="n">sigmas</span> <span class="o">=</span> <span class="p">{</span><span class="n">pair</span><span class="p">:</span> <span class="p">{</span><span class="n">time</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">covariance</span> <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
-    <span class="n">means</span> <span class="o">=</span> <span class="p">{</span><span class="n">pair</span><span class="p">:</span> <span class="p">{</span><span class="n">time</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">mean</span> <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">_map_nested_dicts</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
+    <span class="n">means</span> <span class="o">=</span> <span class="n">_map_nested_dicts</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">result</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
 
     <span class="c1"># combination of covariance matrix valued time series</span>
     <span class="n">combination</span> <span class="o">=</span> <span class="n">CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">means</span><span class="p">)</span>

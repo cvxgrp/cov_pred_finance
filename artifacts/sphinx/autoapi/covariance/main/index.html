@@ -101,14 +101,26 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.main.covariance_estimator" title="covariance.main.covariance_estimator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">covariance_estimator</span></code></a>(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, window=10, mean=False, **kwargs)</p></td>
-<td><p></p></td>
+<td><p>Estimate a series of covariance matrices using the iterated EWMA method</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.main.covariance_estimator">
 <span class="sig-prename descclassname"><span class="pre">covariance.main.</span></span><span class="sig-name descname"><span class="pre">covariance_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/main.html#covariance_estimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.main.covariance_estimator" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Estimate a series of covariance matrices using the iterated EWMA method</p>
+<p>param returns: Frame of returns
+param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],</p>
+<blockquote>
+<div><p>pair[0] is the half life for volatility estimation
+pair[1] is the half life for covariance estimation</p>
+</div></blockquote>
+<p>param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
+param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
+param clip_at: clip volatility adjusted returns at +- clip_at (optional)
+param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)</p>
+<p>return: Yields tuples with time, mean, covariance matrix, weights</p>
+</dd></dl>
 
 </section>
 </section>

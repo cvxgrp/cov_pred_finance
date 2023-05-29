@@ -145,8 +145,8 @@
         <span class="k">return</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cvx</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1">#return self.weights</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -240,7 +240,8 @@
 <span class="sd">        Solves the covariance combination problem at a given time t</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># solve problem</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">weights</span>
 
         <span class="c1"># Get non-shifted L</span>
         <span class="n">L</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">*</span> <span class="n">weights</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>    <span class="c1"># prediction for time+1</span>
