@@ -1,5 +1,3 @@
-import collections
-
 from cvx.covariance.covariance_combination import CovarianceCombination
 from cvx.covariance.ewma import iterated_ewma
 
@@ -8,7 +6,7 @@ def _map_nested_dicts(ob, func):
     """
     Recursively applies a function to a nested dictionary
     """
-    if isinstance(ob, collections.Mapping):
+    if isinstance(ob, dict):
         return {k: _map_nested_dicts(v, func) for k, v in ob.items()}
     else:
         return func(ob)
