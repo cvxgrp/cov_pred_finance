@@ -127,6 +127,8 @@ class CovarianceCombination:
         """
         Solves the covariance combination problem at a given time, i.e.,
         finds the prediction for the covariance matrix at 'time+1'
+
+        param window: number of previous time steps to use in the covariance combination
         """
         # If window is None, use all available data; cap window at length of data
         window = window or len(self.__Ls_shifted)
@@ -158,6 +160,9 @@ class CovarianceCombination:
 
 
     def _solve(self, time, problem, **kwargs):
+        """
+        Solves the covariance combination problem at a given time t
+        """
         # solve problem
         weights = problem.solve(**kwargs)
 

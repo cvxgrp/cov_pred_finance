@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import cvxpy as cp
 
-from cvx.covariance.ewma import ewma_cov
+from cvx.covariance.ewma import _ewma_cov
 from cvx.covariance.covariance_combination import CovarianceCombination
 
 
@@ -28,7 +28,7 @@ def predictors(returns):
     min_periods = 20
     Sigmas = dict()
     for k, cov in enumerate([10, 21, 63]):
-        Sigmas[k] = pd.Series(dict(ewma_cov(returns, halflife=cov, min_periods=min_periods)))#.shift(1).dropna()
+        Sigmas[k] = pd.Series(dict(_ewma_cov(returns, halflife=cov, min_periods=min_periods)))#.shift(1).dropna()
 
     return Sigmas
 
