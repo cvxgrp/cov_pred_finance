@@ -138,8 +138,8 @@ def _ewma_mean(data, halflife, min_periods=0, clip_at=None):
 
 def _general(y,
              times,
-             com: Union[float, None] = None,
-             span: Union[float, None] = None,
+             #com: Union[float, None] = None,
+             #span: Union[float, None] = None,
              halflife: Union[float, TimedeltaConvertibleTypes, None] = None,
              alpha: Union[float, None] = None,
              fct=lambda x: x,
@@ -162,11 +162,11 @@ def _general(y,
 
         return times[k], _ewma
 
-    if com:
-        alpha = 1 / (1 + com)
+    #if com:
+    #    alpha = 1 / (1 + com)
 
-    if span:
-        alpha = 2 / (span + 1)
+    #if span:
+    #    alpha = 2 / (span + 1)
 
     if halflife:
         alpha = 1 - np.exp(-np.log(2)/halflife)

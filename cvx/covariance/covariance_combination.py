@@ -125,6 +125,9 @@ class CovarianceCombination:
 
     def solve(self, window=None, **kwargs):
         """
+        The size of the window is crucial to specify the size of the parameters
+        for the cvxpy problem. Hence those computations are not in the __init__ method
+
         Solves the covariance combination problem at a given time, i.e.,
         finds the prediction for the covariance matrix at 'time+1'
 
