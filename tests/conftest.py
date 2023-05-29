@@ -21,11 +21,6 @@ def prices(resource_dir):
 
 
 @pytest.fixture()
-def Sigma_test_iewma(resource_dir):
-    return pd.read_csv(resource_dir / "Sigma_iewma.csv", index_col=0, header=0)
-
-
-@pytest.fixture()
 def weights_test_combinator(resource_dir):
     return pd.read_csv(
         resource_dir / "weights_combinator.csv", index_col=0, header=None
