@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.covariance_combination &mdash; cvxcovariance Documentation</title>
+  <title>covariance.covariance_combination &mdash; cvxsimulator Documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> cvxcovariance
+            <a href="../../../index.html" class="icon icon-home"> cvxsimulator
             <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
@@ -52,8 +52,6 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../iterated_ewma_vec/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.iterated_ewma_vec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../regularization/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -68,7 +66,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">cvxcovariance</a>
+          <a href="../../../index.html">cvxsimulator</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -126,27 +124,33 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.covariance_combination.</span></span><span class="sig-name descname"><span class="pre">CovarianceCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.covariance_combination.</span></span><span class="sig-name descname"><span class="pre">CovarianceCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination" title="Permalink to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.K">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">K</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.K"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.K" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the number of expert predictors</p>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.index" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.assets">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.assets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.assets" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the assets in the covariance combination problem</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.solve" title="Permalink to this definition"></a></dt>
-<dd><p>The size of the window is crucial to specify the size of the parameters
-for the cvxpy problem. Hence those computations are not in the __init__ method</p>
-<p>Solves the covariance combination problem at a given time, i.e.,
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.solve" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the covariance combination problem at a given time, i.e.,
 finds the prediction for the covariance matrix at ‘time+1’</p>
-<p>param window: number of previous time steps to use in the covariance combination</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.solve_window">
+<span class="sig-name descname"><span class="pre">solve_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.solve_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.solve_window" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the covariance combination problem for all timesteps</p>
 </dd></dl>
 
 </dd></dl>
