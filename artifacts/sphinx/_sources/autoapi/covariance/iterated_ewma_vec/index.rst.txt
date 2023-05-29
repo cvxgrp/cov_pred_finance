@@ -1,6 +1,0 @@
-:py:mod:`covariance.iterated_ewma_vec`
-======================================
-
-.. py:module:: covariance.iterated_ewma_vec
-
-

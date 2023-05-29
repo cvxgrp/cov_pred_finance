@@ -77,11 +77,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sc</span>
 
-<div class="viewcode-block" id="LowRank"><a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.LowRank">[docs]</a><span class="n">LowRank</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;LowRank&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Loading&#39;</span><span class="p">,</span> <span class="s1">&#39;Cov&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;Approximation&#39;</span><span class="p">])</span></div>
+<div class="viewcode-block" id="LowRank"><a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.LowRank">[docs]</a><span class="n">LowRank</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;LowRank&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Loading&quot;</span><span class="p">,</span> <span class="s2">&quot;Cov&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;Approximation&quot;</span><span class="p">])</span></div>
+
 
 <span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    param Rs: Txnxn numpy array of correlation matrices</span>
+<span class="sd">    param Rs: nxn numpy array of correlation matrices</span>
 <span class="sd">    param r: float, rank of low rank component</span>
 
 <span class="sd">    returns: low rank + diag approximation of R\</span>
@@ -93,7 +94,7 @@
     <span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># ascending order of the largest r eigenvalues</span>
-    <span class="n">lamda</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">subset_by_index</span><span class="o">=</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="n">r</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">lamda</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">subset_by_index</span><span class="o">=</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
     <span class="c1"># Sort eigenvalues in descending order</span>
     <span class="n">lamda</span> <span class="o">=</span> <span class="n">lamda</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -109,7 +110,7 @@
 
     <span class="c1"># Create low rank approximation</span>
     <span class="k">return</span> <span class="n">LowRank</span><span class="p">(</span><span class="n">Loading</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">Cov</span><span class="o">=</span><span class="n">lamda</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">Approximation</span><span class="o">=</span><span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span><span class="p">)</span>
-    <span class="c1">#return R_lo + D</span>
+    <span class="c1"># return R_lo + D</span>
 
 
 <div class="viewcode-block" id="regularize_covariance"><a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.regularize_covariance">[docs]</a><span class="k">def</span> <span class="nf">regularize_covariance</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
@@ -125,7 +126,7 @@
         <span class="n">R</span> <span class="o">=</span> <span class="n">sigma</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">vola</span><span class="p">,</span> <span class="n">vola</span><span class="p">)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
         <span class="c1"># todo: requires some further work</span>
-        <span class="n">cov</span> <span class="o">=</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">Approximation</span> <span class="o">*</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">Approximation</span> <span class="o">*</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span></div>
 </pre></div>
 

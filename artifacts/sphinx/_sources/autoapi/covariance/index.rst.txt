@@ -12,7 +12,6 @@ Submodules
 
    covariance_combination/index.rst
    ewma/index.rst
-   iterated_ewma_vec/index.rst
    main/index.rst
    regularization/index.rst
 
