@@ -32,7 +32,6 @@ from cvx.covariance.ewma import center, clip
 #             yield t, mean_vector
 
 
-
 # @pytest.mark.parametrize("halflife", [1, 2, 4, 8, 16, 32, 64])
 # def test_ewma_cov(prices, halflife):
 #     """
@@ -47,7 +46,6 @@ from cvx.covariance.ewma import center, clip
 #
 #     for time in d1.keys():
 #         pd.testing.assert_frame_equal(d1[time], d2[time], rtol=1e-10, atol=1e-5)
-
 
 
 # @pytest.mark.parametrize("halflife", [1, 2, 4, 8, 16, 32, 64])
@@ -68,11 +66,9 @@ from cvx.covariance.ewma import center, clip
 #     pd.testing.assert_series_equal(d1, d2, rtol=1e-10, atol=1e-5)
 
 
-
-
 def test_center_inactive():
     # Test case 1
-    returns = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+    returns = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     halflife = 1
     min_periods = 0
     mean_adj = False
@@ -84,11 +80,13 @@ def test_center_inactive():
 
 def test_center_active():
     # Test case 2
-    returns = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+    returns = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
     halflife = 1
     min_periods = 0
     mean_adj = True
-    expected_mean = pd.DataFrame({'a': [1.0, 1.666667, 2.428571], 'b': [4.0, 4.666667, 5.4285715]})
+    expected_mean = pd.DataFrame(
+        {"a": [1.0, 1.666667, 2.428571], "b": [4.0, 4.666667, 5.4285715]}
+    )
     expected_centered_returns = returns.sub(expected_mean)
 
     centered_returns, mean = center(returns, halflife, min_periods, mean_adj)
@@ -98,16 +96,16 @@ def test_center_active():
 
 def test_clip_1():
     # Test case 1
-    data = pd.DataFrame({'a': [1, 2, 3, -4], 'b': [4, -5, 6, 7]})
+    data = pd.DataFrame({"a": [1, 2, 3, -4], "b": [4, -5, 6, 7]})
     clip_at = 5
-    expected_data = pd.DataFrame({'a': [1, 2, 3, -4], 'b': [4, -5, 5, 5]})
+    expected_data = pd.DataFrame({"a": [1, 2, 3, -4], "b": [4, -5, 5, 5]})
     clipped_data = clip(data, clip_at)
     assert clipped_data.equals(expected_data)
 
 
 def test_clip_2():
     # Test case 2
-    data = pd.DataFrame(np.random.randn(10, 5), columns=['a', 'b', 'c', 'd', 'e'])
+    data = pd.DataFrame(np.random.randn(10, 5), columns=["a", "b", "c", "d", "e"])
     clip_at = None
     expected_data = data
     clipped_data = clip(data, clip_at)

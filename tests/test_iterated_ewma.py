@@ -19,4 +19,3 @@
 #     Sigma_hat = Sigmas[returns.index[-1]]
 #
 #     pd.testing.assert_frame_equal(Sigma_hat, Sigma_test_iewma)
-

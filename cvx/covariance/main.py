@@ -12,7 +12,16 @@ def _map_nested_dicts(ob, func):
         return func(ob)
 
 
-def covariance_estimator(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, window=10, mean=False, **kwargs):
+def covariance_estimator(
+    returns,
+    pairs,
+    min_periods_vola=20,
+    min_periods_cov=20,
+    clip_at=None,
+    window=10,
+    mean=False,
+    **kwargs,
+):
     """
     Estimate a series of covariance matrices using the iterated EWMA method
 
@@ -28,15 +37,21 @@ def covariance_estimator(returns, pairs, min_periods_vola=20, min_periods_cov=20
     return: Yields tuples with time, mean, covariance matrix, weights
     """
     # compute the covariance matrices, one time series for each pair
-    results = {f"{pair[0]}-{pair[1]}":
-                 {result.time: result for result in iterated_ewma(returns=returns,
-                                                                  vola_halflife=pair[0],
-                                                                  cov_halflife=pair[1],
-                                                                  min_periods_vola=min_periods_vola,
-                                                                  min_periods_cov=min_periods_cov,
-                                                                  clip_at=clip_at,
-                                                                  mean=mean)}
-              for pair in pairs}
+    results = {
+        f"{pair[0]}-{pair[1]}": {
+            result.time: result
+            for result in iterated_ewma(
+                returns=returns,
+                vola_halflife=pair[0],
+                cov_halflife=pair[1],
+                min_periods_vola=min_periods_vola,
+                min_periods_cov=min_periods_cov,
+                clip_at=clip_at,
+                mean=mean,
+            )
+        }
+        for pair in pairs
+    }
 
     sigmas = _map_nested_dicts(results, lambda result: result.covariance)
     means = _map_nested_dicts(results, lambda result: result.mean)

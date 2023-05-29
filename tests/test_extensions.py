@@ -53,4 +53,3 @@
 #
 #     _evaluate_nonzero_mean(iewma1, iewma2)
 #
-

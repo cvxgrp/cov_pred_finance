@@ -4,11 +4,12 @@ import pandas as pd
 import numpy as np
 import scipy as sc
 
-LowRank = namedtuple('LowRank', ['Loading', 'Cov', 'D', 'Approximation'])
+LowRank = namedtuple("LowRank", ["Loading", "Cov", "D", "Approximation"])
+
 
 def _regularize_correlation(R, r):
     """
-    param Rs: Txnxn numpy array of correlation matrices
+    param Rs: nxn numpy array of correlation matrices
     param r: float, rank of low rank component
 
     returns: low rank + diag approximation of R\
@@ -20,7 +21,7 @@ def _regularize_correlation(R, r):
     n = R.shape[0]
 
     # ascending order of the largest r eigenvalues
-    lamda, Q = sc.linalg.eigh(a=R, subset_by_index=[n-r, n-1])
+    lamda, Q = sc.linalg.eigh(a=R, subset_by_index=[n - r, n - 1])
 
     # Sort eigenvalues in descending order
     lamda = lamda[::-1]
@@ -36,7 +37,7 @@ def _regularize_correlation(R, r):
 
     # Create low rank approximation
     return LowRank(Loading=Q, Cov=lamda, D=D, Approximation=R_lo + D)
-    #return R_lo + D
+    # return R_lo + D
 
 
 def regularize_covariance(sigmas, r):
@@ -52,5 +53,5 @@ def regularize_covariance(sigmas, r):
         R = sigma / np.outer(vola, vola)
         R = _regularize_correlation(R, r)
         # todo: requires some further work
-        cov = vola.reshape(-1,1) * R.Approximation * vola.reshape(1,-1)
+        cov = vola.reshape(-1, 1) * R.Approximation * vola.reshape(1, -1)
         yield time, pd.DataFrame(cov, index=sigma.columns, columns=sigma.columns)
