@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.regularization &mdash; cvxcovariance Documentation</title>
+  <title>covariance.main &mdash; cvxcovariance Documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
@@ -22,7 +22,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="prev" title="covariance.main" href="../main/index.html" /> 
+    <link rel="next" title="covariance.regularization" href="../regularization/index.html" />
+    <link rel="prev" title="covariance.iterated_ewma_vec" href="../iterated_ewma_vec/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,8 +52,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../covariance_combination/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../iterated_ewma_vec/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.iterated_ewma_vec</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../regularization/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -77,9 +78,9 @@
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">API Reference</a> &raquo;</li>
           <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a> &raquo;</li>
-      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></li>
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/autoapi/covariance/regularization/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/autoapi/covariance/main/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -87,8 +88,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-covariance.regularization">
-<span id="covariance-regularization"></span><h1><a class="reference internal" href="#module-covariance.regularization" title="covariance.regularization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a><a class="headerlink" href="#module-covariance.regularization" title="Permalink to this heading"></a></h1>
+  <section id="module-covariance.main">
+<span id="covariance-main"></span><h1><a class="reference internal" href="#module-covariance.main" title="covariance.main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></a><a class="headerlink" href="#module-covariance.main" title="Permalink to this heading"></a></h1>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
 <section id="functions">
@@ -99,38 +100,15 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.regularize_covariance" title="covariance.regularization.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(sigmas, r)</p></td>
-<td><p>param Sigmas: dictionary of covariance matrices</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading"></a></h3>
-<table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.LowRank" title="covariance.regularization.LowRank"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRank</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.main.covariance_estimator" title="covariance.main.covariance_estimator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">covariance_estimator</span></code></a>(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, window=10, mean=False, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py data">
-<dt class="sig sig-object py" id="covariance.regularization.LowRank">
-<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRank</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py function">
-<dt class="sig sig-object py" id="covariance.regularization.regularize_covariance">
-<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">regularize_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#regularize_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.regularize_covariance" title="Permalink to this definition"></a></dt>
-<dd><p>param Sigmas: dictionary of covariance matrices
-param r: float, rank of low rank component</p>
-<p>returns: regularized covariance matrices according to “Factor form
-regularization.” of Section 7.2 in the paper “A Simple Method for Predicting Covariance Matrices of Financial Returns”</p>
-</dd></dl>
+<dt class="sig sig-object py" id="covariance.main.covariance_estimator">
+<span class="sig-prename descclassname"><span class="pre">covariance.main.</span></span><span class="sig-name descname"><span class="pre">covariance_estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/main.html#covariance_estimator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.main.covariance_estimator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 </section>
@@ -140,7 +118,8 @@ regularization.” of Section 7.2 in the paper “A Simple Method for Predicting
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../main/index.html" class="btn btn-neutral float-left" title="covariance.main" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../iterated_ewma_vec/index.html" class="btn btn-neutral float-left" title="covariance.iterated_ewma_vec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../regularization/index.html" class="btn btn-neutral float-right" title="covariance.regularization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

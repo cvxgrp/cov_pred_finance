@@ -1,0 +1,22 @@
+:py:mod:`covariance.main`
+=========================
+
+.. py:module:: covariance.main
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.main.covariance_estimator
+
+
+
+.. py:function:: covariance_estimator(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, window=10, mean=False, **kwargs)
+
+

@@ -200,6 +200,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Solves the covariance combination problem at a given time, i.e.,</span>
 <span class="sd">        finds the prediction for the covariance matrix at &#39;time+1&#39;</span>
+
+<span class="sd">        param window: number of previous time steps to use in the covariance combination</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If window is None, use all available data; cap window at length of data</span>
         <span class="n">window</span> <span class="o">=</span> <span class="n">window</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span><span class="p">)</span>
@@ -231,6 +233,9 @@
 
 
     <span class="k">def</span> <span class="nf">_solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solves the covariance combination problem at a given time t</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># solve problem</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 

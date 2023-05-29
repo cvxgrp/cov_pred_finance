@@ -13,13 +13,10 @@ Functions
 
 .. autoapisummary::
 
-   covariance.ewma.variance
    covariance.ewma.volatility
-   covariance.ewma.regularize_covariance
+   covariance.ewma.center
+   covariance.ewma.clip
    covariance.ewma.iterated_ewma
-   covariance.ewma.cov
-   covariance.ewma.ewma_cov
-   covariance.ewma.ewma_mean
 
 
 
@@ -36,16 +33,6 @@ Attributes
 
    
 
-.. py:function:: variance(returns, halflife, min_periods=0, clip_at=None)
-
-   Estimate variance from returns using an exponentially weighted moving average (EWMA)
-
-   param returns: 1 dim. numpy array of returns
-   param halflife: EWMA half life
-   param min_periods: minimum number of observations to start EWMA (optional)
-   param clip_at: clip y_last at  +- clip_at*EWMA (optional)
-
-
 .. py:function:: volatility(returns, halflife, min_periods=0, clip_at=None)
 
    Estimate volatility from returns using an exponentially weighted moving average (EWMA)
@@ -56,27 +43,26 @@ Attributes
    param clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
 
-.. py:function:: regularize_covariance(Sigmas, r)
+.. py:function:: center(returns, halflife, min_periods=0, mean_adj=False)
 
-   param Sigmas: dictionary of covariance matrices
-   param r: float, rank of low rank component
+   Center returns by subtracting their exponentially weighted moving average (EWMA)
 
-   returns: regularized covariance matrices according to "Factor form
-   regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
+   param returns: Frame of returns
+   param halflife: EWMA half life
+   param min_periods: minimum number of observations to start EWMA (optional)
+   param mean_adj: subtract EWMA mean from returns (optional), otherwise function returns original returns and 0.0 as mean
+
+   return: the centered returns and their mean
+
+
+.. py:function:: clip(data, clip_at=None)
+
+   Clip data +- clip_at
+
+   param data: Frame of data
+   param clip_at: clip data at  +- clip_at
 
 
 .. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None)
-
-
-.. py:function:: cov(**kwargs)
-
-
-.. py:function:: ewma_cov(data, halflife, min_periods=0)
-
-   param data: Txn pandas DataFrame of returns
-   param halflife: float, halflife of the EWMA
-
-
-.. py:function:: ewma_mean(data, halflife, min_periods=0, clip_at=None)
 
 

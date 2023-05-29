@@ -49,5 +49,7 @@ Attributes
       Solves the covariance combination problem at a given time, i.e.,
       finds the prediction for the covariance matrix at 'time+1'
 
+      param window: number of previous time steps to use in the covariance combination
+
 
 
