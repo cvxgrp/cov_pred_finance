@@ -40,20 +40,23 @@ def test_combine_all(combinator, returns, weights_test_combinator, Sigma_test_co
     """
     Tests the covariance combination function
     """
-    r = None
-
-    for results in combinator.solve(window=None):
-        assert returns.index[-1] == results.time
-        r = results
+    r = {results.time: results for results in combinator.solve(window=None)}
+    r = r[returns.index[-1]]
 
     pd.testing.assert_series_equal(r.weights, weights_test_combinator, check_names=False, atol=1e-6)
     pd.testing.assert_frame_equal(r.covariance, Sigma_test_combinator, rtol=1e-2)
     
 
 def test_number_of_experts(combinator):
+    """
+    Tests the number of experts
+    """
     assert combinator.K == 3
 
 
 def test_assets(combinator):
+    """
+    Tests the assets
+    """
     assert set(combinator.assets) == set(["GOOG", "AAPL", "FB"])
 

@@ -72,8 +72,8 @@ class _CombinationProblem:
         return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
 
     def solve(self, **kwargs):
-        self._problem.solve(**kwargs)
-        return self.weights
+        return self._problem.solve(**kwargs)
+        #return self.weights
 
     @property
     def weights(self):
@@ -167,7 +167,8 @@ class CovarianceCombination:
         Solves the covariance combination problem at a given time t
         """
         # solve problem
-        weights = problem.solve(**kwargs)
+        problem.solve(**kwargs)
+        weights = problem.weights
 
         # Get non-shifted L
         L = sum(self.__Ls.loc[time] * weights.values)    # prediction for time+1
