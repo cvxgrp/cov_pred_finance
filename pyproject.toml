@@ -1,16 +1,17 @@
 [tool.poetry]
-name = "cov_pred_finance"
+name = "cvxcovariance"
 version = "0.0.0"             # Don't touch, leave at 0.0.0
 description = "..."
-authors = ["Kasper", "Thomas"]
+authors = ["Kasper Johansson", "Thomas Schmelzer"]
 readme = "README.md"
 repository = "https://github.com/cvxgrp/cov_pred_finance"
 packages = [{include = "cvx"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.0"
-pandas = "<2.0.0"
+pandas = "*"
 cvxpy = "*"
+scipy = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.1.3"

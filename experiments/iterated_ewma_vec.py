@@ -39,7 +39,7 @@ def ewma(y, halflife, clip_at=None, min_periods=None):
     returns: list of EWMAs for times t=2,3,...,T+1 = len(y)
 
 
-    Note: We define EWMA_t as a function of the 
+    Note: We define EWMA_t as a function of the
     observations up to time t-1. This means that
     y = [y_1,y_2,...,y_T] (for some T), while
     EWMA = [EWMA_2, EWMA_3, ..., EWMA_{T+1}]
@@ -51,7 +51,7 @@ def ewma(y, halflife, clip_at=None, min_periods=None):
     EWMAs = []
     EWMAs = np.zeros_like(y)
     EWMAs[0] = y[0]
-    for t in range(1,y.shape[0]): # First EWMA is for t=2 
+    for t in range(1,y.shape[0]): # First EWMA is for t=2
         # y_last = y[t-1] # Note zero-indexing
         # EWMA_t = get_next_ewma(EWMA_t, y_last, t, beta, clip_at, min_periods)
         EWMAs[t] = get_next_ewma(EWMAs[t-1], y[t], t+1, beta, clip_at, min_periods)
@@ -73,7 +73,7 @@ def _get_realized_covs(returns):
     returns = returns.reshape(T,n,1)
 
     return returns @ returns.transpose(0,2,1)
-    
+
 
 def _get_realized_vars(returns):
     """
@@ -88,7 +88,7 @@ def _get_realized_vars(returns):
     # variances = []
     T,n = returns.shape
     volatilities = np.zeros((T, n))
-    
+
     for t in range(returns.shape[0]):
         r_t = returns[t, :].reshape(-1,)
         volatilities[t] = r_t**2
@@ -108,7 +108,7 @@ def _refactor_to_corr(Sigmas):
 def _regularize_correlation(R, r):
     """
     param Rs: Txnxn numpy array of correlation matrices
-    param r: float, rank of low rank component 
+    param r: float, rank of low rank component
 
     returns: low rank + diag approximation of R\
         R_hat = sum_i^r lambda_i q_i q_i' + E, where E is diagonal,
@@ -131,9 +131,9 @@ def _regularize_correlation(R, r):
     Q_r = Q[:, :, :r]
     R_lo = Q_r @ Lamda_r @ Q_r.transpose(0, 2, 1)
 
-    # Get diagonal component 
+    # Get diagonal component
     D = np.stack([np.diag(np.diag(R[i, :, :]-R_lo[i, :, :])) for i in range(R.shape[0])])
-    
+
     # Create low rank approximation
     return R_lo + D
 
@@ -163,13 +163,13 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
         min_periods_cov = max(1, min_periods_cov)
 
         if mean: # Need to remove one entry for each estimate
-            min_periods_vola = max(min_periods_vola, 2) 
-            min_periods_cov = max(min_periods_cov, 2)  
+            min_periods_vola = max(min_periods_vola, 2)
+            min_periods_cov = max(min_periods_cov, 2)
             returns_mean = ewma(returns.values, halflife=vola_halflife)
         else:
             returns_mean = np.zeros_like(returns)
 
-        ### Volatility estimation  
+        ### Volatility estimation
         if clip_at:
             clip_at_var = clip_at**2
         else:
@@ -202,7 +202,7 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
 
         # Create correlation matrix
         R_tilde = ewma(realized_covs, halflife=cov_halflife)
-        
+
         # Apply min_periods_cov
         R_tilde = R_tilde[min_periods_cov-1:]
         returns_adj_mean = returns_adj_mean[min_periods_cov-1:]
@@ -220,18 +220,21 @@ def iterated_ewma(returns, vola_halflife, cov_halflife,\
         D = D.reshape(T,1,n)
         Sigmas = np.transpose(D, axes=(0,2,1)) * R * D
 
-        times = returns.index 
+        times = returns.index
         if mean:
-            T, n = R.shape[0], R.shape[1]    
-  
+            T, n = R.shape[0], R.shape[1]
+
             means = returns_mean + (D.reshape(T,n) * returns_adj_mean)
 
             means = {times[i]: pd.Series(means[i], index = returns.columns) for i in range(len(times))}
             covariances = {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
+            # todo: bad style. Function should always return the same type
+            # here it returns a tuple
             return IEWMA(mean=means, covariance=covariances)
         else:
+            # here it returns a dictionary
             return {times[i]: pd.DataFrame(Sigmas[i], index = returns.columns, columns = returns.columns) for i in range(len(times))}
 
-    
+
 
