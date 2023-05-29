@@ -142,7 +142,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.solve">
 <span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.solve" title="Permalink to this definition"></a></dt>
-<dd><p>Solves the covariance combination problem at a given time, i.e.,
+<dd><p>The size of the window is crucial to specify the size of the parameters
+for the cvxpy problem. Hence those computations are not in the __init__ method</p>
+<p>Solves the covariance combination problem at a given time, i.e.,
 finds the prediction for the covariance matrix at ‘time+1’</p>
 <p>param window: number of previous time steps to use in the covariance combination</p>
 </dd></dl>

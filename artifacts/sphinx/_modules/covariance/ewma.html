@@ -211,8 +211,8 @@
 
 <span class="k">def</span> <span class="nf">_general</span><span class="p">(</span><span class="n">y</span><span class="p">,</span>
              <span class="n">times</span><span class="p">,</span>
-             <span class="n">com</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">span</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="c1">#com: Union[float, None] = None,</span>
+             <span class="c1">#span: Union[float, None] = None,</span>
              <span class="n">halflife</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">TimedeltaConvertibleTypes</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">alpha</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">fct</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
@@ -235,11 +235,11 @@
 
         <span class="k">return</span> <span class="n">times</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">_ewma</span>
 
-    <span class="k">if</span> <span class="n">com</span><span class="p">:</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">com</span><span class="p">)</span>
+    <span class="c1">#if com:</span>
+    <span class="c1">#    alpha = 1 / (1 + com)</span>
 
-    <span class="k">if</span> <span class="n">span</span><span class="p">:</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">span</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#if span:</span>
+    <span class="c1">#    alpha = 2 / (span + 1)</span>
 
     <span class="k">if</span> <span class="n">halflife</span><span class="p">:</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">halflife</span><span class="p">)</span>
