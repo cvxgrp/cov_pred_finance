@@ -45,7 +45,7 @@ for predictor in covariance_combination(returns, half_life_pairs):
 
 ### CovarianceCombination
 The `CovarianceCombination` class takes as input a pandas DataFrame of
-returns and a dictionary of covariance predictors `{key: \{time:
+returns and a dictionary of covariance predictors `{key: {time:
 sigmas}`. For example, here we combine two EWMA covariance predictors from pandas:
 
 ```python
