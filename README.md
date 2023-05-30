@@ -2,7 +2,7 @@
 
 Consider a vector time series of $n$ financial returns, denoted by the $n$-dimensional return vectors $r_t$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
 
-The `cvxsimulator` package
+The `cvxcovariance` package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance $\Sigma_t$
 at each time step.
 
