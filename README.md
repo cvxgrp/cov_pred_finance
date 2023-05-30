@@ -28,7 +28,7 @@ pip install cvxcovariance
 
 ## Usage
 There are two alternative ways to use the package. The first is to use the
-`from_ewmas` function to create a combined multiple IEWMA (CM-IEWMA) predictor. The second is to provide your own covariance experts, via dictionaries, and pass them to the `from_sigmas` function. Both functions return an object of the `_CovarianceCombination` class.
+`from_ewmas` function to create a combined multiple IEWMA (CM-IEWMA) predictor. The second is to provide your own covariance experts, via dictionaries, and pass them to the `from_sigmas` function. Both functions return an object of the `_CovarianceCombination` class, which can be used to solve the covariance combination problem.
 
 ### CM-IEWMA
 The `from_ewmas` function takes as input a pandas DataFrame of
