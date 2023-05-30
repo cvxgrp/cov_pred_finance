@@ -36,17 +36,19 @@ from cvx.covariance.covariance_combination import CovarianceCombination
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
+n = returns.shape[1]
 
 # Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
-# Loop through combination results to get predictors
-covariance_predictors = {}
-n = returns.shape[1]
+# Define the covariance combinator 
 combinator = CovarianceCombination.from_ewmas(returns, 
                                              halflife_pairs,
                                              min_periods_vola=n, # min periods for volatility estimation
                                              min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
+                                             
+# Solve combination problem and loop through combination results to get predictors   
+covariance_predictors = {}
 for predictor in combinator.solve(window=10): # lookback window in convex optimization problem
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
@@ -64,7 +66,8 @@ import pandas as pd
 from cvx.covariance.covariance_combination import CovarianceCombination
 
 # Load return data
-returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]; n = returns.shape[1]
+returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
+n = returns.shape[1]
 
 # Define 21 and 63 day EWMAs as dictionaries (K=2 experts)
 ewma21 = returns.ewm(halflife=21, min_periods=5*n).cov().dropna()
