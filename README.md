@@ -46,7 +46,7 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Loop through combination results to get predictors
 covariance_predictors = {}
-for predictor in covariance_combination(returns, half_life_pairs):
+for predictor in covariance_combination(returns, halflife_pairs):
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
