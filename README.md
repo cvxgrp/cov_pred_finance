@@ -39,7 +39,6 @@ returns = prices.pct_change().dropna()
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 covariance_predictors = {}
-iewma_weights = {}
 for predictor in covariance_combination(returns, half_life_pairs):
     covariance_predictors[predictor.time] = predictor.covariance
 ```
