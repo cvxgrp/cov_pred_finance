@@ -31,13 +31,14 @@ returns and the IEWMA half-life pairs and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via a namedtuple:
     
 ```python
-prices = pd.read_csv(
-        "resources/stock_prices.csv", index_col=0, header=0, parse_dates=True
-    ).ffill()
+# Define return data
+prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
+# Define half-life pairs, (halflife_vola, halflife_cov)
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
+# Loop through combination results to get predictors
 covariance_predictors = {}
 for predictor in covariance_combination(returns, half_life_pairs):
     covariance_predictors[predictor.time] = predictor.covariance
@@ -53,9 +54,8 @@ sigmas}`. For example, here we combine two EWMA covariance predictors from panda
 import panda as pd
 from cvxcovariance import CovarianceCombination
 
-prices = pd.read_csv(
-        "resources/stock_prices.csv", index_col=0, header=0, parse_dates=True
-    ).ffill()
+# Define return data
+prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
 # Define 21 and 63 day EWMAs as dictionaries
@@ -70,6 +70,7 @@ ewmas = {21: ewma21, 63: ewma63}
 # Define the combinator and solve combination problems
 combinator = CovarianceCombination(sigmas=ewmas, returns=returns)
 
+# Loop through combination results to get predictors
 covariance_predictors = {}
 for predictor in combinator.solve(window=10):
     covariance_predictors[predictor.time] = predictor.covariance
