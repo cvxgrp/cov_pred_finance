@@ -1,6 +1,6 @@
 import pandas as pd
 
-from cvx.covariance.covariance_combination import CovarianceCombination
+from cvx.covariance.covariance_combination import from_ewmas
 
 
 def test_covariance_estimator(prices):
@@ -10,7 +10,7 @@ def test_covariance_estimator(prices):
     # Pairs of halflife volatility vs halflife covariances
     pairs = [(10, 10), (21, 21), (21, 63)]
 
-    combinator = CovarianceCombination.from_ewmas(returns, pairs, clip_at=4.2)
+    combinator = from_ewmas(returns, pairs, clip_at=4.2)
     results = {
         result.time: result.weights
         for result in combinator.solve(window=10)
@@ -33,7 +33,7 @@ def test_covariance_estimator_mean(prices):
     # Pairs of halflife volatility vs halflife covariances
     pairs = [(10, 10), (21, 21), (21, 63)]
 
-    combinator = CovarianceCombination.from_ewmas(returns, pairs, clip_at=4.2, mean=True)
+    combinator = from_ewmas(returns, pairs, clip_at=4.2, mean=True)
     results = {
         result.time: result.weights
         for result in combinator.solve(window=10)
@@ -56,7 +56,7 @@ def test_covariance_estimator_no_clipping(prices):
     # Pairs of halflife volatility vs halflife covariances
     pairs = [(10, 10), (21, 21), (21, 63)]
 
-    combinator = CovarianceCombination.from_ewmas(returns, pairs)
+    combinator = from_ewmas(returns, pairs)
     results = {
         result.time: result.weights
         for result in combinator.solve(window=10)

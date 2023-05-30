@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from cvx.covariance.covariance_combination import CovarianceCombination
+from cvx.covariance.covariance_combination import from_sigmas
 from cvx.covariance.ewma import iterated_ewma
 
 
@@ -41,7 +41,7 @@ def combinator(returns):
     }
 
     # combination of covariance matrix valued time series
-    return CovarianceCombination(sigmas=sigmas, returns=returns)
+    return from_sigmas(sigmas=sigmas, returns=returns)
 
 
 def test_combine_all(
