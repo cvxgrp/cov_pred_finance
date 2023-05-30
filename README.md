@@ -20,7 +20,7 @@ pip install cvxcovariance
 
 ## Usage
 There are two main ways to use the package. The first is to use the
-$\texttt{covariance\_combination}$
+$\texttt{covariance$\_$combination}$
  function to create a CM-IEWMA predictor. The
 second is to define your own covariance predictors, via dictionaries, and pass
 them to the $\texttt{CovarianceCombination}$ class.
