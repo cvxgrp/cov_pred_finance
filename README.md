@@ -2,7 +2,7 @@
 
 Consider a vector time series of $n$ financial returns, denoted by the $n$-dimensional return vectors $r_t$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
 
-The $\texttt{cvxsimulator}$ package
+The `cvxsimulator` package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance $\Sigma_t$
 at each time step.
 
@@ -23,10 +23,10 @@ There are two main ways to use the package. The first is to use the
 `covariance_combination`
  function to create a CM-IEWMA predictor. The
 second is to define your own covariance predictors, via dictionaries, and pass
-them to the $\texttt{CovarianceCombination}$ class.
+them to the `CovarianceCombination` class.
 
 ### CM-IEWMA
-The $\texttt{covariance_combination}$ function takes in a pandas DataFrame of
+The `covariance_combination` function takes in a pandas DataFrame of
 returns and the IEWMA half-life pairs and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via a namedtuple:
     
