@@ -2,12 +2,12 @@
 
 Consider a vector time series of $n$ financial returns, denoted $r_t\in
 **R**^n$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
-The covariance at time $t$ is defined as $$ \Sigma_t = \mathbf{E} r_tr_t^T -
-(\mathbf{E} r_t)(\mathbf{E} r_t)^T $$ The $\texttt{cvxsimulator}$ package
-provides simple tools for creating an estimate $\hat\Sigma_t$ of $\Sigma_t$
-based on the data $r_1,\ldots,r_{t-1}$.
 
-In the simplest case the user provides as input an $n\times T$ pandas DataFrame
+The $\texttt{cvxsimulator}$ package
+provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance $\Sigma_t$
+at each time step.
+
+In the simplest case the user provides an $n\times T$ pandas DataFrame
 of returns $r_1,\ldots,r_T$ and gets back covariance predictors for the $T$ time
 steps. Note: at time $t$ the user is provided with $\Sigma_{t+1}$,
 $\textit{i.e.}$, the covariance matrix for the next time step.
