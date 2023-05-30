@@ -23,6 +23,11 @@ jobs:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
 
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2
+        #with:
+        #  path-to-lcov: coverage.lcov
+
   jupyter:
     runs-on: "ubuntu-latest"
     steps:
