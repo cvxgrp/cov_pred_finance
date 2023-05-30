@@ -38,10 +38,7 @@ import pandas as pd
 from cvx.covariance import CovarianceCombinator
 
 # Load return data
-# prices = pd.read_csv(Path("resources") / "stock_prices.csv", index_col=0,
-# header=0, parse_dates=True).ffill()
-prices = pd.read_csv("../../tests/resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
-returns = prices.pct_change().dropna()
+returns = pd.read_csv(Path("data") / "ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
 
 # Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
