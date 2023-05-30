@@ -51,10 +51,11 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 # Loop through combination results to get predictors
 covariance_predictors = {}
 n = returns.shape[1]
-for predictor in covariance_estimator(returns, halflife_pairs,
-                                      min_periods_vola=n,
-                                      min_periods_cov=3*n,
-                                      window=10):
+for predictor in covariance_estimator(returns, 
+                                      halflife_pairs,
+                                      min_periods_vola=n, # min periods for volatility estimation
+                                      min_periods_cov=3*n, # min periods for correlation estimation (must be at least n)
+                                      window=10): # lookback window 
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
