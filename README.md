@@ -53,7 +53,8 @@ covariance_predictors = {}
 n = returns.shape[1]
 for predictor in covariance_estimator(returns, halflife_pairs,
                                       min_periods_vola=n,
-                                      min_periods_cov=3*n):
+                                      min_periods_cov=3*n,
+                                      window=10):
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
