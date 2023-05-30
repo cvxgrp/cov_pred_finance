@@ -65,12 +65,12 @@ import pandas as pd
 from cvx.covariance.covariance_combination import CovarianceCombination
 
 # Load return data
-returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
+returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]; n = returns.shape[1]
 
 # Define 21 and 63 day EWMAs as dictionaries (K=2 experts)
-ewma21 = returns.ewm(halflife=21, min_periods=3*n).cov().dropna()
+ewma21 = returns.ewm(halflife=21, min_periods=5*n).cov().dropna()
 expert1 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
-ewma63 = returns.ewm(halflife=63, min_periods=3*n).cov().dropna()
+ewma63 = returns.ewm(halflife=63, min_periods=5*n).cov().dropna()
 expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).unique()}
 
 # Create expert dictionary
