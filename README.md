@@ -9,7 +9,7 @@ step. (The $K$ experts are computed as iterated exponentially weighted moving av
 
 
 Note: at time $t$ the user is provided with $\Sigma_{t+1}$,
-$\textit{i.e.}$, the covariance matrix for the next time step.
+$\textit{i.e.}$, the covariance matrix for the next time step. So `Result.covariance` returns the covariance prediction for `time+1`.
 
 ## Installation
 To install the package, run the following command in the terminal:
