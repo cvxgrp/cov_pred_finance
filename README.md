@@ -33,7 +33,7 @@ iterates over the CM-IEWMA covariance predictors defined via namedtuples. Throug
     
 ```python
 import pandas as pd
-from cvx.covariance import CovarianceCombinator
+from cvx.covariance.covariance_combination import CovarianceCombination
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
@@ -44,7 +44,7 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 # Loop through combination results to get predictors
 covariance_predictors = {}
 n = returns.shape[1]
-combinator = CovarianceCombinator.from_ewmas(returns, 
+combinator = CovarianceCombination.from_ewmas(returns, 
                                              halflife_pairs,
                                              min_periods_vola=n, # min periods for volatility estimation
                                              min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
