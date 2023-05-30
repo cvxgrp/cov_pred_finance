@@ -7,13 +7,14 @@
 Module Contents
 ---------------
 
-Classes
-~~~~~~~
+
+Functions
+~~~~~~~~~
 
 .. autoapisummary::
 
-   covariance.covariance_combination.CovarianceCombination
-
+   covariance.covariance_combination.from_ewmas
+   covariance.covariance_combination.from_sigmas
 
 
 
@@ -30,46 +31,22 @@ Attributes
 
    
 
-.. py:class:: CovarianceCombination(sigmas, returns, means=None)
+.. py:function:: from_ewmas(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False)
 
-   .. py:method:: K(self)
-      :property:
+   Estimate a series of covariance matrices using the iterated EWMA method
 
-      Returns the number of expert predictors
+   param returns: Frame of returns
+   param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],
+               pair[0] is the half life for volatility estimation
+               pair[1] is the half life for covariance estimation
+   param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
+   param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
+   param clip_at: clip volatility adjusted returns at +- clip_at (optional)
+   param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)
 
-
-   .. py:method:: assets(self)
-      :property:
-
-      Returns the assets in the covariance combination problem
-
-
-   .. py:method:: solve(self, window=None, **kwargs)
-
-      The size of the window is crucial to specify the size of the parameters
-      for the cvxpy problem. Hence those computations are not in the __init__ method
-
-      Solves the covariance combination problem at a given time, i.e.,
-      finds the prediction for the covariance matrix at 'time+1'
-
-      param window: number of previous time steps to use in the covariance combination
+   return: Yields tuples with time, mean, covariance matrix, weights
 
 
-   .. py:method:: from_ewmas(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False)
-      :staticmethod:
-
-      Estimate a series of covariance matrices using the iterated EWMA method
-
-      param returns: Frame of returns
-      param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],
-                  pair[0] is the half life for volatility estimation
-                  pair[1] is the half life for covariance estimation
-      param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
-      param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
-      param clip_at: clip volatility adjusted returns at +- clip_at (optional)
-      param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)
-
-      return: Yields tuples with time, mean, covariance matrix, weights
-
+.. py:function:: from_sigmas(sigmas, returns, means=None)
 
 
