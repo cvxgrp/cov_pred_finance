@@ -1,3 +1,8 @@
+---
+title: My Document
+mathjax: true
+---
+
 # [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
 
 The `cvxcovariance` package
