@@ -26,9 +26,9 @@ second is to define your own covariance predictors, via dictionaries, and pass
 them to the `CovarianceCombination` class.
 
 ### covariance_combination
-The `covariance_combination` function takes in a pandas DataFrame of
-returns and the IEWMA half-life pairs and returns an iterator object that
-iterates over the CM-IEWMA covariance predictors defined via a namedtuple:
+The `covariance_combination` function takes as input a pandas DataFrame of
+returns and the IEWMA half-life pairs, and returns an iterator object that
+iterates over the CM-IEWMA covariance predictors defined via a namedtuple. Via the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes.
     
 ```python
 # Define return data
