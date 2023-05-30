@@ -27,7 +27,7 @@ There are two alternative ways to use the package. The first is to use the
 
 ### CM-IEWMA
 The `from_ewmas` function takes as input a pandas DataFrame of
-returns and the IEWMA half-life pairs, and returns an iterator object that
+returns and the IEWMA half-life pairs (each pair consists of one half-life for volatility estimation and one for correlation estimation), and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via namedtuples. Through the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
     
 ```python
