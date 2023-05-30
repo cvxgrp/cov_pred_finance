@@ -28,7 +28,7 @@ pip install cvxcovariance
 
 ## Usage
 There are two alternative ways to use the package. The first is to use the
-`from_ewmas` function in the `CovarianceCombinator` class to create a combined multiple IEWMA (CM-IEWMA) predictor. The second is to provide your own covariance experts, via dictionaries, and pass them to the `CovarianceCombination` class.
+`from_ewmas` function to create a combined multiple IEWMA (CM-IEWMA) predictor. The second is to provide your own covariance experts, via dictionaries, and pass them to the `from_sigmas` function.
 
 ### CM-IEWMA
 The `from_ewmas` function takes as input a pandas DataFrame of
@@ -37,7 +37,7 @@ iterates over the CM-IEWMA covariance predictors defined via namedtuples. Throug
     
 ```python
 import pandas as pd
-from cvx.covariance.covariance_combination import CovarianceCombination
+from cvx.covariance.covariance_combination import from_ewmas
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
@@ -47,7 +47,7 @@ n = returns.shape[1]
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Define the covariance combinator 
-combinator = CovarianceCombination.from_ewmas(returns, 
+combinator = from_ewmas(returns, 
                                              halflife_pairs,
                                              min_periods_vola=n, # min periods for volatility estimation
                                              min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
@@ -61,14 +61,14 @@ for predictor in combinator.solve(window=10): # lookback window in convex optimi
 Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
 
 ### General covariance combination
-The `CovarianceCombination` class takes as input a pandas DataFrame of
+The `from_sigmas` function takes as input a pandas DataFrame of
 returns and a dictionary of covariance predictors `{key: {time:
 sigma}`, where `key` is the key of an expert predictor and `{time:
 sigma}` is the expert predictions. For example, here we combine two EWMA covariance predictors from pandas:
 
 ```python
 import pandas as pd
-from cvx.covariance.covariance_combination import CovarianceCombination
+from cvx.covariance.covariance_combination import from_sigmas
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
@@ -84,7 +84,7 @@ expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).u
 experts = {1: expert1, 2: expert2}
 
 # Define the covariance combinator 
-combinator = CovarianceCombination(sigmas=experts, returns=returns)
+combinator = from_sigmas(sigmas=experts, returns=returns)
 
 # Solve combination problem and loop through combination results to get predictors
 covariance_predictors = {}
