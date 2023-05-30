@@ -66,24 +66,26 @@ sigma}`, where `key` is the key of an expert predictor and `{time:
 sigma}` is the expert predictions. For example, here we combine two EWMA covariance predictors from pandas:
 
 ```python
-import panda as pd
-from cvxcovariance import CovarianceCombination
+import pandas as pd
+from cvx.covariance.covariance_combination import CovarianceCombination
 
 # Load return data
-prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
-returns = prices.pct_change().dropna()
+# prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0,
+# parse_dates=True).ffill()
+prices = pd.read_csv("../../tests/resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
+returns = prices.pct_change().dropna(); n = returns.shape[1]
 
 # Define 21 and 63 day EWMAs as dictionaries (K=2 experts)
-ewma21 = returns.ewm(halflife=21, min_periods=63).cov().dropna()
+ewma21 = returns.ewm(halflife=21, min_periods=3*n).cov().dropna()
 expert1 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
-ewma63 = returns.ewm(halflife=63, min_periods=63).cov().dropna()
+ewma63 = returns.ewm(halflife=63, min_periods=3*n).cov().dropna()
 expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).unique()}
 
 # Create expert dictionary
 experts = {1: expert1, 2: expert2}
 
 # Define the covariance combinator 
-combinator = CovarianceCombination(sigmas=ewmas, returns=returns)
+combinator = CovarianceCombination(sigmas=experts, returns=returns)
 
 # Solve combination problem and loop through combination results to get predictors
 covariance_predictors = {}
