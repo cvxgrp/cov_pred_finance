@@ -28,10 +28,10 @@ them to the `CovarianceCombination` class.
 ### covariance_combination
 The `covariance_combination` function takes as input a pandas DataFrame of
 returns and the IEWMA half-life pairs, and returns an iterator object that
-iterates over the CM-IEWMA covariance predictors defined via a namedtuple. Via the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes.
+iterates over the CM-IEWMA covariance predictors defined via a namedtuple. Via the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
     
 ```python
-# Define return data
+# Load return data
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
@@ -41,6 +41,7 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 # Loop through combination results to get predictors
 covariance_predictors = {}
 for predictor in covariance_combination(returns, half_life_pairs):
+    # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
 Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
@@ -48,31 +49,33 @@ Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, $\t
 ### CovarianceCombination
 The `CovarianceCombination` class takes as input a pandas DataFrame of
 returns and a dictionary of covariance predictors `{key: {time:
-sigmas}`. For example, here we combine two EWMA covariance predictors from pandas:
+sigma}`, where `key` is the key of an expert predictor and `{time:
+sigma}` is the expert predictions. For example, here we combine two EWMA covariance predictors from pandas:
 
 ```python
 import panda as pd
 from cvxcovariance import CovarianceCombination
 
-# Define return data
+# Load return data
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
 # Define 21 and 63 day EWMAs as dictionaries
 ewma21 = returns.ewm(halflife=21, min_periods=63).cov().dropna()
-ewma21 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
-
+expert1 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
 ewma63 = returns.ewm(halflife=63, min_periods=63).cov().dropna()
-ewma63 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).unique()}
+expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).unique()}
 
-ewmas = {21: ewma21, 63: ewma63}
+# Create expert dictionary
+experts = {1: expert1, 2: expert2}
 
-# Define the combinator and solve combination problems
+# Define the covariance combinator 
 combinator = CovarianceCombination(sigmas=ewmas, returns=returns)
 
-# Loop through combination results to get predictors
+# Solve combination problem and loop through combination results to get predictors
 covariance_predictors = {}
 for predictor in combinator.solve(window=10):
+    # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
 Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
