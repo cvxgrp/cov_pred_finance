@@ -51,7 +51,6 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.covariance_combination</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../regularization/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a></li>
 </ul>
 </li>
@@ -146,6 +145,23 @@ for the cvxpy problem. Hence those computations are not in the __init__ method</
 <p>Solves the covariance combination problem at a given time, i.e.,
 finds the prediction for the covariance matrix at ‘time+1’</p>
 <p>param window: number of previous time steps to use in the covariance combination</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="covariance.covariance_combination.CovarianceCombination.from_ewmas">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_ewmas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/covariance_combination.html#CovarianceCombination.from_ewmas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.covariance_combination.CovarianceCombination.from_ewmas" title="Permalink to this definition"></a></dt>
+<dd><p>Estimate a series of covariance matrices using the iterated EWMA method</p>
+<p>param returns: Frame of returns
+param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],</p>
+<blockquote>
+<div><p>pair[0] is the half life for volatility estimation
+pair[1] is the half life for covariance estimation</p>
+</div></blockquote>
+<p>param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
+param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
+param clip_at: clip volatility adjusted returns at +- clip_at (optional)
+param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)</p>
+<p>return: Yields tuples with time, mean, covariance matrix, weights</p>
 </dd></dl>
 
 </dd></dl>
