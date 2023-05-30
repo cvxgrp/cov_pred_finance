@@ -1,7 +1,7 @@
 # [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
 
 Consider a vector time series of $n$ financial returns, denoted $r_t\in
-\reals^n$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
+\mathbf{R}^n$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
 The covariance at time $t$ is defined as $$ \Sigma_t = \mathbf{E} r_tr_t^T -
 (\mathbf{E} r_t)(\mathbf{E} r_t)^T $$ The $\texttt{cvxsimulator}$ package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of $\Sigma_t$
