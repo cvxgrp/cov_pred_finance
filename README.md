@@ -34,11 +34,15 @@ returns and the IEWMA half-life pairs, and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via namedtuples. Through the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
     
 ```python
-import panda as pd
-from cvxcovariance import covariance_estimator
+from pathlib import Path
+
+import pandas as pd
+from cvx.covariance import covariance_estimator
 
 # Load return data
-prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
+# prices = pd.read_csv(Path("resources") / "stock_prices.csv", index_col=0,
+# header=0, parse_dates=True).ffill()
+prices = pd.read_csv("../../tests/resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
 # Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
@@ -46,7 +50,10 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Loop through combination results to get predictors
 covariance_predictors = {}
-for predictor in covariance_estimator(returns, halflife_pairs):
+n = returns.shape[1]
+for predictor in covariance_estimator(returns, halflife_pairs,
+                                      min_periods_vola=n,
+                                      min_periods_cov=3*n):
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
