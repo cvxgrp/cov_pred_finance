@@ -24,11 +24,11 @@ pip install cvxcovariance
 ## Usage
 There are two alternative ways to use the package. The first is to use the
 `covariance_combination`
- function to create a CM-IEWMA predictor. The
+ function to create a combined multiple IEWMA (CM-IEWMA) predictor. The
 second is to define your own covariance predictors, via dictionaries, and pass
 them to the `CovarianceCombination` class.
 
-### covariance_combination
+### CM-IEWMA
 The `covariance_combination` function takes as input a pandas DataFrame of
 returns and the IEWMA half-life pairs, and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via a namedtuple. Via the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
@@ -49,7 +49,7 @@ for predictor in covariance_combination(returns, half_life_pairs):
 ```
 Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
 
-### CovarianceCombination
+### General covariance combination
 The `CovarianceCombination` class takes as input a pandas DataFrame of
 returns and a dictionary of covariance predictors `{key: {time:
 sigma}`, where `key` is the key of an expert predictor and `{time:
