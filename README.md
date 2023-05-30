@@ -26,7 +26,7 @@ second is to define your own covariance predictors, via dictionaries, and pass
 them to the $\texttt{CovarianceCombination}$ class.
 
 ### CM-IEWMA
-The $\texttt{covariance\_combination}$ function takes in a pandas DataFrame of
+The $\texttt{covariance_combination}$ function takes in a pandas DataFrame of
 returns and the IEWMA half-life pairs and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via a namedtuple:
     
