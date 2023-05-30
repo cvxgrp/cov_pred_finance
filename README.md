@@ -38,7 +38,7 @@ iterates over the CM-IEWMA covariance predictors defined via namedtuples. Throug
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
-# Define half-life pairs, (halflife_vola, halflife_cov)
+# Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Loop through combination results to get predictors
@@ -63,7 +63,7 @@ from cvxcovariance import CovarianceCombination
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
 
-# Define 21 and 63 day EWMAs as dictionaries
+# Define 21 and 63 day EWMAs as dictionaries (K=2 experts)
 ewma21 = returns.ewm(halflife=21, min_periods=63).cov().dropna()
 expert1 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
 ewma63 = returns.ewm(halflife=63, min_periods=63).cov().dropna()
