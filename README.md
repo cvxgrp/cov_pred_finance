@@ -6,7 +6,7 @@ provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance 
 For a detailed description of the methodology, see the our manuscript [A Simple Method for Predicting
 Covariance Matrices of Financial Returns](https://web.stanford.edu/~boyd/papers/cov_pred_finance.html) (in particular Section 3).
 
-In the simplest case the user provides an $T\times n$ pandas DataFrame
+In the simplest case the user provides a $T\times n$ pandas DataFrame
 of returns $r_1,\ldots,r_T$ and $K$ half-life pairs, and gets back covariance predictors for each time
 step. (The $K$ experts are computed as iterated exponentially weighted moving average (IEWMA) predictors as described in Section 2.6 of the [paper](https://web.stanford.edu/~boyd/papers/cov_pred_finance.html).) In the more general case, the user provides the $K$ expert predictors $\hat\Sigma_t^{(1)},\ldots,\hat\Sigma_t^{(K)}$, $t=1,\ldots,T$, and these are blended together by solving a convex optimization problem. In either case the result is returned as an iterator object over namedtuples: `Result = namedtuple("Result", ["time", "mean", "covariance", "weights"])`.
 
