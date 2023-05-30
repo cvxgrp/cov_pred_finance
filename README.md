@@ -42,6 +42,7 @@ covariance_predictors = {}
 for predictor in covariance_combination(returns, half_life_pairs):
     covariance_predictors[predictor.time] = predictor.covariance
 ```
+Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, \textit{i.e.}, it is uses knowledge of $r_1,\ldots,r_t$.
 
 ### CovarianceCombination
 The `CovarianceCombination` class takes as input a pandas DataFrame of
@@ -73,6 +74,7 @@ covariance_predictors = {}
 for predictor in combinator.solve(window=10):
     covariance_predictors[predictor.time] = predictor.covariance
 ```
+Here `covariance_predictors[t]` is the covariance prediction for time $t+1$, \textit{i.e.}, it is uses knowledge of $r_1,\ldots,r_t$.
 
 ## Poetry
 
