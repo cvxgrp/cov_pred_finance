@@ -5,7 +5,8 @@ provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance 
 
 In the simplest case the user provides an $n\times T$ pandas DataFrame
 of returns $r_1,\ldots,r_T$ and $K$ half-life pairs, and gets back covariance predictors for each time
-step. (The $K$ experts are computed as iterated exponentially weighted moving average (IEWMAs) predictors as described in Section 2.6 of the [paper](https://web.stanford.edu/~boyd/papers/pdf/cov_pred_finance.pdf)) In the more general case, the user provides the $K$ expert predictors $\hat\Sigma_t^{(1)},\ldots,\hat\Sigma_t^{(K)}$, $t=1,\ldots,T$, and these are blended together by solving a convex optimization problen; the result is returned as a dictionary: $\{t: \hat\Sigma_{t+1}\}$
+step. (The $K$ experts are computed as iterated exponentially weighted moving average (IEWMAs) predictors as described in Section 2.6 of the [paper](https://web.stanford.edu/~boyd/papers/pdf/cov_pred_finance.pdf)) In the more general case, the user provides the $K$ expert predictors $\hat\Sigma_t^{(1)},\ldots,\hat\Sigma_t^{(K)}$, $t=1,\ldots,T$, and these are blended together by solving a convex optimization problen; the result is returned as a dictionary: $\{t: \hat\Sigma_{t+1}\}
+$
 
 
 Note: at time $t$ the user is provided with $\Sigma_{t+1}$,
