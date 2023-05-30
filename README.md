@@ -48,9 +48,9 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Define the covariance combinator 
 combinator = from_ewmas(returns, 
-                                             halflife_pairs,
-                                             min_periods_vola=n, # min periods for volatility estimation
-                                             min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
+                        halflife_pairs,
+                        min_periods_vola=n, # min periods for volatility estimation
+                        min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
                                              
 # Solve combination problem and loop through combination results to get predictors   
 covariance_predictors = {}
