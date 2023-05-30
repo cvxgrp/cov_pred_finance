@@ -1,5 +1,7 @@
 # [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
 
+[![Coverage Status](https://coveralls.io/repos/github/cvxgrp/cvxcovariance/badge.svg?branch=main)](https://coveralls.io/github/cvxgrp/cvxcovariance?branch=main)
+
 ## Poetry
 
 We assume you share already the love for [Poetry](https://python-poetry.org). Once you have installed poetry you can perform
