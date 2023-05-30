@@ -34,6 +34,9 @@ returns and the IEWMA half-life pairs, and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via namedtuples. Through the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
     
 ```python
+import panda as pd
+from cvxcovariance import covariance_combination
+
 # Load return data
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
 returns = prices.pct_change().dropna()
