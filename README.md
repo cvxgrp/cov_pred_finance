@@ -1,7 +1,6 @@
 # [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
 
-Consider a vector time series of $n$ financial returns, denoted $r_t\in
-**R**^n$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
+Consider a vector time series of $n$ financial returns, denoted by the $n$-dimensional return vectors $r_t$, $t=1,2,\ldots$. (We take $r_t$ to be the return from $t-1$ to $t$.)
 
 The $\texttt{cvxsimulator}$ package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance $\Sigma_t$
