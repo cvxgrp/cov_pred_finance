@@ -23,19 +23,19 @@ pip install cvxcovariance
 
 ## Usage
 There are two alternative ways to use the package. The first is to use the
-`covariance_combination`
+`covariance_estimator`
  function to create a combined multiple IEWMA (CM-IEWMA) predictor. The
 second is to define your own covariance predictors, via dictionaries, and pass
 them to the `CovarianceCombination` class.
 
 ### CM-IEWMA
-The `covariance_combination` function takes as input a pandas DataFrame of
+The `covariance_estimator` function takes as input a pandas DataFrame of
 returns and the IEWMA half-life pairs, and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via namedtuples. Through the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default this is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
     
 ```python
 import panda as pd
-from cvxcovariance import covariance_combination
+from cvxcovariance import covariance_estimator
 
 # Load return data
 prices = pd.read_csv("resources/stock_prices.csv", index_col=0, header=0, parse_dates=True).ffill()
@@ -46,7 +46,7 @@ halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Loop through combination results to get predictors
 covariance_predictors = {}
-for predictor in covariance_combination(returns, halflife_pairs):
+for predictor in covariance_estimator(returns, halflife_pairs):
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
