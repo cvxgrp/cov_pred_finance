@@ -1,6 +1,6 @@
 import pandas as pd
 
-from cvx.covariance.covariance_combination import from_ewmas
+from cvx.covariance.combination import from_ewmas
 
 
 def test_covariance_estimator(prices):

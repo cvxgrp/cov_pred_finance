@@ -34,10 +34,10 @@ There are two alternative ways to use the package. The first is to use the
 The `from_ewmas` function takes as input a pandas DataFrame of
 returns and the IEWMA half-life pairs (each pair consists of one half-life for volatility estimation and one for correlation estimation), and returns an iterator object that
 iterates over the CM-IEWMA covariance predictors defined via namedtuples. Through the namedtuple you can access the `time`, `mean`, `covariance`, and `weights` attributes. `time` is the timestamp. `mean` is the estimated mean of the return at the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`, if the user wants to estimate the mean; per default the mean is set to zero, which is a reasonable assumption for many financial returns. `covariance` is the estimated covariance matrix for the $\textit{next}$ timestamp, $\textit{i.e.}$ `time+1`. `weights` are the $K$ weights attributed to the experts. Here is an example:
-    
+
 ```python
 import pandas as pd
-from cvx.covariance.covariance_combination import from_ewmas
+from cvx.covariance.combination import from_ewmas
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
@@ -47,14 +47,14 @@ n = returns.shape[1]
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
 # Define the covariance combinator 
-combinator = from_ewmas(returns, 
+combinator = from_ewmas(returns,
                         halflife_pairs,
-                        min_periods_vola=n, # min periods for volatility estimation
-                        min_periods_cov=3*n) # min periods for correlation estimation (must be at least n)
-                                             
+                        min_periods_vola=n,  # min periods for volatility estimation
+                        min_periods_cov=3 * n)  # min periods for correlation estimation (must be at least n)
+
 # Solve combination problem and loop through combination results to get predictors   
 covariance_predictors = {}
-for predictor in combinator.solve(window=10): # lookback window in convex optimization problem
+for predictor in combinator.solve(window=10):  # lookback window in convex optimization problem
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
     covariance_predictors[predictor.time] = predictor.covariance
 ```
@@ -68,16 +68,16 @@ sigma}` is the expert predictions. For example, here we combine two EWMA covaria
 
 ```python
 import pandas as pd
-from cvx.covariance.covariance_combination import from_sigmas
+from cvx.covariance.combination import from_sigmas
 
 # Load return data
 returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
 n = returns.shape[1]
 
 # Define 21 and 63 day EWMAs as dictionaries (K=2 experts)
-ewma21 = returns.ewm(halflife=21, min_periods=5*n).cov().dropna()
+ewma21 = returns.ewm(halflife=21, min_periods=5 * n).cov().dropna()
 expert1 = {time: ewma21.loc[time] for time in ewma21.index.get_level_values(0).unique()}
-ewma63 = returns.ewm(halflife=63, min_periods=5*n).cov().dropna()
+ewma63 = returns.ewm(halflife=63, min_periods=5 * n).cov().dropna()
 expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).unique()}
 
 # Create expert dictionary
