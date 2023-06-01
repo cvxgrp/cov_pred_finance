@@ -182,7 +182,7 @@ class _CovarianceCombination:
         )
         self.__Ls_shifted = self.__Ls.shift(1).dropna()
         self.__nus = pd.DataFrame(
-            {key: _nu(Ls, means[key]) for key, Ls in self.__Ls.items()}
+            {key: _nu(Ls, self.means[key]) for key, Ls in self.__Ls.items()}
         )
         self.__nus_shifted = self.__nus.shift(1).dropna()
 
@@ -256,7 +256,7 @@ class _CovarianceCombination:
         }
 
         problem = _CombinationProblem(
-            keys=self.__sigmas.keys(), n=len(self.assets), window=window
+            keys=self.sigmas.keys(), n=len(self.assets), window=window
         )
 
         for time in A.keys():
