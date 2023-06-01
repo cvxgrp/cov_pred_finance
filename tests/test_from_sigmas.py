@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from cvx.covariance.covariance_combination import from_sigmas
+from cvx.covariance.combination import from_sigmas
 from cvx.covariance.ewma import iterated_ewma
 
 
