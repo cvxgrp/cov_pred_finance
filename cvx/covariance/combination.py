@@ -178,7 +178,7 @@ class _CovarianceCombination:
 
         # all those quantities don't depend on the window size
         self.__Ls = pd.DataFrame(
-            {k: _cholesky_precision(sigma) for k, sigma in sigmas.items()}
+            {k: _cholesky_precision(sigma) for k, sigma in self.sigmas.items()}
         )
         self.__Ls_shifted = self.__Ls.shift(1).dropna()
         self.__nus = pd.DataFrame(
@@ -187,18 +187,31 @@ class _CovarianceCombination:
         self.__nus_shifted = self.__nus.shift(1).dropna()
 
     @property
+    def sigmas(self):
+        return self.__sigmas
+
+    @property
+    def means(self):
+        return self.__means
+
+    @property
+    def returns(self):
+        return self.__returns
+
+
+    @property
     def K(self):
         """
         Returns the number of expert predictors
         """
-        return len(self.__sigmas)
+        return len(self.sigmas)
 
     @property
     def assets(self):
         """
         Returns the assets in the covariance combination problem
         """
-        return self.__returns.columns
+        return self.returns.columns
 
     def solve(self, window=None, **kwargs):
         """
@@ -217,7 +230,7 @@ class _CovarianceCombination:
         # Compute P matrix and its Cholesky factor
         Lts_at_r = pd.DataFrame(
             {
-                key: _B_t_col(Ls, self.__nus_shifted[key], self.__returns)
+                key: _B_t_col(Ls, self.__nus_shifted[key], self.returns)
                 for key, Ls in self.__Ls_shifted.items()
             }
         )
