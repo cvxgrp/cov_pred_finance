@@ -675,6 +675,22 @@ scs = ["setuptools (>65.5.1)"]
 xpress = ["xpress"]
 
 [[package]]
+name = "cvxsimulator"
+version = "0.4.0"
+description = "Simple simulator for investors"
+category = "dev"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "cvxsimulator-0.4.0-py3-none-any.whl", hash = "sha256:80444d124d253afa3bed58975b871e19c6cb440a9fc0302e278c4d66e2d9f119"},
+    {file = "cvxsimulator-0.4.0.tar.gz", hash = "sha256:03ae03d8cd981b154cdd4e98d1665be9720131f68982b6b2cc5b34b5ac0140ad"},
+]
+
+[package.dependencies]
+numpy = "*"
+pandas = "*"
+
+[[package]]
 name = "cycler"
 version = "0.11.0"
 description = "Composable style cycles"
@@ -1637,14 +1653,14 @@ webpdf = ["pyppeteer (>=1,<1.1)"]
 
 [[package]]
 name = "nbformat"
-version = "5.8.0"
+version = "5.9.0"
 description = "The Jupyter Notebook format"
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "nbformat-5.8.0-py3-none-any.whl", hash = "sha256:d910082bd3e0bffcf07eabf3683ed7dda0727a326c446eeb2922abe102e65162"},
-    {file = "nbformat-5.8.0.tar.gz", hash = "sha256:46dac64c781f1c34dfd8acba16547024110348f9fc7eab0f31981c2a3dc48d1f"},
+    {file = "nbformat-5.9.0-py3-none-any.whl", hash = "sha256:8c8fa16d6d05062c26177754bfbfac22de644888e2ef69d27ad2a334cf2576e5"},
+    {file = "nbformat-5.9.0.tar.gz", hash = "sha256:e98ebb6120c3efbafdee2a40af2a140cadee90bb06dd69a2a63d9551fcc7f976"},
 ]
 
 [package.dependencies]
@@ -3157,4 +3173,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.0"
-content-hash = "fd461dafebbd418f70da107df5c9c73720dfe0b3022b1e9f502168c5099c12fb"
+content-hash = "55d1977d2477a0017e4bf5e79cb92043a92f8f308d5a3d25298a177157b91bdf"
