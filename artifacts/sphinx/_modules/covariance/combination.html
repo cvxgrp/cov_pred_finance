@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>covariance.covariance_combination &mdash; cvxcovariance Documentation</title>
+  <title>covariance.combination &mdash; cvxcovariance Documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
@@ -61,7 +61,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>covariance.covariance_combination</li>
+      <li>covariance.combination</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,7 +70,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for covariance.covariance_combination</h1><div class="highlight"><pre>
+  <h1>Source code for covariance.combination</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cvx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -138,7 +138,7 @@
 
 
 <span class="c1"># Declaring namedtuple()</span>
-<div class="viewcode-block" id="Result"><a class="viewcode-back" href="../../autoapi/covariance/covariance_combination/index.html#covariance.covariance_combination.Result">[docs]</a><span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">])</span></div>
+<div class="viewcode-block" id="Result"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.Result">[docs]</a><span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">])</span></div>
 
 
 <span class="k">class</span> <span class="nc">_CombinationProblem</span><span class="p">:</span>
@@ -172,7 +172,7 @@
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_weight</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="from_ewmas"><a class="viewcode-back" href="../../autoapi/covariance/covariance_combination/index.html#covariance.covariance_combination.from_ewmas">[docs]</a><span class="k">def</span> <span class="nf">from_ewmas</span><span class="p">(</span>
+<div class="viewcode-block" id="from_ewmas"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_ewmas">[docs]</a><span class="k">def</span> <span class="nf">from_ewmas</span><span class="p">(</span>
     <span class="n">returns</span><span class="p">,</span>
     <span class="n">pairs</span><span class="p">,</span>
     <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
@@ -217,7 +217,7 @@
     <span class="c1"># combination of covariance matrix valued time series</span>
     <span class="k">return</span> <span class="n">_CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">means</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="from_sigmas"><a class="viewcode-back" href="../../autoapi/covariance/covariance_combination/index.html#covariance.covariance_combination.from_sigmas">[docs]</a><span class="k">def</span> <span class="nf">from_sigmas</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="from_sigmas"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_sigmas">[docs]</a><span class="k">def</span> <span class="nf">from_sigmas</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">means</span><span class="p">)</span></div>
 
 

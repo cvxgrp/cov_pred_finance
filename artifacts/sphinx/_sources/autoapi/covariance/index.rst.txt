@@ -10,7 +10,7 @@ Submodules
    :titlesonly:
    :maxdepth: 1
 
-   covariance_combination/index.rst
+   combination/index.rst
    ewma/index.rst
    regularization/index.rst
 

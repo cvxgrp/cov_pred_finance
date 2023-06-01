@@ -1,7 +1,7 @@
-:py:mod:`covariance.covariance_combination`
-===========================================
+:py:mod:`covariance.combination`
+================================
 
-.. py:module:: covariance.covariance_combination
+.. py:module:: covariance.combination
 
 
 Module Contents
@@ -13,8 +13,8 @@ Functions
 
 .. autoapisummary::
 
-   covariance.covariance_combination.from_ewmas
-   covariance.covariance_combination.from_sigmas
+   covariance.combination.from_ewmas
+   covariance.combination.from_sigmas
 
 
 
@@ -23,7 +23,7 @@ Attributes
 
 .. autoapisummary::
 
-   covariance.covariance_combination.Result
+   covariance.combination.Result
 
 
 .. py:data:: Result
