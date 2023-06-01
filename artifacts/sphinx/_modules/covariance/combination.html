@@ -251,7 +251,7 @@
 
         <span class="c1"># all those quantities don&#39;t depend on the window size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_cholesky_precision</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_cholesky_precision</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nus</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -260,18 +260,31 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__nus_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nus</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sigmas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sigmas</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">means</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__means</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">returns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__returns</span>
+
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">K</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the number of expert predictors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sigmas</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">assets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the assets in the covariance combination problem</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__returns</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -290,7 +303,7 @@
         <span class="c1"># Compute P matrix and its Cholesky factor</span>
         <span class="n">Lts_at_r</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="n">key</span><span class="p">:</span> <span class="n">_B_t_col</span><span class="p">(</span><span class="n">Ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nus_shifted</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__returns</span><span class="p">)</span>
+                <span class="n">key</span><span class="p">:</span> <span class="n">_B_t_col</span><span class="p">(</span><span class="n">Ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nus_shifted</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">Ls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
         <span class="p">)</span>
