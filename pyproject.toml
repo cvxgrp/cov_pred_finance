@@ -24,7 +24,7 @@ matplotlib = "*"
 loguru = "*"
 plotly = "*"
 jupyterlab = "*"
-
+cvxsimulator = "*"
 
 [build-system]
 requires = ["poetry>=1.0.2"]
