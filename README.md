@@ -117,5 +117,3 @@ environment. Executing
 constructs a dedicated
 [Kernel](https://docs.jupyter.org/en/latest/projects/kernels.html) for the
 project.
-
-
