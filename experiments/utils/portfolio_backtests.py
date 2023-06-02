@@ -1,7 +1,12 @@
-from abc import ABC, abstractmethod
-from tqdm import trange
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import warnings
+from abc import ABC
+from abc import abstractmethod
+
 import pandas as pd
+from tqdm import trange
 
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")

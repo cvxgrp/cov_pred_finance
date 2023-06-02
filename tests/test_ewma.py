@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.ewma import center, clip
+from cvx.covariance.ewma import center
+from cvx.covariance.ewma import clip
+
 
 def test_center_inactive():
     # Test case 1

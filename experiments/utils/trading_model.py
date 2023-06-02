@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+import multiprocessing as mp
+from collections import namedtuple
+
 import cvxpy as cp
 import numpy as np
-import multiprocessing as mp
 import pandas as pd
-from collections import namedtuple
 
 
 def _get_L_inv(covariance):

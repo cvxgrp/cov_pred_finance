@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 """global fixtures"""
+from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
 import pandas as pd
+import pytest
 
 
 @pytest.fixture(scope="session", name="resource_dir")

@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
+import warnings
 from collections import namedtuple
+
 import cvxpy as cvx
 import numpy as np
 import pandas as pd
-import warnings
 
 from cvx.covariance.ewma import iterated_ewma
 
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")
+
 
 def _map_nested_dicts(ob, func):
     """
@@ -100,12 +105,7 @@ class _CombinationProblem:
 
 
 def from_ewmas(
-    returns,
-    pairs,
-    min_periods_vola=20,
-    min_periods_cov=20,
-    clip_at=None,
-    mean=False
+    returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False
 ):
     """
     Estimate a series of covariance matrices using the iterated EWMA method
@@ -143,6 +143,7 @@ def from_ewmas(
 
     # combination of covariance matrix valued time series
     return _CovarianceCombination(sigmas=sigmas, returns=returns, means=means)
+
 
 def from_sigmas(sigmas, returns, means=None):
     return _CovarianceCombination(sigmas=sigmas, returns=returns, means=means)
@@ -197,7 +198,6 @@ class _CovarianceCombination:
     @property
     def returns(self):
         return self.__returns
-
 
     @property
     def K(self):
@@ -282,4 +282,3 @@ class _CovarianceCombination:
             index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
         )
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)
-

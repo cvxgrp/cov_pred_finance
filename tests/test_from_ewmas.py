@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import pandas as pd
 
 from cvx.covariance.combination import from_ewmas
@@ -11,16 +14,12 @@ def test_covariance_estimator(prices):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     combinator = from_ewmas(returns, pairs, clip_at=4.2)
-    results = {
-        result.time: result.weights
-        for result in combinator.solve(window=10)
-    }
+    results = {result.time: result.weights for result in combinator.solve(window=10)}
 
     pd.testing.assert_series_equal(
         results[pd.Timestamp("2018-04-11")],
         pd.Series(
-            index=["10-10", "21-21", "21-63"], 
-            data=[0.060104, 0.205062, 0.734834]
+            index=["10-10", "21-21", "21-63"], data=[0.060104, 0.205062, 0.734834]
         ),
         atol=1e-3,
     )
@@ -34,10 +33,7 @@ def test_covariance_estimator_mean(prices):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     combinator = from_ewmas(returns, pairs, clip_at=4.2, mean=True)
-    results = {
-        result.time: result.weights
-        for result in combinator.solve(window=10)
-    }
+    results = {result.time: result.weights for result in combinator.solve(window=10)}
 
     pd.testing.assert_series_equal(
         results[pd.Timestamp("2018-04-11")],
@@ -57,10 +53,7 @@ def test_covariance_estimator_no_clipping(prices):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     combinator = from_ewmas(returns, pairs)
-    results = {
-        result.time: result.weights
-        for result in combinator.solve(window=10)
-    }
+    results = {result.time: result.weights for result in combinator.solve(window=10)}
 
     pd.testing.assert_series_equal(
         results[pd.Timestamp("2018-04-11")],
