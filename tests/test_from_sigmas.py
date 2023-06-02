@@ -1,5 +1,8 @@
-import pytest
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import pandas as pd
+import pytest
 
 from cvx.covariance.combination import from_sigmas
 from cvx.covariance.ewma import iterated_ewma

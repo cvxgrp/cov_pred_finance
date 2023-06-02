@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import annotations
+
 from collections import namedtuple
+from typing import Union
 
 import numpy as np
 import pandas as pd
 from pandas._typing import TimedeltaConvertibleTypes
-from typing import Union
 
 IEWMA = namedtuple("IEWMA", ["time", "mean", "covariance", "volatility"])
 
