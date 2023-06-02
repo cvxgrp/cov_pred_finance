@@ -20,7 +20,7 @@ def _map_nested_dicts(ob, func):
     """
     if isinstance(ob, dict):
         return {k: _map_nested_dicts(v, func) for k, v in ob.items()}
-    
+
     return func(ob)
 
 
