@@ -20,8 +20,8 @@ def _map_nested_dicts(ob, func):
     """
     if isinstance(ob, dict):
         return {k: _map_nested_dicts(v, func) for k, v in ob.items()}
-    else:
-        return func(ob)
+    
+    return func(ob)
 
 
 def _cholesky_precision(cov):
