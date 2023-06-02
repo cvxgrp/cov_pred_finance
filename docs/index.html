@@ -406,13 +406,13 @@ iterates over the CM-IEWMA covariance predictors defined via namedtuples. Throug
 <span class="c1"># Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)</span>
 <span class="n">halflife_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span> <span class="p">(</span><span class="mi">63</span><span class="p">,</span> <span class="mi">125</span><span class="p">)]</span>
 
-<span class="c1"># Define the covariance combinator </span>
+<span class="c1"># Define the covariance combinator</span>
 <span class="n">combinator</span> <span class="o">=</span> <span class="n">from_ewmas</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span>
                         <span class="n">halflife_pairs</span><span class="p">,</span>
                         <span class="n">min_periods_vola</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>  <span class="c1"># min periods for volatility estimation</span>
                         <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>  <span class="c1"># min periods for correlation estimation (must be at least n)</span>
 
-<span class="c1"># Solve combination problem and loop through combination results to get predictors   </span>
+<span class="c1"># Solve combination problem and loop through combination results to get predictors</span>
 <span class="n">covariance_predictors</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="n">combinator</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>  <span class="c1"># lookback window in convex optimization problem</span>
     <span class="c1"># From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights</span>
@@ -441,7 +441,7 @@ returns and a dictionary of covariance predictors <code class="docutils literal 
 <span class="c1"># Create expert dictionary</span>
 <span class="n">experts</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">expert1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="n">expert2</span><span class="p">}</span>
 
-<span class="c1"># Define the covariance combinator </span>
+<span class="c1"># Define the covariance combinator</span>
 <span class="n">combinator</span> <span class="o">=</span> <span class="n">from_sigmas</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">experts</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">)</span>
 
 <span class="c1"># Solve combination problem and loop through combination results to get predictors</span>

@@ -41,13 +41,13 @@ n = returns.shape[1]
 # Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
 halflife_pairs = [(10, 21), (21, 63), (63, 125)]
 
-# Define the covariance combinator 
+# Define the covariance combinator
 combinator = from_ewmas(returns,
                         halflife_pairs,
                         min_periods_vola=n,  # min periods for volatility estimation
                         min_periods_cov=3 * n)  # min periods for correlation estimation (must be at least n)
 
-# Solve combination problem and loop through combination results to get predictors   
+# Solve combination problem and loop through combination results to get predictors
 covariance_predictors = {}
 for predictor in combinator.solve(window=10):  # lookback window in convex optimization problem
     # From predictor we can access predictor.time, predictor.mean (=0 here), predictor.covariance, and predictor.weights
@@ -78,7 +78,7 @@ expert2 = {time: ewma63.loc[time] for time in ewma63.index.get_level_values(0).u
 # Create expert dictionary
 experts = {1: expert1, 2: expert2}
 
-# Define the covariance combinator 
+# Define the covariance combinator
 combinator = from_sigmas(sigmas=experts, returns=returns)
 
 # Solve combination problem and loop through combination results to get predictors
