@@ -128,6 +128,5 @@ If you want to reference our paper in your research, please consider citing us b
       year={2023},
       eprint={2305.19484},
       archivePrefix={arXiv},
-      primaryClass={econ.EM}
 }
 ```
