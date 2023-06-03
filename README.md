@@ -123,7 +123,7 @@ If you want to reference our paper in your research, please consider citing us b
 
 ```BibTeX
 @misc{johansson2023covariance,
-      title={A Simple Method for Predicting Covariance Matrices of Financial Returns}, 
+      title={A Simple Method for Predicting Covariance Matrices of Financial Returns},
       author={Kasper Johansson and Mehmet Giray Ogut and Markus Pelger and Thomas Schmelzer and Stephen Boyd},
       year={2023},
       eprint={2305.19484},
