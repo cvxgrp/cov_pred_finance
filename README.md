@@ -117,3 +117,16 @@ environment. Executing
 constructs a dedicated
 [Kernel](https://docs.jupyter.org/en/latest/projects/kernels.html) for the
 project.
+
+## Citing
+If you want to reference our paper in your research, please consider citing us by using the following BibTeX:
+
+```BibTeX
+@misc{johansson2023covariance,
+      title={A Simple Method for Predicting Covariance Matrices of Financial Returns},
+      author={Kasper Johansson and Mehmet Giray Ogut and Markus Pelger and Thomas Schmelzer and Stephen Boyd},
+      year={2023},
+      eprint={2305.19484},
+      archivePrefix={arXiv},
+}
+```
