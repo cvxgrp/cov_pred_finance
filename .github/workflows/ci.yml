@@ -22,7 +22,6 @@ jobs:
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
-          source-folder: 'cvx'
 
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2
