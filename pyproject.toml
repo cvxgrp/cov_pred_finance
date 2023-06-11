@@ -8,7 +8,7 @@ repository = "https://github.com/cvxgrp/cov_pred_finance"
 packages = [{include = "cvx"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8.0"
+python = ">=3.8.0,<4.0"
 pandas = "*"
 cvxpy = "*"
 scipy = "*"
@@ -25,6 +25,7 @@ loguru = "*"
 plotly = "*"
 jupyterlab = "*"
 cvxsimulator = "*"
+jupyter-book = "0.15.1"
 
 [build-system]
 requires = ["poetry>=1.0.2"]
