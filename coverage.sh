@@ -6,5 +6,5 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     open htmlcov/index.html
 fi
 if [[ $OSTYPE == 'linux'* ]]; then
-    xdg-open htmlcov/index.html
+    xdg-open htmlcov/index.html 2> /dev/null
 fi
