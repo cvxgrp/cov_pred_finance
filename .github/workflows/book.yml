@@ -1,0 +1,65 @@
+name: "book"
+
+on:
+- push
+
+jobs:
+  sphinx:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cvxgrp/.github/actions/sphinx@main
+        with:
+          os: ${{ runner.os }}
+          python-version: '3.10'
+          sphinx-folder: "book/sphinx"
+
+  test:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cvxgrp/.github/actions/test@main
+        with:
+          os: ${{ runner.os }}
+          python-version: '3.10'
+          source-folder: 'cvx'
+
+  jupyter:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cvxgrp/.github/actions/jupyter@main
+        with:
+          os: ${{ runner.os }}
+          python-version: '3.10'
+          kernel: "covariance"
+
+  book:
+    runs-on: "ubuntu-latest"
+    needs: [test, sphinx, jupyter]
+    steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Download Book
+        uses: actions/download-artifact@v3
+        with:
+          name: book
+          path: .book
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: sphinx
+          path: .book/artifacts/sphinx
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: tests
+          path: .book/artifacts/tests
+
+      - name: GitHub Pages action
+        uses: JamesIves/github-pages-deploy-action@v4.2.2
+        with:
+          branch: gh-pages          # The branch the action should deploy to.
+          folder: .book              # The folder the action should deploy.
