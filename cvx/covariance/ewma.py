@@ -94,6 +94,8 @@ def iterated_ewma(
     min_periods_vola=20,
     min_periods_cov=20,
     mean=False,
+    mu_halflife1=None,
+    mu_halflife2=None,
     clip_at=None,
 ):
     def scale_cov(vola, matrix):
@@ -114,8 +116,9 @@ def iterated_ewma(
 
     # compute the moving mean of the returns
 
+    # TODO: Check if this is correct half life
     returns, returns_mean = center(
-        returns=returns, halflife=vola_halflife, min_periods=0, mean_adj=mean
+        returns=returns, halflife=mu_halflife1, min_periods=0, mean_adj=mean
     )
 
     # estimate the volatility, clip some returns before they enter the estimation
@@ -129,10 +132,9 @@ def iterated_ewma(
     # adj the returns
     adj = clip((returns / vola), clip_at=clip_at)
 
-    # center the adj returns again?
-    adj, adj_mean = center(
-        adj, halflife=cov_halflife, min_periods=min_periods_cov, mean_adj=mean
-    )
+    # center the adj returns again? Yes, I think so
+    # TODO: Check if this is correct half life
+    adj, adj_mean = center(adj, halflife=mu_halflife2, min_periods=0, mean_adj=mean)
 
     m = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
 

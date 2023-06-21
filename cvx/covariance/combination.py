@@ -7,6 +7,7 @@ from collections import namedtuple
 import cvxpy as cvx
 import numpy as np
 import pandas as pd
+from tqdm import trange
 
 from cvx.covariance.ewma import iterated_ewma
 
@@ -91,13 +92,21 @@ class _CombinationProblem:
             self.P_chol_param.T @ self._weight
         )
 
-    @property
-    def _problem(self):
-        return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
+    ### This won't work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time
+    # @property
+    # def _problem(self):
+    #     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
+    ###
+
+    def _construct_problem(self):
+        self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
+
+    # def solve(self, **kwargs):
+    #     return self._problem.solve(**kwargs)
+    # return self.weights
 
     def solve(self, **kwargs):
-        return self._problem.solve(**kwargs)
-        # return self.weights
+        return self.prob.solve(**kwargs)
 
     @property
     def weights(self):
@@ -259,7 +268,12 @@ class _CovarianceCombination:
             keys=self.sigmas.keys(), n=len(self.assets), window=window
         )
 
-        for time in A.keys():
+        problem._construct_problem()
+
+        # for i in trange(len(A.keys())):
+        for i in range(len(A.keys())):
+            time = list(A.keys())[i]
+            # for time in A.keys():
             problem.A_param.value = A[time]
             problem.P_chol_param.value = P_chol[time]
 
