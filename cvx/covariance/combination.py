@@ -7,7 +7,7 @@ from collections import namedtuple
 import cvxpy as cvx
 import numpy as np
 import pandas as pd
-from tqdm import trange
+# from tqdm import trange
 
 from cvx.covariance.ewma import iterated_ewma
 
