@@ -53,7 +53,6 @@ def ewma(y, halflife, clip_at=None, min_periods=None):
     """
 
     beta = np.exp(-np.log(2) / halflife)
-    EWMA_t = 0
     EWMAs = []
     EWMAs = np.zeros_like(y)
     EWMAs[0] = y[0]

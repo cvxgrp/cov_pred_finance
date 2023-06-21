@@ -32,14 +32,16 @@ def test_covariance_estimator_mean(prices):
     # Pairs of halflife volatility vs halflife covariances
     pairs = [(10, 10), (21, 21), (21, 63)]
 
-    combinator = from_ewmas(returns, pairs, clip_at=4.2, mean=True)
+    combinator = from_ewmas(returns, pairs, clip_at=4.2, mean=True, min_periods_cov=21)
     results = {result.time: result.weights for result in combinator.solve(window=10)}
 
     pd.testing.assert_series_equal(
         results[pd.Timestamp("2018-04-11")],
         pd.Series(
             index=["10-10", "21-21", "21-63"],
-            data=[0.090970, 0.029890, 0.879140],
+            # data=[0.090970, 0.029890, 0.879140],
+            # i fixed a bug in iterated_ewma and these values changed
+            data=[0.089445, 0.038577, 0.871978],
         ),
         atol=1e-3,
     )

@@ -11,7 +11,7 @@ from tqdm import trange
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")
 
-from experiments.trading_model import *
+from experiments.utils.trading_model import *
 
 
 def _get_causal(returns, Sigmas, start_date, end_date, mus=None):
@@ -28,7 +28,7 @@ def _get_causal(returns, Sigmas, start_date, end_date, mus=None):
     return returns_temp, Sigmas_temp
 
 
-def _create_table_helper(metrics):
+def _create_table_helper(metrics, prescient=True):
     print("\\begin{tabular}{lcccc}")
     print("   \\toprule")
     print("   {Predictor} & {Return} & {Risk} & {Sharpe} & {Drawdown} \\\\")
@@ -46,21 +46,22 @@ def _create_table_helper(metrics):
                 )
             )
     print("   \\hline")
-    metric = metrics["PRESCIENT"]
-    print(
-        "   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
-            name,
-            metric.mean_return * 100,
-            metric.risk * 100,
-            metric.sharpe,
-            metric.drawdown * 100,
+    if prescient:
+        metric = metrics["PRESCIENT"]
+        print(
+            "   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
+                name,
+                metric.mean_return * 100,
+                metric.risk * 100,
+                metric.sharpe,
+                metric.drawdown * 100,
+            )
         )
-    )
     print("   \\bottomrule")
     print("\\end{tabular}")
 
 
-def create_table(traders, sigma_tar, rf, excess):
+def create_table(traders, sigma_tar, rf, excess, prescient=True):
     """
     param traders: dict of Trader Class objects
     param sigma_tar: target volatility
@@ -77,7 +78,7 @@ def create_table(traders, sigma_tar, rf, excess):
             metrics[name] = trader.get_metrics(
                 diluted_with_cash=False, rf=rf, excess=excess
             )
-    _create_table_helper(metrics)
+    _create_table_helper(metrics, prescient)
 
 
 class PortfolioBacktest(ABC):
