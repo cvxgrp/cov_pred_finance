@@ -98,6 +98,9 @@ def iterated_ewma(
     mu_halflife2=None,
     clip_at=None,
 ):
+    mu_halflife1 = mu_halflife1 or vola_halflife
+    mu_halflife2 = mu_halflife2 or cov_halflife
+
     def scale_cov(vola, matrix):
         index = matrix.index
         columns = matrix.columns
@@ -134,7 +137,12 @@ def iterated_ewma(
 
     # center the adj returns again? Yes, I think so
     # TODO: Check if this is correct half life
+
     adj, adj_mean = center(adj, halflife=mu_halflife2, min_periods=0, mean_adj=mean)
+    # if mean:
+    #     print(adj)
+    #     print(adj_mean)
+    #     assert False
 
     m = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
 
