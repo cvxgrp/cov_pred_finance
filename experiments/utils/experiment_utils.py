@@ -4,8 +4,72 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from cvx.covariance.regularization import regularize_covariance
 
-def log_likelihood(returns, Sigmas, means=None):
+
+def turnover(weights):
+    """
+    Computes average turnover for a sequence of weights,
+    i.e., mean of |w_{t+1}-w_{t}|_1
+    """
+    return np.mean(np.abs(weights.diff(axis=1)).sum(axis=1))
+
+
+def _single_log_likelihood(r, Sigma, m):
+    n = len(r)
+    Sigma_inv = np.linalg.inv(Sigma)
+    det = np.linalg.det(Sigma)
+    return (
+        -n / 2 * np.log(2 * np.pi)
+        - 1 / 2 * np.log(det)
+        - 1 / 2 * (r - m).T @ Sigma_inv @ (r - m)
+    )
+
+
+def log_likelihood_regularized(returns, Sigmas, means=None, r=None):
+    """
+    Helper function to avoid storing all the covariance matrices in memory for
+    large universe experiments
+
+    param returns: pandas DataFrame of returns
+    param Sigmas: dictionary of covariance matrices
+    param r: float, rank of low rank component
+
+    Note: Sigmas[time] is covariance prediction for returns[time+1]
+    """
+    ll = []
+    m = np.zeros_like(returns.iloc[0].values).reshape(-1, 1)
+
+    returns = returns.shift(-1)
+    times = []
+
+    if r is not None:
+        for time, cov in regularize_covariance(Sigmas, r=r):
+            if not returns.loc[time].isna()[0]:
+                if means is not None:
+                    m = means.loc[time].values.reshape(-1, 1)
+                ll.append(
+                    _single_log_likelihood(
+                        returns.loc[time].values.reshape(-1, 1), cov.values, m
+                    )
+                )
+                times.append(time)
+    else:
+        for time, cov in Sigmas.items():
+            if not returns.loc[time].isna()[0]:
+                if means is not None:
+                    m = means.loc[time].values.reshape(-1, 1)
+                ll.append(
+                    _single_log_likelihood(
+                        returns.loc[time].values.reshape(-1, 1), cov.values, m
+                    )
+                )
+                times.append(time)
+
+    return pd.Series(ll, index=times).astype(float)
+
+
+def log_likelihood(returns, Sigmas, means=None, scale=1):
     """
     Computes the log likelihhod assuming Gaussian returns with covariance matrix
     Sigmas and mean vector means
@@ -22,6 +86,10 @@ def log_likelihood(returns, Sigmas, means=None):
     returns = returns.reshape(T, n, 1)
     means = means.reshape(T, n, 1)
 
+    returns = returns * scale
+    means = means * scale
+    Sigmas = Sigmas * scale**2
+
     dets = np.linalg.det(Sigmas).reshape(len(Sigmas), 1, 1)
     Sigma_invs = np.linalg.inv(Sigmas)
 
@@ -34,6 +102,38 @@ def log_likelihood(returns, Sigmas, means=None):
         @ Sigma_invs
         @ (returns - means)
     ).flatten()
+
+
+def log_likelihood_sequential(returns, Sigmas, means=None, scale=1):
+    """
+    Computes Gaussian log likelihood sequentially
+    """
+    if means is None:
+        means = np.zeros_like(returns)
+
+    T, n = returns.shape
+
+    returns = returns.reshape(T, n, 1)
+    means = means.reshape(T, n, 1)
+
+    returns = returns * scale
+    means = means * scale
+    Sigmas = Sigmas * scale**2
+
+    ll = np.zeros(T)
+
+    for t in range(T):
+        r = returns[t].reshape(n, 1)
+        m = means[t].reshape(n, 1)
+        Sigma = Sigmas[t]
+        det = np.linalg.det(Sigma)
+        Sigma_inv = np.linalg.inv(Sigma)
+
+        ll[t] = (
+            -n / 2 * np.log(2 * np.pi)
+            - 1 / 2 * np.log(det)
+            - 1 / 2 * (r - m).T @ Sigma_inv @ (r - m)
+        )
 
 
 def rolling_window(returns, memory, min_periods=20):

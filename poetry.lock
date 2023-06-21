@@ -246,26 +246,6 @@ files = [
 ]
 
 [[package]]
-name = "backtest"
-version = "0.1.0"
-description = ""
-category = "dev"
-optional = false
-python-versions = "^3.8.0"
-files = []
-develop = false
-
-[package.dependencies]
-cvxpy = "^1.3.1"
-pandas = "^2.0.2"
-
-[package.source]
-type = "git"
-url = "https://github.com/cvxgrp/cvxbacktest"
-reference = "main"
-resolved_reference = "8f73778ef8cd3f04da9ea274a5138d9e91911a28"
-
-[[package]]
 name = "beautifulsoup4"
 version = "4.12.2"
 description = "Screen-scraping library"
@@ -658,6 +638,26 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 
 [package.extras]
 toml = ["tomli"]
+
+[[package]]
+name = "cvxbacktest"
+version = "0.0.0"
+description = "Backtesting"
+category = "dev"
+optional = false
+python-versions = ">=3.8.0, <4.0"
+files = []
+develop = false
+
+[package.dependencies]
+cvxpy = "^1.3.1"
+pandas = "^2.0.2"
+
+[package.source]
+type = "git"
+url = "https://github.com/cvxgrp/cvxbacktest"
+reference = "main"
+resolved_reference = "15c66a3c28fe3baf459720802e0d8b7538c5469e"
 
 [[package]]
 name = "cvxpy"
@@ -4088,4 +4088,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.0,<4.0"
-content-hash = "6080734f7ee45c1d38dcc0f15a771f21cb46b4e95705e91f482a226eaa37c9e6"
+content-hash = "79c6faa2f9744e63ee6c9047388d08c4e5f7aa8228dae83b73fa168726438f2e"
