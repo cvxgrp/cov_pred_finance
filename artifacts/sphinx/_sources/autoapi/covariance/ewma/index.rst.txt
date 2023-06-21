@@ -63,6 +63,6 @@ Attributes
    param clip_at: clip data at  +- clip_at
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, clip_at=None)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, mu_halflife1=None, mu_halflife2=None, clip_at=None)
 
 

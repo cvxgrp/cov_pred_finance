@@ -80,6 +80,7 @@
 <span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cvx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">trange</span>
 
 <span class="kn">from</span> <span class="nn">cvx.covariance.ewma</span> <span class="kn">import</span> <span class="n">iterated_ewma</span>
 
@@ -164,13 +165,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">P_chol_param</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span>
         <span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cvx</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span>
+    <span class="c1">### This won&#39;t work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time</span>
+    <span class="c1"># @property</span>
+    <span class="c1"># def _problem(self):</span>
+    <span class="c1">#     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)</span>
+    <span class="c1">###</span>
+
+    <span class="k">def</span> <span class="nf">_construct_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prob</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cvx</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span>
+
+    <span class="c1"># def solve(self, **kwargs):</span>
+    <span class="c1">#     return self._problem.solve(**kwargs)</span>
+    <span class="c1"># return self.weights</span>
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="c1"># return self.weights</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -332,7 +341,12 @@
             <span class="n">keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assets</span><span class="p">),</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span>
         <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">A</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">problem</span><span class="o">.</span><span class="n">_construct_problem</span><span class="p">()</span>
+
+        <span class="c1"># for i in trange(len(A.keys())):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># for time in A.keys():</span>
             <span class="n">problem</span><span class="o">.</span><span class="n">A_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">time</span><span class="p">]</span>
             <span class="n">problem</span><span class="o">.</span><span class="n">P_chol_param</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">P_chol</span><span class="p">[</span><span class="n">time</span><span class="p">]</span>
 

@@ -167,8 +167,13 @@
     <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">mean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">mu_halflife1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">mu_halflife2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
+    <span class="n">mu_halflife1</span> <span class="o">=</span> <span class="n">mu_halflife1</span> <span class="ow">or</span> <span class="n">vola_halflife</span>
+    <span class="n">mu_halflife2</span> <span class="o">=</span> <span class="n">mu_halflife2</span> <span class="ow">or</span> <span class="n">cov_halflife</span>
+
     <span class="k">def</span> <span class="nf">scale_cov</span><span class="p">(</span><span class="n">vola</span><span class="p">,</span> <span class="n">matrix</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">index</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">columns</span>
@@ -187,8 +192,9 @@
 
     <span class="c1"># compute the moving mean of the returns</span>
 
+    <span class="c1"># TODO: Check if this is correct half life</span>
     <span class="n">returns</span><span class="p">,</span> <span class="n">returns_mean</span> <span class="o">=</span> <span class="n">center</span><span class="p">(</span>
-        <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">vola_halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mean_adj</span><span class="o">=</span><span class="n">mean</span>
+        <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">mu_halflife1</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mean_adj</span><span class="o">=</span><span class="n">mean</span>
     <span class="p">)</span>
 
     <span class="c1"># estimate the volatility, clip some returns before they enter the estimation</span>
@@ -202,10 +208,14 @@
     <span class="c1"># adj the returns</span>
     <span class="n">adj</span> <span class="o">=</span> <span class="n">clip</span><span class="p">((</span><span class="n">returns</span> <span class="o">/</span> <span class="n">vola</span><span class="p">),</span> <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">)</span>
 
-    <span class="c1"># center the adj returns again?</span>
-    <span class="n">adj</span><span class="p">,</span> <span class="n">adj_mean</span> <span class="o">=</span> <span class="n">center</span><span class="p">(</span>
-        <span class="n">adj</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">cov_halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods_cov</span><span class="p">,</span> <span class="n">mean_adj</span><span class="o">=</span><span class="n">mean</span>
-    <span class="p">)</span>
+    <span class="c1"># center the adj returns again? Yes, I think so</span>
+    <span class="c1"># TODO: Check if this is correct half life</span>
+
+    <span class="n">adj</span><span class="p">,</span> <span class="n">adj_mean</span> <span class="o">=</span> <span class="n">center</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">halflife</span><span class="o">=</span><span class="n">mu_halflife2</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mean_adj</span><span class="o">=</span><span class="n">mean</span><span class="p">)</span>
+    <span class="c1"># if mean:</span>
+    <span class="c1">#     print(adj)</span>
+    <span class="c1">#     print(adj_mean)</span>
+    <span class="c1">#     assert False</span>
 
     <span class="n">m</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">index</span><span class="o">=</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
