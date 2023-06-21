@@ -657,7 +657,7 @@ pandas = "^2.0.2"
 type = "git"
 url = "https://github.com/cvxgrp/cvxbacktest"
 reference = "main"
-resolved_reference = "15c66a3c28fe3baf459720802e0d8b7538c5469e"
+resolved_reference = "bed3047db1430abe8403e9fc4ac6631444aa2cbe"
 
 [[package]]
 name = "cvxpy"
