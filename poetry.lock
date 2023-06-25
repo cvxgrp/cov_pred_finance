@@ -721,6 +721,27 @@ scs = ["setuptools (>65.5.1)"]
 xpress = ["xpress"]
 
 [[package]]
+name = "cvxrisk"
+version = "0.0.0"
+description = "Simple riskengine for cvxpy"
+category = "dev"
+optional = false
+python-versions = ">=3.8,<4.0"
+files = []
+develop = false
+
+[package.dependencies]
+cvxpy = "*"
+pandas = "*"
+scikit-learn = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/cvxgrp/cvxrisk"
+reference = "main"
+resolved_reference = "66d2d7f700459dfc35ae60dab394de2868d2f327"
+
+[[package]]
 name = "cvxsimulator"
 version = "0.5.1"
 description = "Simple simulator for investors"
@@ -4088,4 +4109,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.0,<4.0"
-content-hash = "79c6faa2f9744e63ee6c9047388d08c4e5f7aa8228dae83b73fa168726438f2e"
+content-hash = "7ddc2b406981da44feed38b793291a3b758511661e105e034f792656fd80e804"
