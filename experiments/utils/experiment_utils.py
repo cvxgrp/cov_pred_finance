@@ -60,6 +60,42 @@ def _single_log_likelihood(r, Sigma, m):
     )
 
 
+def log_likelihood_low_rank(returns, Sigmas, means=None):
+    """
+    Computes the log-likelihoods
+
+    param returns: pandas DataFrame of returns
+    param Sigmas: dictionary of covariance matrices where each covariance matrix
+                  is a namedtuple with fields "F" and "d"
+    param means: pandas DataFrame of means
+
+    Note: Sigmas[time] is covariance prediction for returns[time+1]
+        same for means.loc[time]
+    """
+    returns = returns.shift(-1)
+
+    ll = []
+    m = np.zeros_like(returns.iloc[0].values).reshape(-1, 1)
+
+    times = []
+
+    for time, low_rank in Sigmas.items():
+        # TODO: forming the covariance matrix is bad...
+        cov = low_rank.F @ (low_rank.F).T + np.diag(low_rank.d)
+
+        if not returns.loc[time].isna()[0]:
+            if means is not None:
+                m = means.loc[time].values.reshape(-1, 1)
+            ll.append(
+                _single_log_likelihood(
+                    returns.loc[time].values.reshape(-1, 1), cov.values, m
+                )
+            )
+            times.append(time)
+
+    return pd.Series(ll, index=times).astype(float)
+
+
 def log_likelihood_regularized(returns, Sigmas, means=None, r=None):
     """
     Helper function to avoid storing all the covariance matrices in memory for
@@ -71,10 +107,11 @@ def log_likelihood_regularized(returns, Sigmas, means=None, r=None):
 
     Note: Sigmas[time] is covariance prediction for returns[time+1]
     """
+    returns = returns.shift(-1)
+
     ll = []
     m = np.zeros_like(returns.iloc[0].values).reshape(-1, 1)
 
-    returns = returns.shift(-1)
     times = []
 
     if r is not None:

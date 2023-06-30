@@ -29,6 +29,7 @@ jupyter-book = "0.15.1"
 cvxbacktest = { git = "https://github.com/cvxgrp/cvxbacktest", branch = "main"}
 cvxrisk = { git = "https://github.com/cvxgrp/cvxrisk", branch = "main"}
 yfinance = "*"
+statsmodels = "*"
 
 
 
