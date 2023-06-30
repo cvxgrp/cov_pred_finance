@@ -10,10 +10,103 @@ from pandas._typing import TimedeltaConvertibleTypes
 from scipy.sparse.linalg import eigsh
 from scipy.sparse.linalg import LinearOperator
 
+from cvx.covariance.ewma import center
+from cvx.covariance.ewma import clip
+from cvx.covariance.ewma import volatility
+
 LowRankCovariance = namedtuple("LowRankCovariance", ["F", "d"])
+IEWMA = namedtuple("IEWMA", ["time", "mean", "covariance", "volatility"])
 
 
-def ewma_low_rank(data, halflife, min_periods=0, rank=5):
+def _get_diagonal(F, d):
+    return np.sum(F**2, axis=1) + d
+
+
+def low_rank_iterated_ewma(
+    returns,
+    vola_halflife,
+    cov_halflife,
+    rank,
+    min_periods_vola=20,
+    min_periods_cov=20,
+    mean=False,
+    mu_halflife1=None,
+    mu_halflife2=None,
+    clip_at=None,
+):
+    mu_halflife1 = mu_halflife1 or vola_halflife
+    mu_halflife2 = mu_halflife2 or cov_halflife
+
+    def scale_low_rank(vola, low_rank):
+        F_temp = low_rank.F
+        d_temp = low_rank.d
+
+        index = F_temp.index
+        columns = F_temp.columns
+        F_temp = F_temp.values
+        d_temp = d_temp.values
+
+        # Convert (covariance) matrix to correlation matrix
+        v = 1 / np.sqrt(_get_diagonal(F_temp, d_temp).reshape(-1, 1))
+        F = v * F_temp
+        d = (v.flatten() ** 2) * d_temp
+
+        F = vola.reshape(-1, 1) * F
+        d = (vola**2) * d
+
+        return LowRankCovariance(
+            F=pd.DataFrame(F, index=index, columns=columns), d=pd.Series(d, index=index)
+        )
+
+    def scale_mean(vola, vec1, vec2):
+        return vec1 + vola * vec2
+
+    # compute the moving mean of the returns
+
+    # TODO: Check if this is correct half life
+    returns, returns_mean = center(
+        returns=returns, halflife=mu_halflife1, min_periods=0, mean_adj=mean
+    )
+
+    # estimate the volatility, clip some returns before they enter the estimation
+    vola = volatility(
+        returns=returns,
+        halflife=vola_halflife,
+        min_periods=min_periods_vola,
+        clip_at=clip_at,
+    )
+
+    # adj the returns
+    adj = clip((returns / vola), clip_at=clip_at)
+
+    # center the adj returns again? Yes, I think so
+    # TODO: Check if this is correct half life
+
+    adj, adj_mean = center(adj, halflife=mu_halflife2, min_periods=0, mean_adj=mean)
+    # if mean:
+    #     print(adj)
+    #     print(adj_mean)
+    #     assert False
+
+    m = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
+
+    for t, low_rank in _ewma_low_rank(
+        data=adj, halflife=cov_halflife, min_periods=min_periods_cov, rank=rank
+    ):
+        if mean:
+            m = scale_mean(
+                vola=vola.loc[t].values, vec1=returns_mean.loc[t], vec2=adj_mean.loc[t]
+            )
+
+        yield IEWMA(
+            time=t,
+            mean=m,
+            covariance=scale_low_rank(vola=vola.loc[t].values, low_rank=low_rank),
+            volatility=vola.loc[t],
+        )
+
+
+def _ewma_low_rank(data, halflife, min_periods=0, rank=5):
     """
     param data: Txn pandas DataFrame of returns
     param halflife: float, halflife of the EWMA
