@@ -7,7 +7,8 @@ import numpy as np
 import pandas as pd
 import scipy as sc
 
-LowRank = namedtuple("LowRank", ["Loading", "Cov", "D", "Approximation"])
+LowRank = namedtuple("LowRank", ["Loading", "Lambda", "D", "Approximation"])
+LowRankDiag = namedtuple("LowRankCovariance", ["F", "d"])
 
 
 def _regularize_correlation(R, r):
@@ -39,11 +40,11 @@ def _regularize_correlation(R, r):
     D = np.diag(np.diag(R - R_lo))
 
     # Create low rank approximation
-    return LowRank(Loading=Q, Cov=lamda, D=D, Approximation=R_lo + D)
+    return LowRank(Loading=Q, Lambda=lamda, D=D, Approximation=R_lo + D)
     # return R_lo + D
 
 
-def regularize_covariance(sigmas, r):
+def regularize_covariance(sigmas, r, low_rank_format=False):
     """
     param Sigmas: dictionary of covariance matrices
     param r: float, rank of low rank component
@@ -52,9 +53,73 @@ def regularize_covariance(sigmas, r):
     regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
     """
     for time, sigma in sigmas.items():
-        vola = np.sqrt(np.diag(sigma))
-        R = sigma / np.outer(vola, vola)
+        vola = np.sqrt(np.diag(sigma)).reshape(-1, 1)
+        # R = sigma / np.outer(vola, vola)
+        R = (1 / vola) * sigma * (1 / vola).T
         R = _regularize_correlation(R, r)
         # todo: requires some further work
-        cov = vola.reshape(-1, 1) * R.Approximation * vola.reshape(1, -1)
-        yield time, pd.DataFrame(cov, index=sigma.columns, columns=sigma.columns)
+        if not low_rank_format:
+            cov = vola.reshape(-1, 1) * R.Approximation * vola.reshape(1, -1)
+            yield time, pd.DataFrame(cov, index=sigma.columns, columns=sigma.columns)
+        else:
+            F = vola.reshape(-1, 1) * R.Loading * np.sqrt(R.Lambda)
+            d = np.diag(vola.reshape(-1, 1) * R.D * vola.reshape(1, -1))
+            yield time, LowRankDiag(
+                F=pd.DataFrame(F, index=sigma.columns),
+                d=pd.Series(d, index=sigma.columns),
+            )
+
+
+# def _em_objective(Cxx, Cxs, Css, F, d):
+#     return np.trace(np.diag(1/d)@(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)) + np.log(np.prod(d))
+
+
+def _e_step(Sigma, F, d):
+    G = np.linalg.inv((F.T * (1 / d.values.reshape(1, -1))) @ F + np.eye(F.shape[1]))
+    L = G @ F.T * (1 / d.values.reshape(1, -1))
+    Cxx = Sigma
+    Cxs = Sigma @ L.T
+    Css = L @ (Sigma @ L.T) + G
+
+    return Cxx, Cxs, Css
+
+
+def _m_step(Cxx, Cxs, Css):
+    F = Cxs @ np.linalg.inv(Css)
+    # d = np.diag(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)
+    d = np.diag(Cxx) - 2 * np.sum(Cxs * F, axis=1) + np.sum(F * (F @ Css), axis=1)
+    return LowRankDiag(F=F, d=pd.Series(d, index=F.index))
+
+
+def _em_low_rank_approximation(sigma, initial_sigma):
+    """
+    param sigma: one covariance matrices
+    param rank: float, rank of low rank component
+
+    returns: regularized covariance matrices
+    """
+    assets = sigma.columns
+    F = initial_sigma.F
+    d = initial_sigma.d
+
+    for _ in range(5):
+        Cxx, Cxs, Css = _e_step(sigma, F, d)
+        F, d = _m_step(Cxx, Cxs, Css)
+
+    return LowRankDiag(F=pd.DataFrame(F, index=assets), d=pd.Series(d, index=assets))
+
+
+from tqdm import tqdm
+
+
+def em_regularize_covariance(sigmas, initial_sigmas):
+    """
+    param sigmas: dictionary of covariance matrices
+    param  initial_sigmas: dictionary of initial low rank + diagonal approximations; these
+    are namedtuples with fields F and d, with F nxk and d length n
+
+    returns: regularized covariance matrices
+    """
+
+    for time, sigma in tqdm(sigmas.items()):
+        yield time, _em_low_rank_approximation(sigma, initial_sigmas[time])
