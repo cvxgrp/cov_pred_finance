@@ -48,6 +48,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../ccp_regularize/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ccp_regularize</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../combination/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.combination</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="../ewma/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.regularization</span></code></a></li>
@@ -97,8 +98,11 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.regularize_covariance" title="covariance.regularization.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(sigmas, r)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.regularize_covariance" title="covariance.regularization.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(sigmas, r, low_rank_format=False)</p></td>
 <td><p>param Sigmas: dictionary of covariance matrices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.em_regularize_covariance" title="covariance.regularization.em_regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">em_regularize_covariance</span></code></a>(sigmas, initial_sigmas)</p></td>
+<td><p>param sigmas: dictionary of covariance matrices</p></td>
 </tr>
 </tbody>
 </table>
@@ -114,6 +118,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.LowRank" title="covariance.regularization.LowRank"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRank</span></code></a></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.LowRankDiag" title="covariance.regularization.LowRankDiag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRankDiag</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py data">
@@ -121,13 +128,27 @@
 <span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRank</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="covariance.regularization.LowRankDiag">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRankDiag</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRankDiag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRankDiag" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.regularization.regularize_covariance">
-<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">regularize_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#regularize_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.regularize_covariance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">regularize_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_rank_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#regularize_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.regularize_covariance" title="Permalink to this definition"></a></dt>
 <dd><p>param Sigmas: dictionary of covariance matrices
 param r: float, rank of low rank component</p>
 <p>returns: regularized covariance matrices according to “Factor form
 regularization.” of Section 7.2 in the paper “A Simple Method for Predicting Covariance Matrices of Financial Returns”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.regularization.em_regularize_covariance">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">em_regularize_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_sigmas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#em_regularize_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.em_regularize_covariance" title="Permalink to this definition"></a></dt>
+<dd><p>param sigmas: dictionary of covariance matrices
+param  initial_sigmas: dictionary of initial low rank + diagonal approximations; these
+are namedtuples with fields F and d, with F nxk and d length n</p>
+<p>returns: regularized covariance matrices</p>
 </dd></dl>
 
 </section>

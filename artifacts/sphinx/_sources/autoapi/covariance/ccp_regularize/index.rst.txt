@@ -1,0 +1,14 @@
+:py:mod:`covariance.ccp_regularize`
+===================================
+
+.. py:module:: covariance.ccp_regularize
+
+
+Module Contents
+---------------
+
+.. py:data:: slogdet
+   
+
+   
+

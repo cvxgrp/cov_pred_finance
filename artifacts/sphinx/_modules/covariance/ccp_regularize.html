@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.ccp_regularize &mdash; cvxcovariance Documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/logo.jpeg"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> cvxcovariance
+            <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cvxcovariance</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>covariance.ccp_regularize</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for covariance.ccp_regularize</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="nn">cp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="slogdet"><a class="viewcode-back" href="../../autoapi/covariance/ccp_regularize/index.html#covariance.ccp_regularize.slogdet">[docs]</a><span class="n">slogdet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span></div>
+
+
+<span class="k">class</span> <span class="nc">_State</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Construct E, G, s.t, E-GG^T = (D+FF^T)^{-1}</span>
+        <span class="n">d_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">d_inv</span> <span class="o">*</span> <span class="n">F</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">=</span> <span class="n">d_inv</span> <span class="o">*</span> <span class="p">(</span><span class="n">F</span> <span class="o">@</span> <span class="n">Lamda</span><span class="p">)</span>  <span class="c1"># k=ccp iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ek</span> <span class="o">=</span> <span class="n">d_inv</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span> <span class="o">=</span> <span class="n">Sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">Sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">])]</span>
+        <span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="n">slogdet</span><span class="p">(</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">))</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s2">&quot;fro&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="nf">construct_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct the ccp problem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e_var</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G_var</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Variable</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gk_par</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Parameter</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">))</span>
+
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">cp</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">cp</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e_var</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">G_var</span><span class="p">]),</span> <span class="n">cp</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">G_var</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">])]</span>
+        <span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="n">cp</span><span class="o">.</span><span class="n">log_det</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">cp</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e_var</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+            <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk_par</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">G_var</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">prob</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        One iteration of the algorithm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gk_par</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;MOSEK&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ek</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">e_var</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G_var</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return final F and d</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">e_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">e_inv</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">)))</span>
+        <span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">e_inv</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">@</span> <span class="n">Lamda</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">e_inv</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span>
+
+
+<span class="k">class</span> <span class="nc">_State2</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Construct E, G, s.t, E-GG^T = (D+FF^T)^{-1}</span>
+        <span class="n">d_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">d_inv</span> <span class="o">*</span> <span class="n">F</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">=</span> <span class="n">d_inv</span> <span class="o">*</span> <span class="p">(</span><span class="n">F</span> <span class="o">@</span> <span class="n">Lamda</span><span class="p">)</span>  <span class="c1"># k=ccp iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ek</span> <span class="o">=</span> <span class="n">d_inv</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span> <span class="o">=</span> <span class="n">Sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">Sigma</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">])]</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">slogdet</span><span class="p">(</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">slogdet</span><span class="p">(</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="n">slogdet</span><span class="p">(</span><span class="n">matrix</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">))</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s2">&quot;fro&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        One iteration of the algorithm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">=</span> <span class="n">_solve_proximal_gradient</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sigma</span>
+        <span class="p">)</span>
+        <span class="c1"># print(self.Gk)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return final F and d</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">e_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ek</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">Lamda</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">e_inv</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gk</span><span class="p">)))</span>
+        <span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">e_inv</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gk</span> <span class="o">@</span> <span class="n">Lamda</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">e_inv</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span>
+
+
+<span class="k">def</span> <span class="nf">_common_factor</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">G</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The common factor in the gradient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">e_inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">e</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">e_inv</span> <span class="o">*</span> <span class="p">(</span><span class="n">G</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">G</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">e_inv</span> <span class="o">*</span> <span class="n">G</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">_grad_G</span><span class="p">(</span><span class="n">common_factor</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">common_factor</span>
+
+
+<span class="k">def</span> <span class="nf">_grad_e</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">common_factor</span><span class="p">):</span>
+    <span class="n">e_inv</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">e_inv</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">common_factor</span> <span class="o">@</span> <span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">e_inv</span><span class="o">.</span><span class="n">T</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">_solve_proximal_gradient</span><span class="p">(</span><span class="n">e_init</span><span class="p">,</span> <span class="n">G_init</span><span class="p">,</span> <span class="n">Gk</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">,</span> <span class="n">maxiters</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">ej</span> <span class="o">=</span> <span class="n">e_init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">Gj</span> <span class="o">=</span> <span class="n">G_init</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">Sigma_at_Gk</span> <span class="o">=</span> <span class="n">Sigma</span> <span class="o">@</span> <span class="n">Gk</span>  <span class="c1"># For proximal gradient update</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiters</span><span class="p">):</span>
+        <span class="n">common_factor</span> <span class="o">=</span> <span class="n">_common_factor</span><span class="p">(</span><span class="n">ej</span><span class="p">,</span> <span class="n">Gj</span><span class="p">)</span>
+        <span class="n">G_grad</span> <span class="o">=</span> <span class="n">_grad_G</span><span class="p">(</span><span class="n">common_factor</span><span class="p">)</span>
+        <span class="n">e_grad</span> <span class="o">=</span> <span class="n">_grad_e</span><span class="p">(</span><span class="n">ej</span><span class="p">,</span> <span class="n">Gj</span><span class="p">,</span> <span class="n">common_factor</span><span class="p">)</span>
+
+        <span class="c1"># TODO: hardcoded</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ej</span> <span class="o">=</span> <span class="p">(</span><span class="n">ej</span> <span class="o">-</span> <span class="p">(</span><span class="n">e_grad</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)))</span> <span class="o">*</span> <span class="n">alpha</span>
+        <span class="n">Gj</span> <span class="o">=</span> <span class="p">(</span><span class="n">Gj</span> <span class="o">-</span> <span class="p">(</span><span class="n">G_grad</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Sigma_at_Gk</span><span class="p">))</span> <span class="o">*</span> <span class="n">alpha</span>
+
+    <span class="k">return</span> <span class="n">ej</span><span class="p">,</span> <span class="n">Gj</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
