@@ -14,7 +14,6 @@ Functions
 .. autoapisummary::
 
    covariance.regularization.regularize_covariance
-   covariance.regularization.em_regularize_covariance
 
 
 
@@ -24,7 +23,6 @@ Attributes
 .. autoapisummary::
 
    covariance.regularization.LowRank
-   covariance.regularization.LowRankDiag
 
 
 .. py:data:: LowRank
@@ -32,26 +30,12 @@ Attributes
 
    
 
-.. py:data:: LowRankDiag
-   
-
-   
-
-.. py:function:: regularize_covariance(sigmas, r, low_rank_format=False)
+.. py:function:: regularize_covariance(sigmas, r)
 
    param Sigmas: dictionary of covariance matrices
    param r: float, rank of low rank component
 
    returns: regularized covariance matrices according to "Factor form
    regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
-
-
-.. py:function:: em_regularize_covariance(sigmas, initial_sigmas)
-
-   param sigmas: dictionary of covariance matrices
-   param  initial_sigmas: dictionary of initial low rank + diagonal approximations; these
-   are namedtuples with fields F and d, with F nxk and d length n
-
-   returns: regularized covariance matrices
 
 
