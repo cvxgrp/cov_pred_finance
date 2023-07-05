@@ -113,6 +113,10 @@ class _CombinationProblem:
     def weights(self):
         return pd.Series(index=self.keys, data=self._weight.value)
 
+    @property
+    def status(self):
+        return self.prob.status
+
 
 def from_ewmas(
     returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False
@@ -253,11 +257,6 @@ class _CovarianceCombination:
             for i in range(window - 1, len(times))
         }
 
-        for time, matrix in P.items():
-            try:
-                a = np.linalg.cholesky(matrix)
-            except:
-                print(matrix)
         P_chol = {time: np.linalg.cholesky(matrix) for time, matrix in P.items()}
 
         # Compute A matrix
@@ -277,10 +276,12 @@ class _CovarianceCombination:
         problem._construct_problem()
 
         # for i in trange(len(A.keys())):
-        for i in range(len(A.keys())):
-            time = list(A.keys())[i]
+        # for i in range(len(A.keys())):
+
+        for time, AA in A.items():
+            # time = list(A.keys())[i]
             # for time in A.keys():
-            problem.A_param.value = A[time]
+            problem.A_param.value = AA  # A[time]
             problem.P_chol_param.value = P_chol[time]
 
             yield self._solve(time=time, problem=problem, **kwargs)
@@ -290,22 +291,41 @@ class _CovarianceCombination:
         Solves the covariance combination problem at a given time t
         """
         # solve problem
-        try:
-            problem.solve(**kwargs)
-            weights = problem.weights
+        # try:
+        problem.solve(**kwargs)
+        print(problem.status)
 
-            # Get non-shifted L
-            L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
-            nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+        if problem.status != "optimal":
+            raise cvx.SolverError("Solver did not converge")
 
-            mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-            sigma = pd.DataFrame(
-                index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-            )
-        except cvx.SolverError as e:
-            print(e)
-            mean = pd.Series(index=self.assets, data=np.nan)
-            sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.nan)
-            weights = pd.Series(index=self.sigmas.keys(), data=np.nan)
+        weights = problem.weights
+
+        # Get non-shifted L
+        L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
+        nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+
+        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
+        sigma = pd.DataFrame(
+            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
+        )
+        # except cvx.SolverError as e:
+        #    mean = pd.Series(index=self.assets, data=np.nan)
+        #    sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.nan)
+        #    weights = pd.Series(index=self.sigmas.keys(), data=np.nan)
+        #    raise cvx.SolverError("Solver did not converge")
 
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)
+
+        # for loop:
+        #     try:
+        #         solve something
+        #         write result into file
+        #     except cvx.SolverError as e:
+        #
+        #         PRINT BIG WARNING ON SCREEN THAT THERE WAS A Problem for a particular day
+        #         user can see time could write to some stack
+        #         pass
+        #
+        # for loop:
+        #     solve something
+        #     write results into file
