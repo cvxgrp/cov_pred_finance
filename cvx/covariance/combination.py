@@ -275,16 +275,15 @@ class _CovarianceCombination:
 
         problem._construct_problem()
 
-        # for i in trange(len(A.keys())):
-        # for i in range(len(A.keys())):
-
         for time, AA in A.items():
-            # time = list(A.keys())[i]
-            # for time in A.keys():
-            problem.A_param.value = AA  # A[time]
+            problem.A_param.value = AA
             problem.P_chol_param.value = P_chol[time]
 
-            yield self._solve(time=time, problem=problem, **kwargs)
+            try:
+                yield self._solve(time=time, problem=problem, **kwargs)
+            except cvx.SolverError:
+                print(f"Solver did not converge at time {time}")
+                yield None
 
     def _solve(self, time, problem, **kwargs):
         """
@@ -296,7 +295,7 @@ class _CovarianceCombination:
         print(problem.status)
 
         if problem.status != "optimal":
-            raise cvx.SolverError("Solver did not converge")
+            raise cvx.SolverError
 
         weights = problem.weights
 
@@ -308,24 +307,5 @@ class _CovarianceCombination:
         sigma = pd.DataFrame(
             index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
         )
-        # except cvx.SolverError as e:
-        #    mean = pd.Series(index=self.assets, data=np.nan)
-        #    sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.nan)
-        #    weights = pd.Series(index=self.sigmas.keys(), data=np.nan)
-        #    raise cvx.SolverError("Solver did not converge")
 
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)
-
-        # for loop:
-        #     try:
-        #         solve something
-        #         write result into file
-        #     except cvx.SolverError as e:
-        #
-        #         PRINT BIG WARNING ON SCREEN THAT THERE WAS A Problem for a particular day
-        #         user can see time could write to some stack
-        #         pass
-        #
-        # for loop:
-        #     solve something
-        #     write results into file

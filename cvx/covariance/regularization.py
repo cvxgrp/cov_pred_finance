@@ -70,8 +70,7 @@ def regularize_covariance(sigmas, r, low_rank_format=False):
             )
 
 
-# def _em_objective(Cxx, Cxs, Css, F, d):
-#     return np.trace(np.diag(1/d)@(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)) + np.log(np.prod(d))
+##### Expectation-Maximization algorithm proposeb by Emmanuel Candes #####
 
 
 def _e_step(Sigma, F, d):
