@@ -10,6 +10,8 @@ import pandas as pd
 
 from cvx.covariance.ewma import iterated_ewma
 
+# from tqdm import trange
+
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")
 
@@ -251,6 +253,11 @@ class _CovarianceCombination:
             for i in range(window - 1, len(times))
         }
 
+        for time, matrix in P.items():
+            try:
+                a = np.linalg.cholesky(matrix)
+            except:
+                print(matrix)
         P_chol = {time: np.linalg.cholesky(matrix) for time, matrix in P.items()}
 
         # Compute A matrix
@@ -283,15 +290,22 @@ class _CovarianceCombination:
         Solves the covariance combination problem at a given time t
         """
         # solve problem
-        problem.solve(**kwargs)
-        weights = problem.weights
+        try:
+            problem.solve(**kwargs)
+            weights = problem.weights
 
-        # Get non-shifted L
-        L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
-        nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+            # Get non-shifted L
+            L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
+            nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
 
-        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-        sigma = pd.DataFrame(
-            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-        )
+            mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
+            sigma = pd.DataFrame(
+                index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
+            )
+        except cvx.SolverError as e:
+            print(e)
+            mean = pd.Series(index=self.assets, data=np.nan)
+            sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.nan)
+            weights = pd.Series(index=self.sigmas.keys(), data=np.nan)
+
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)

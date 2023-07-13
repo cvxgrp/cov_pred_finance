@@ -107,8 +107,8 @@ def iterated_ewma(
         matrix = matrix.values
 
         # Convert (covariance) matrix to correlation matrix
-        v = np.sqrt(np.diagonal(matrix))
-        matrix = matrix / np.outer(v, v)
+        v = 1 / np.sqrt(np.diagonal(matrix)).reshape(-1, 1)
+        matrix = v * matrix * v.T
 
         cov = vola.reshape(-1, 1) * matrix * vola.reshape(1, -1)
 
