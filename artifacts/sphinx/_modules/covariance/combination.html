@@ -164,8 +164,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">P_chol_param</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span>
         <span class="p">)</span>
 
+    <span class="c1">### This won&#39;t work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time</span>
+    <span class="c1"># @property</span>
+    <span class="c1"># def _problem(self):</span>
+    <span class="c1">#     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)</span>
+    <span class="c1">###</span>
+
     <span class="k">def</span> <span class="nf">_construct_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prob</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">cvx</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span>
+
+    <span class="c1"># def solve(self, **kwargs):</span>
+    <span class="c1">#     return self._problem.solve(**kwargs)</span>
+    <span class="c1"># return self.weights</span>
 
     <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -185,13 +195,10 @@
 <span class="sd">    param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],</span>
 <span class="sd">                pair[0] is the half life for volatility estimation</span>
 <span class="sd">                pair[1] is the half life for covariance estimation</span>
-<span class="sd">    param min_periods_vola: minimum number of observations to start EWMA</span>
-<span class="sd">                            for volatility estimation (optional)</span>
-<span class="sd">    param min_periods_cov: minimum number of observations to start EWMA</span>
-<span class="sd">                           for covariance estimation (optional)</span>
+<span class="sd">    param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)</span>
+<span class="sd">    param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)</span>
 <span class="sd">    param clip_at: clip volatility adjusted returns at +- clip_at (optional)</span>
-<span class="sd">    param mean: subtract EWMA mean from returns</span>
-<span class="sd">                and volatility adjusted returns (optional)</span>
+<span class="sd">    param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)</span>
 
 <span class="sd">    return: Yields tuples with time, mean, covariance matrix, weights</span>
 <span class="sd">    &quot;&quot;&quot;</span>
