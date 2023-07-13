@@ -91,18 +91,8 @@ class _CombinationProblem:
             self.P_chol_param.T @ self._weight
         )
 
-    ### This won't work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time
-    # @property
-    # def _problem(self):
-    #     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-    ###
-
     def _construct_problem(self):
         self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-
-    # def solve(self, **kwargs):
-    #     return self._problem.solve(**kwargs)
-    # return self.weights
 
     def solve(self, **kwargs):
         return self.prob.solve(**kwargs)
@@ -122,10 +112,13 @@ def from_ewmas(
     param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],
                 pair[0] is the half life for volatility estimation
                 pair[1] is the half life for covariance estimation
-    param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
-    param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
+    param min_periods_vola: minimum number of observations to start EWMA
+                            for volatility estimation (optional)
+    param min_periods_cov: minimum number of observations to start EWMA
+                           for covariance estimation (optional)
     param clip_at: clip volatility adjusted returns at +- clip_at (optional)
-    param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)
+    param mean: subtract EWMA mean from returns
+                and volatility adjusted returns (optional)
 
     return: Yields tuples with time, mean, covariance matrix, weights
     """

@@ -258,7 +258,7 @@ class Trader:
             # risk = cp.norm(L_inv_param @ w, 2)
 
             if portfolio_type == "robust_min_risk":
-                assert kappa != None
+                assert kappa is not None
                 sigma_hat_param = cp.Parameter((self.n, 1), nonneg=True)
                 risk = cp.norm2(
                     cp.sum(cp.multiply(L_inv_param, w.T), axis=1)
@@ -542,7 +542,7 @@ class Trader:
                 or diluted_with_cash
             ):
                 if diluted_with_cash:
-                    if not self.diluted == True:
+                    if self.diluted is not True:
                         assert sigma_des is not None
                         self.dilute_with_cash(sigma_des)
                     w_t = self.ws_diluted[t]
