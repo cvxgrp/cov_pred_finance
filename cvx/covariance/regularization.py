@@ -49,7 +49,8 @@ def regularize_covariance(sigmas, r):
     param r: float, rank of low rank component
 
     returns: regularized covariance matrices according to "Factor form
-    regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
+    regularization." of Section 7.2 in the paper "A Simple Method
+    for Predicting Covariance Matrices of Financial Returns"
     """
     for time, sigma in sigmas.items():
         vola = np.sqrt(np.diag(sigma))
