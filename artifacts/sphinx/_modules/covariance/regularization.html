@@ -122,7 +122,8 @@
 <span class="sd">    param r: float, rank of low rank component</span>
 
 <span class="sd">    returns: regularized covariance matrices according to &quot;Factor form</span>
-<span class="sd">    regularization.&quot; of Section 7.2 in the paper &quot;A Simple Method for Predicting Covariance Matrices of Financial Returns&quot;</span>
+<span class="sd">    regularization.&quot; of Section 7.2 in the paper &quot;A Simple Method</span>
+<span class="sd">    for Predicting Covariance Matrices of Financial Returns&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">vola</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span>
