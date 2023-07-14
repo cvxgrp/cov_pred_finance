@@ -99,7 +99,7 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.volatility" title="covariance.ewma.volatility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volatility</span></code></a>(returns, halflife, min_periods=0, clip_at=None)</p></td>
-<td><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p></td>
+<td><p>Estimate volatility from returns using an</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.center" title="covariance.ewma.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a>(returns, halflife, min_periods=0, mean_adj=False)</p></td>
 <td><p>Center returns by subtracting their exponentially weighted moving average (EWMA)</p></td>
@@ -134,7 +134,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.volatility">
 <span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">volatility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#volatility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.volatility" title="Permalink to this definition"></a></dt>
-<dd><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p>
+<dd><p>Estimate volatility from returns using an
+exponentially weighted moving average (EWMA)</p>
 <p>param returns: 1 dim. numpy array of returns
 param halflife: EWMA half life
 param min_periods: minimum number of observations to start EWMA (optional)
@@ -148,7 +149,10 @@ param clip_at: clip y_last at  +- clip_at*EWMA (optional)</p>
 <p>param returns: Frame of returns
 param halflife: EWMA half life
 param min_periods: minimum number of observations to start EWMA (optional)
-param mean_adj: subtract EWMA mean from returns (optional), otherwise function returns original returns and 0.0 as mean</p>
+param mean_adj: subtract EWMA mean from returns (optional),</p>
+<blockquote>
+<div><p>otherwise function returns original returns and 0.0 as mean</p>
+</div></blockquote>
 <p>return: the centered returns and their mean</p>
 </dd></dl>
 
