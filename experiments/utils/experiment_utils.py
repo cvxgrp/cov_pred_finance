@@ -1,10 +1,35 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from cvx.covariance.regularization import regularize_covariance
+
+
+def yearly_SR(trader, plot=True, regression_line=True):
+    rets = pd.Series(trader.rets.flatten(), index=trader.returns.index)
+
+    # Only keep years with more than 100 trading days
+    rets = rets.groupby(rets.index.year).filter(lambda x: len(x) > 100)
+
+    means = rets.resample("Y").mean() * 252
+    stds = rets.resample("Y").std() * np.sqrt(252)
+
+    SRs = means / stds
+
+    if plot:
+        # Fit regression line to SRs
+        coefficients = np.polyfit(SRs.index.year + 1, SRs.values, 1)
+        sr_pred = np.polyval(coefficients, SRs.index.year)
+
+        plt.plot(SRs, marker="o")
+        if regression_line:
+            plt.plot(SRs.index, sr_pred, "--", color="red", alpha=0.5, label="Trend")
+        plt.ylabel("Sharpe ratio")
+        plt.legend()
+    return SRs
 
 
 def turnover(weights):
@@ -12,7 +37,16 @@ def turnover(weights):
     Computes average turnover for a sequence of weights,
     i.e., mean of |w_{t+1}-w_{t}|_1
     """
-    return np.mean(np.abs(weights.diff(axis=1)).sum(axis=1))
+    w_diff = weights[1:] - weights[:-1]
+    w_old = weights[:-1]
+
+    daily_turnover = np.mean(
+        np.sum(np.abs(w_diff), axis=1) / np.sum(np.abs(w_old), axis=1)
+    )
+
+    yearly_turnover = 252 * daily_turnover
+
+    return yearly_turnover * 100
 
 
 def _single_log_likelihood(r, Sigma, m):
@@ -26,6 +60,42 @@ def _single_log_likelihood(r, Sigma, m):
     )
 
 
+def log_likelihood_low_rank(returns, Sigmas, means=None):
+    """
+    Computes the log-likelihoods
+
+    param returns: pandas DataFrame of returns
+    param Sigmas: dictionary of covariance matrices where each covariance matrix
+                  is a namedtuple with fields "F" and "d"
+    param means: pandas DataFrame of means
+
+    Note: Sigmas[time] is covariance prediction for returns[time+1]
+        same for means.loc[time]
+    """
+    returns = returns.shift(-1)
+
+    ll = []
+    m = np.zeros_like(returns.iloc[0].values).reshape(-1, 1)
+
+    times = []
+
+    for time, low_rank in Sigmas.items():
+        # TODO: forming the covariance matrix is bad...
+        cov = low_rank.F @ (low_rank.F).T + np.diag(low_rank.d)
+
+        if not returns.loc[time].isna()[0]:
+            if means is not None:
+                m = means.loc[time].values.reshape(-1, 1)
+            ll.append(
+                _single_log_likelihood(
+                    returns.loc[time].values.reshape(-1, 1), cov.values, m
+                )
+            )
+            times.append(time)
+
+    return pd.Series(ll, index=times).astype(float)
+
+
 def log_likelihood_regularized(returns, Sigmas, means=None, r=None):
     """
     Helper function to avoid storing all the covariance matrices in memory for
@@ -37,10 +107,11 @@ def log_likelihood_regularized(returns, Sigmas, means=None, r=None):
 
     Note: Sigmas[time] is covariance prediction for returns[time+1]
     """
+    returns = returns.shift(-1)
+
     ll = []
     m = np.zeros_like(returns.iloc[0].values).reshape(-1, 1)
 
-    returns = returns.shift(-1)
     times = []
 
     if r is not None:
