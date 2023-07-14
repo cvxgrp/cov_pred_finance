@@ -37,3 +37,13 @@ pre-commit = "*"
 [build-system]
 requires = ["poetry>=1.0.2"]
 build-backend = "poetry.masonry.api"
+
+[tool.ruff]
+select = ["E", "F", "I"]
+line-length = 100
+target-version = "py38"
+exclude = [
+    "*__init__.py",
+    "experiments"
+]
+namespace-packages = ["cvx/covariance"]
