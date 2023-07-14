@@ -10,8 +10,6 @@ import pandas as pd
 
 from cvx.covariance.ewma import iterated_ewma
 
-# from tqdm import trange
-
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")
 
@@ -93,18 +91,8 @@ class _CombinationProblem:
             self.P_chol_param.T @ self._weight
         )
 
-    ### This won't work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time
-    # @property
-    # def _problem(self):
-    #     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-    ###
-
     def _construct_problem(self):
         self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-
-    # def solve(self, **kwargs):
-    #     return self._problem.solve(**kwargs)
-    # return self.weights
 
     def solve(self, **kwargs):
         return self.prob.solve(**kwargs)
@@ -253,11 +241,6 @@ class _CovarianceCombination:
             for i in range(window - 1, len(times))
         }
 
-        for time, matrix in P.items():
-            try:
-                a = np.linalg.cholesky(matrix)
-            except:
-                print(matrix)
         P_chol = {time: np.linalg.cholesky(matrix) for time, matrix in P.items()}
 
         # Compute A matrix
