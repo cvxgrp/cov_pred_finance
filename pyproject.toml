@@ -40,8 +40,8 @@ build-backend = "poetry.masonry.api"
 
 [tool.ruff]
 select = ["E", "F", "I"]
-line-length = 100
-target-version = "py38"
+line-length = 125
+target-version = "py310"
 exclude = [
     "*__init__.py",
     "experiments"
