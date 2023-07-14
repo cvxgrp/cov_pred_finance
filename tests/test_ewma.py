@@ -4,8 +4,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.ewma import center
-from cvx.covariance.ewma import clip
+from cvx.covariance.ewma import center, clip
 
 
 def test_center_inactive():
