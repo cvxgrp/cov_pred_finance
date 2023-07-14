@@ -108,7 +108,8 @@
 
 <div class="viewcode-block" id="volatility"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.volatility">[docs]</a><span class="k">def</span> <span class="nf">volatility</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Estimate volatility from returns using an exponentially weighted moving average (EWMA)</span>
+<span class="sd">    Estimate volatility from returns using an</span>
+<span class="sd">    exponentially weighted moving average (EWMA)</span>
 
 <span class="sd">    param returns: 1 dim. numpy array of returns</span>
 <span class="sd">    param halflife: EWMA half life</span>
@@ -134,7 +135,8 @@
 <span class="sd">    param returns: Frame of returns</span>
 <span class="sd">    param halflife: EWMA half life</span>
 <span class="sd">    param min_periods: minimum number of observations to start EWMA (optional)</span>
-<span class="sd">    param mean_adj: subtract EWMA mean from returns (optional), otherwise function returns original returns and 0.0 as mean</span>
+<span class="sd">    param mean_adj: subtract EWMA mean from returns (optional),</span>
+<span class="sd">                    otherwise function returns original returns and 0.0 as mean</span>
 
 <span class="sd">    return: the centered returns and their mean</span>
 <span class="sd">    &quot;&quot;&quot;</span>
