@@ -30,6 +30,9 @@ cvxbacktest = { git = "https://github.com/cvxgrp/cvxbacktest", branch = "main"}
 cvxrisk = { git = "https://github.com/cvxgrp/cvxrisk", branch = "main"}
 yfinance = "*"
 statsmodels = "*"
+black = "23.3.0"
+ruff = "0.0.277"
+pre-commit = "*"
 
 [build-system]
 requires = ["poetry>=1.0.2"]
