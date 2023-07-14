@@ -185,10 +185,13 @@
 <span class="sd">    param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],</span>
 <span class="sd">                pair[0] is the half life for volatility estimation</span>
 <span class="sd">                pair[1] is the half life for covariance estimation</span>
-<span class="sd">    param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)</span>
-<span class="sd">    param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)</span>
+<span class="sd">    param min_periods_vola: minimum number of observations to start EWMA</span>
+<span class="sd">                            for volatility estimation (optional)</span>
+<span class="sd">    param min_periods_cov: minimum number of observations to start EWMA</span>
+<span class="sd">                           for covariance estimation (optional)</span>
 <span class="sd">    param clip_at: clip volatility adjusted returns at +- clip_at (optional)</span>
-<span class="sd">    param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)</span>
+<span class="sd">    param mean: subtract EWMA mean from returns</span>
+<span class="sd">                and volatility adjusted returns (optional)</span>
 
 <span class="sd">    return: Yields tuples with time, mean, covariance matrix, weights</span>
 <span class="sd">    &quot;&quot;&quot;</span>
