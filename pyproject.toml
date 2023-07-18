@@ -13,9 +13,22 @@ pandas = "*"
 cvxpy = "*"
 scipy = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.test.dependencies]
 pytest = "7.2.0"
-pytest-cov = "*"
+pytest-cov = "4.0.0"
+mock = "*"
+
+[tool.poetry.group.jupyter.dependencies]
+jupyterlab = "*"
+jupyter-book = "0.15.1"
+
+[tool.poetry.group.linting.dependencies]
+pylint = "*"
+ruff = "0.0.277"
+pre-commit = "*"
+black = "23.3.0"
+
+[tool.poetry.dev-dependencies]
 seaborn = "*"
 arch = "*"
 tqdm = "*"
@@ -23,16 +36,11 @@ scikit-learn = "*"
 matplotlib = "*"
 loguru = "*"
 plotly = "*"
-jupyterlab = "*"
 cvxsimulator = "*"
-jupyter-book = "0.15.1"
 cvxbacktest = { git = "https://github.com/cvxgrp/cvxbacktest", branch = "main"}
 cvxrisk = { git = "https://github.com/cvxgrp/cvxrisk", branch = "main"}
 yfinance = "*"
 statsmodels = "*"
-black = "23.3.0"
-ruff = "0.0.277"
-pre-commit = "*"
 
 [build-system]
 requires = ["poetry>=1.0.2"]
