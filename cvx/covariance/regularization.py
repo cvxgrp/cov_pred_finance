@@ -70,7 +70,7 @@ def regularize_covariance(sigmas, r, low_rank_format=False):
             )
 
 
-##### Expectation-Maximization algorithm proposeb by Emmanuel Candes #####
+##### Expectation-Maximization algorithm proposed by Emmanuel Candes #####
 
 
 def _e_step(Sigma, F, d):
