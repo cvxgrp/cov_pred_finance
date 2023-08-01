@@ -42,7 +42,11 @@ def test_covariance_estimator_mean(prices):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     combinator = from_ewmas(returns, pairs, clip_at=4.2, mean=True, min_periods_cov=21)
-    results = {result.time: result.weights for result in combinator.solve(window=10)}
+    results = {
+        result.time: result.weights
+        for result in combinator.solve(window=10)
+        if result is not None
+    }
 
     pd.testing.assert_series_equal(
         results[pd.Timestamp("2018-04-11")],

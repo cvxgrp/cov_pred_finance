@@ -289,10 +289,7 @@ class _CovarianceCombination:
         """
         Solves the covariance combination problem at a given time t
         """
-        # solve problem
-        # try:
         problem.solve(**kwargs)
-        print(problem.status)
 
         if problem.status != "optimal":
             raise cvx.SolverError
