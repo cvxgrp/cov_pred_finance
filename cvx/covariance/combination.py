@@ -10,6 +10,8 @@ import pandas as pd
 
 from cvx.covariance.ewma import iterated_ewma
 
+# from tqdm import trange
+
 # Mute specific warning
 warnings.filterwarnings("ignore", message="Solution may be inaccurate.*")
 
@@ -100,6 +102,10 @@ class _CombinationProblem:
     @property
     def weights(self):
         return pd.Series(index=self.keys, data=self._weight.value)
+
+    @property
+    def status(self):
+        return self.prob.status
 
 
 def from_ewmas(
@@ -259,36 +265,39 @@ class _CovarianceCombination:
 
         problem._construct_problem()
 
-        # for i in trange(len(A.keys())):
-        for i in range(len(A.keys())):
-            time = list(A.keys())[i]
-            # for time in A.keys():
-            problem.A_param.value = A[time]
+        for time, AA in A.items():
+            problem.A_param.value = AA
             problem.P_chol_param.value = P_chol[time]
 
-            yield self._solve(time=time, problem=problem, **kwargs)
+            try:
+                yield self._solve(time=time, problem=problem, **kwargs)
+            except cvx.SolverError:
+                print(f"Solver did not converge at time {time}")
+                yield None
 
     def _solve(self, time, problem, **kwargs):
         """
         Solves the covariance combination problem at a given time t
         """
-        # solve problem
-        try:
-            problem.solve(**kwargs)
-            weights = problem.weights
+        problem.solve(**kwargs)
 
-            # Get non-shifted L
-            L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
-            nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+        if problem.status != "optimal":
+            raise cvx.SolverError
 
-            mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-            sigma = pd.DataFrame(
-                index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-            )
-        except cvx.SolverError as e:
-            print(e)
-            mean = pd.Series(index=self.assets, data=np.nan)
-            sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.nan)
-            weights = pd.Series(index=self.sigmas.keys(), data=np.nan)
+        weights = problem.weights
+
+        # Get non-shifted L
+        L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
+        nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+
+        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
+        sigma = pd.DataFrame(
+            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
+        )
+
+        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
+        sigma = pd.DataFrame(
+            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
+        )
 
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)

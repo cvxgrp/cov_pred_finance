@@ -23,6 +23,8 @@ htmlcov
 # Remove previous ipynb_checkpoints
 #   git rm -r .ipynb_checkpoints/
 
+after_comb_covariance_no_reg.csv
+
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
 *.aux

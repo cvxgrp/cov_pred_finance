@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from cvx.covariance.regularization import em_regularize_covariance
 from cvx.covariance.regularization import regularize_covariance
 
 
@@ -286,3 +287,10 @@ def ecdf(data):
     x = np.sort(data)
     y = np.arange(1, n + 1) / n
     return x, y
+
+
+def em_low_rank_log_likelihood(returns, Sigmas, rank):
+    Sigmas_low_rank = dict(regularize_covariance(Sigmas, r=rank, low_rank_format=True))
+    Sigmas_em = dict(em_regularize_covariance(Sigmas, Sigmas_low_rank))
+
+    return log_likelihood_low_rank(returns, Sigmas_em)
