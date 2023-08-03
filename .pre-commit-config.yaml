@@ -8,12 +8,18 @@ repos:
     -   id: fix-encoding-pragma
 
 -   repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
     -   id: black
 
--   repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.9.0
-    hooks:
-    -   id: reorder-python-imports
-        args: [--py37-plus, --add-import, 'from __future__ import annotations']
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: 'v0.0.277'
+  hooks:
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix, 'cvx']
+
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.35.0
+  hooks:
+  - id: markdownlint-fix
+    args: ["--ignore", "book/**/*.md"]

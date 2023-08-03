@@ -6,6 +6,7 @@ from collections import namedtuple
 import numpy as np
 import pandas as pd
 import scipy as sc
+from tqdm import tqdm
 
 LowRank = namedtuple("LowRank", ["Loading", "Lambda", "D", "Approximation"])
 LowRankDiag = namedtuple("LowRankCovariance", ["F", "d"])
@@ -106,9 +107,6 @@ def _em_low_rank_approximation(sigma, initial_sigma):
         F, d = _m_step(Cxx, Cxs, Css)
 
     return LowRankDiag(F=pd.DataFrame(F, index=assets), d=pd.Series(d, index=assets))
-
-
-from tqdm import tqdm
 
 
 def em_regularize_covariance(sigmas, initial_sigmas):

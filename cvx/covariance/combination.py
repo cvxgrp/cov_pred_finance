@@ -93,18 +93,8 @@ class _CombinationProblem:
             self.P_chol_param.T @ self._weight
         )
 
-    ### This won't work (we dont want to reconstruct the problem every time). CVXPY will recompile the problem every time
-    # @property
-    # def _problem(self):
-    #     return cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-    ###
-
     def _construct_problem(self):
         self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
-
-    # def solve(self, **kwargs):
-    #     return self._problem.solve(**kwargs)
-    # return self.weights
 
     def solve(self, **kwargs):
         return self.prob.solve(**kwargs)
@@ -299,6 +289,11 @@ class _CovarianceCombination:
         # Get non-shifted L
         L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
         nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
+
+        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
+        sigma = pd.DataFrame(
+            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
+        )
 
         mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
         sigma = pd.DataFrame(
