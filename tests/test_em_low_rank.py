@@ -4,8 +4,10 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.regularization import em_regularize_covariance
-from cvx.covariance.regularization import regularize_covariance
+from cvx.covariance.regularization import (
+    em_regularize_covariance,
+    regularize_covariance,
+)
 
 
 def test_em():

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
-import cvxpy as cp
 import pandas as pd
 
 from cvx.covariance.combination import from_ewmas
