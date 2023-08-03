@@ -6,7 +6,8 @@ from collections import namedtuple
 import numpy as np
 import pandas as pd
 import scipy as sc
-from tqdm import tqdm
+
+# from tqdm import tqdm
 
 LowRank = namedtuple("LowRank", ["Loading", "Lambda", "D", "Approximation"])
 LowRankDiag = namedtuple("LowRankCovariance", ["F", "d"])
@@ -118,5 +119,6 @@ def em_regularize_covariance(sigmas, initial_sigmas):
     returns: regularized covariance matrices
     """
 
-    for time, sigma in tqdm(sigmas.items()):
+    # for time, sigma in tqdm(sigmas.items()):
+    for time, sigma in sigmas.items():
         yield time, _em_low_rank_approximation(sigma, initial_sigmas[time])
