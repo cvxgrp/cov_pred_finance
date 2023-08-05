@@ -354,8 +354,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">problem</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;optimal&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">cvx</span><span class="o">.</span><span class="n">SolverError</span>
+        <span class="c1"># if problem.status != &quot;optimal&quot;:</span>
+        <span class="c1">#     raise cvx.SolverError</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">weights</span>
 
