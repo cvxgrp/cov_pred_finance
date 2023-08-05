@@ -275,6 +275,7 @@ class _CovarianceCombination:
                 yield self._solve(time=time, problem=problem, **kwargs)
             except cvx.SolverError:
                 print(f"Solver did not converge at time {time}")
+                # yield self._solve(time=time, problem=problem, **kwargs, verbose=True)
                 yield None
 
     def _solve(self, time, problem, **kwargs):
