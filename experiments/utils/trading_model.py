@@ -17,6 +17,18 @@ def _get_L_inv(covariance):
 metrics = namedtuple("metrics", ["mean_return", "risk", "sharpe", "drawdown"])
 
 
+def construct_rho(returns, n_devs=2):
+    stdevs = returns.ewm(halflife=125).std().shift(1)
+
+    # set first row to zeros
+    stdevs.iloc[0] = 0
+
+    # Replace nans with zeros
+    stdevs = stdevs.fillna(0)
+
+    return n_devs * stdevs
+
+
 class Trader:
     def __init__(self, R, Sigma_hats, r_hats=None):
         """
@@ -109,7 +121,9 @@ class Trader:
 
         return w_normalized
 
-    def solve_mean_variance(self, prob, w, L_inv_param, r_hat_param, L_inv, r_hat):
+    def solve_mean_variance(
+        self, prob, w, L_inv_param, r_hat_param, L_inv, r_hat, rho_param, rho
+    ):
         """
         Solves the mean variance problem.
 
@@ -119,10 +133,13 @@ class Trader:
         param Sigma_t: covariance matrix
         """
 
+        if rho_param is not None:
+            rho_param.value = rho.reshape(-1, 1)
+
         L_inv_param.value = L_inv
         r_hat_param.value = np.vstack([r_hat.reshape(-1, 1), 0])
         r_hat_param = np.zeros(r_hat_param.shape)
-        prob.solve()
+        prob.solve(ignore_dpp=True, solver="ECOS")
 
         return w.value, prob.objective.value
 
@@ -365,7 +382,14 @@ class Trader:
 
             # risk = cp.norm(L_inv_param @ w[:-1], 2)
             risk = cp.norm2(cp.sum(cp.multiply(L_inv_param, w[:-1].T), axis=1))
-            ret = r_hat_param.T @ w
+
+            robust_mean = False
+            if robust_mean:
+                rho_param = cp.Parameter((self.n, 1), nonneg=True)
+                ret = r_hat_param.T @ w - rho_param.T @ cp.abs(w[:-1])
+                Rhos = construct_rho(self.r_hats)
+            else:
+                ret = r_hat_param.T @ w
 
             # add constraints
             cons += [cp.sum(w) == 1]
@@ -385,13 +409,22 @@ class Trader:
             # Solve problem with random inputs once to speed up later solves
             L_inv_param.value = [*self.L_inv_hats.values()][0]
             r_hat_param.value = np.vstack([self.r_hats.values[0].reshape(-1, 1), 0])
-            prob.solve()
+            if robust_mean:
+                rho_param.value = Rhos.values[0].reshape(-1, 1)
+                prob.solve()
 
             # solve the problem for each date
             all_w = [w for _ in range(self.T)]
             all_L_inv_param = [L_inv_param for _ in range(self.T)]
             all_r_hat_param = [r_hat_param for _ in range(self.T)]
             all_prob = [prob for _ in range(self.T)]
+
+            if robust_mean:
+                all_rho_param = [rho_param for _ in range(self.T)]
+                Rhos = Rhos.values
+            else:
+                all_rho_param = [None for _ in range(self.T)]
+                Rhos = [None for _ in range(self.T)]
 
             pool = mp.Pool()
             ws_and_obj = pool.starmap(
@@ -403,6 +436,8 @@ class Trader:
                     all_r_hat_param,
                     [*self.L_inv_hats.values()],
                     self.r_hats.values,
+                    all_rho_param,
+                    Rhos,
                 ),
             )
             pool.close()

@@ -89,8 +89,10 @@ class _CombinationProblem:
 
     @property
     def _objective(self):
-        return cvx.sum(cvx.log(self.A_param @ self._weight)) - 0.5 * cvx.sum_squares(
-            self.P_chol_param.T @ self._weight
+        return (
+            cvx.sum(cvx.log(self.A_param @ self._weight))
+            - 0.5 * cvx.sum_squares(self.P_chol_param.T @ self._weight)
+            - 0.5 * cvx.sum_squares(self._weight)
         )
 
     def _construct_problem(self):
@@ -281,19 +283,11 @@ class _CovarianceCombination:
         """
         problem.solve(**kwargs)
 
-        if problem.status != "optimal":
-            raise cvx.SolverError
-
         weights = problem.weights
 
         # Get non-shifted L
         L = sum(self.__Ls.loc[time] * weights.values)  # prediction for time+1
         nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
-
-        mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-        sigma = pd.DataFrame(
-            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-        )
 
         mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
         sigma = pd.DataFrame(

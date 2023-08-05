@@ -560,6 +560,27 @@ files = [
 ]
 
 [[package]]
+name = "clarabel"
+version = "0.5.1"
+description = "Clarabel Conic Interior Point Solver for Rust / Python"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "clarabel-0.5.1-cp37-abi3-macosx_10_7_x86_64.whl", hash = "sha256:53780c68971e832f48b45cd96855a409546b0e98a0722f45cac9377ee46929df"},
+    {file = "clarabel-0.5.1-cp37-abi3-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:007b605d6eab2a3ab11abc7da12f2be21a2a5d8bc082d1179591ecd6726e8f8f"},
+    {file = "clarabel-0.5.1-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:dff343c52e1f09505b9e07789b1fd84f655d64b04e76bb7f7a0c5e9c1698a163"},
+    {file = "clarabel-0.5.1-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e2567e112806af313ba339be8fc21ff019c64af2c11d4418e9caadbb6ba127e1"},
+    {file = "clarabel-0.5.1-cp37-abi3-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:587017935ceb4f90ec8e1b6d745c910226c7325d7155c8faec87869bbb8b00a7"},
+    {file = "clarabel-0.5.1-cp37-abi3-win32.whl", hash = "sha256:c4d682b092cbb19d39dcc7dd25f9e233270b16a1b2581911b60ea8a572bea37c"},
+    {file = "clarabel-0.5.1-cp37-abi3-win_amd64.whl", hash = "sha256:7ccda87e4044d7706ce39bb0d451a24f14379636ff1773c3ca1c2164f6d66fa7"},
+]
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[[package]]
 name = "click"
 version = "8.1.6"
 description = "Composable command line interface toolkit"
@@ -1801,14 +1822,14 @@ test = ["coverage", "jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-cov", 
 
 [[package]]
 name = "jupyterlab"
-version = "4.0.3"
+version = "4.0.4"
 description = "JupyterLab computational environment"
 category = "dev"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyterlab-4.0.3-py3-none-any.whl", hash = "sha256:d369944391b1d15f2d1f3cb965fb67352956279b2ae6f03ce7947a43940a8301"},
-    {file = "jupyterlab-4.0.3.tar.gz", hash = "sha256:e14d1ce46a613028111d0d476a1d7d6b094003b7462bac669f5b478317abcb39"},
+    {file = "jupyterlab-4.0.4-py3-none-any.whl", hash = "sha256:23eef35d22be8f2ad9b873ec41ceb2e8c3b0dc8ae740c0f973e2de09e587530f"},
+    {file = "jupyterlab-4.0.4.tar.gz", hash = "sha256:049449a56d93202ed204e0e86f96f5a3447a08cfc09fb012fd239e178651cb34"},
 ]
 
 [package.dependencies]
@@ -2394,6 +2415,35 @@ files = [
 build = ["blurb", "twine", "wheel"]
 docs = ["sphinx"]
 test = ["pytest", "pytest-cov"]
+
+[[package]]
+name = "mosek"
+version = "10.0.46"
+description = "Python API for Mosek"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "Mosek-10.0.46-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:64c67fd828353ba17a974f6afb8789851b5457426c0aab364dfd2b64b7348b53"},
+    {file = "Mosek-10.0.46-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:71dea2fb6e1a4e7df75a74dc7a5c7abcf9635f263391b505494015dc86b656a1"},
+    {file = "Mosek-10.0.46-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:6d5fdd730ed712efb2edb956cd8f365f938d77561d6b6d1f2e70c1fc4d62853a"},
+    {file = "Mosek-10.0.46-cp310-cp310-manylinux2014_x86_64.whl", hash = "sha256:4fb126628781af2293c1961b1cc4d0e67154c39c90d8a9634a907124cc0da2c4"},
+    {file = "Mosek-10.0.46-cp310-cp310-win_amd64.whl", hash = "sha256:3f5406c994919b1d5d9b4bfc757adc48248d751cf839b8fe66afe6a07e66c3a3"},
+    {file = "Mosek-10.0.46-cp37-cp37m-macosx_10_15_x86_64.whl", hash = "sha256:ad8e75209ac4d0c87e0e866b7e581259a8f3e4b17a4e92cd48107172760188c4"},
+    {file = "Mosek-10.0.46-cp37-cp37m-manylinux2014_aarch64.whl", hash = "sha256:47c20ce18ef0e15d84756c4eea84f4c03e294d207401cb27046765f713cb48ae"},
+    {file = "Mosek-10.0.46-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:4593814484cb336907926f7f8705d7a5a3b24c1929446d91623b81f089270ab6"},
+    {file = "Mosek-10.0.46-cp37-cp37m-win_amd64.whl", hash = "sha256:ee9de1efc67f8be8ebbe23baadf058bc6afe33490b42e60b6c28dc7fae042570"},
+    {file = "Mosek-10.0.46-cp38-cp38-macosx_10_15_x86_64.whl", hash = "sha256:cf8c1aac6ea0de68957141844851db54421892313e8f2759f60b48bc151f2a0d"},
+    {file = "Mosek-10.0.46-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e4ce6b61b4b838090fefc6bc25952102e0bd00a543b83e35a91464345af89bde"},
+    {file = "Mosek-10.0.46-cp38-cp38-manylinux2014_aarch64.whl", hash = "sha256:a3ac0923165d814ba4cafcad2fb6753a2be9ec2db39cb595e7b05b18dc52855c"},
+    {file = "Mosek-10.0.46-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:4d9d657c0886394350043bcbe8ae239b038023c25f6219a9144af9492a3b8614"},
+    {file = "Mosek-10.0.46-cp38-cp38-win_amd64.whl", hash = "sha256:5879734a728485a2cb50b61099fcd7bf96c8b80953cf9ae4404aa25db884f81d"},
+    {file = "Mosek-10.0.46-cp39-cp39-macosx_10_15_x86_64.whl", hash = "sha256:a79e7689f454bafca0322002579d5801f51c08486656535ffecc1acf9faa3e0d"},
+    {file = "Mosek-10.0.46-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:e11e26145517a9de3ecc56f8fc28ec0b505a348009906209c82546758f0aab23"},
+    {file = "Mosek-10.0.46-cp39-cp39-manylinux2014_aarch64.whl", hash = "sha256:094ee305ce7d7c7536a7b73e78a2cd81a1fc17aa266a39b5369e927d3a6d99db"},
+    {file = "Mosek-10.0.46-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:27a33ac3092d79079bf1ca49985fd4ad5bae5cdf42aa0b3c88e3cbe099602486"},
+    {file = "Mosek-10.0.46-cp39-cp39-win_amd64.whl", hash = "sha256:68529aec46df699fb0da1510c62e1c484da3416fb86084e2e7be4540da460e80"},
+]
 
 [[package]]
 name = "multitasking"
@@ -4885,14 +4935,14 @@ files = [
 
 [[package]]
 name = "yfinance"
-version = "0.2.26"
+version = "0.2.27"
 description = "Download market data from Yahoo! Finance API"
 category = "dev"
 optional = false
 python-versions = "*"
 files = [
-    {file = "yfinance-0.2.26-py2.py3-none-any.whl", hash = "sha256:3e1798e43956c7eb6266ada0b3522254f9d5099db89343cf535d93136383b5b4"},
-    {file = "yfinance-0.2.26.tar.gz", hash = "sha256:a3ca2218cc99ebf345c5cfe43f69e6d1a0d360cb3cd6e0cd8f5ff80f81ee069d"},
+    {file = "yfinance-0.2.27-py2.py3-none-any.whl", hash = "sha256:e1835a7b744f16b0d419c43e7135a105e09ed95276f99cea0017faf3607dfe79"},
+    {file = "yfinance-0.2.27.tar.gz", hash = "sha256:d5c057963f4f1842d65d28fb5444d0b45b8082988baa64e703b87c6454d88642"},
 ]
 
 [package.dependencies]
@@ -4926,4 +4976,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.0,<4.0"
-content-hash = "ac2063fe54e0439d8a77d6b3d69395a0dcb8ce4ee43606876f8ae35b008766b5"
+content-hash = "ab03501ab60cb96c45a3487f9293a2292137907f00a0a7ef02fb7b3423cdc84b"
