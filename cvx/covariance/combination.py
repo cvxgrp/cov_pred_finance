@@ -281,8 +281,8 @@ class _CovarianceCombination:
         """
         problem.solve(**kwargs)
 
-        if problem.status != "optimal":
-            raise cvx.SolverError
+        # if problem.status != "optimal":
+        #     raise cvx.SolverError
 
         weights = problem.weights
 

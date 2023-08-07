@@ -237,7 +237,7 @@ class MeanVariance(PortfolioBacktest):
             end_date=end_date,
         )
 
-    def backtest(self, additonal_cons, sigma_tar):
+    def backtest(self, additonal_cons, sigma_tar, rhos=None):
         adjust_factor = 1
         traders_mean_var = {}
         for i in trange(len(self.cov_predictors)):
@@ -252,6 +252,7 @@ class MeanVariance(PortfolioBacktest):
                 adjust_factor=adjust_factor,
                 additonal_cons=additonal_cons,
                 sigma_des=sigma_tar,
+                rhos=rhos,
             )
             traders_mean_var[self.names[i]] = trader
 
