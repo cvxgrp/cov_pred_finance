@@ -30,44 +30,46 @@ def construct_rho(returns, n_devs=2):
 
 
 class Trader:
-    def __init__(self, R, Sigma_hats, r_hats=None):
+    def __init__(self, returns, Sigma_hats, r_hats=None, rhos=None):
         """
         param R: nxT pandas dataframe of T returns from n assets; index is date.
         param Sigma_hats: dictionary of causal covariance matrices; keys are
         dates; values are n x n pandas dataframes. They are causal in the sense that
         Sigma_hat[time] does NOT depend on returns[time]
-        param r_hats: dictionary of causal expected returns, i.e., r_hat[time]
+        param r_hats: pandas DataFrame of causal expected returns, i.e., r_hat[time]
         does NOT depend on returns[time]
-
-
         """
-        self.R = R
+        self.returns = returns
         self.Sigma_hats = Sigma_hats
         self.r_hats = r_hats
         self.diluted = False
 
-        assert list(self.R.index) == list(self.Sigma_hats.keys())
+        assert list(self.returns.index) == list(self.Sigma_hats.keys())
         sigma_hats = []
-        for t in self.R.index:
+        for t in self.returns.index:
             Sigma_hat_t = self.Sigma_hats[t].values
             sigma_hat_t = np.sqrt(np.diag(Sigma_hat_t))
             sigma_hats.append(sigma_hat_t)
 
         if r_hats is not None:
-            assert list(self.R.index) == list(self.r_hats.index)
-            assert list(self.R.columns) == list(self.r_hats.columns)
+            assert list(self.returns.index) == list(self.r_hats.index)
+            assert list(self.returns.columns) == list(self.r_hats.columns)
+
+        if rhos is not None:
+            assert list(self.returns.index) == list(self.rhos.index)
+            assert list(self.returns.columns) == list(self.rhos.columns)
 
         # Generate dataframe of standard deviations
         sigma_hats = np.array(sigma_hats)
         self.sigma_hats = pd.DataFrame(
-            sigma_hats, index=self.R.index, columns=self.R.columns
+            sigma_hats, index=self.returns.index, columns=self.returns.columns
         )
-        assert list(self.R.index) == list(self.sigma_hats.index)
-        assert list(self.R.columns) == list(self.sigma_hats.columns)
+        assert list(self.returns.index) == list(self.sigma_hats.index)
+        assert list(self.returns.columns) == list(self.sigma_hats.columns)
 
         # Generate Choleksy factors
         self.L_inv_hats = {}
-        for time in R.index:
+        for time in returns.index:
             self.L_inv_hats[time] = _get_L_inv(
                 pd.DataFrame(
                     self.Sigma_hats[time].values, index=self.assets, columns=self.assets
@@ -76,15 +78,15 @@ class Trader:
 
     @property
     def assets(self):
-        return self.R.columns
+        return self.returns.columns
 
     @property
     def n(self):
-        return self.R.shape[1]
+        return self.returns.shape[1]
 
     @property
     def T(self):
-        return self.R.shape[0]
+        return self.returns.shape[0]
 
     def solve_min_risk(self, prob, w, L_inv_param, L_inv, sigma_param=None, sigma=None):
         """
@@ -212,7 +214,7 @@ class Trader:
             print("Already trades cash...")
             return None
         ws_new = []
-        for i, t in enumerate(self.R.index):
+        for i, t in enumerate(self.returns.index):
             Sigma_hat_t = self.Sigma_hats[t].values
             w_t = self.ws[i].reshape(-1, 1)
             sigma_hat = np.sqrt(w_t[: self.n].T @ Sigma_hat_t @ w_t[: self.n])
@@ -251,15 +253,24 @@ class Trader:
         additonal_cons={"short_lim": 1.6, "upper_bound": 0.15, "lower_bound": -0.1},
         C_speedup=False,
         kappa=None,
+        rhos=None,
     ):
         """
         param portfolio_type: type of portfolio to backtest. Options are "min_risk", "vol_cont", "risk_parity", "mean_variance".
         param cons: list of constraints to impose on the optimization problem.
+        param rhos: pandas DataFrame of uncertainty in expected returns
+            if None, then uncertainty is set to zero. Causal estimates
         """
         self.portfolio_type = portfolio_type
         self.adjust_factor = adjust_factor
         self.additonal_cons = additonal_cons
         self.C_speedup = C_speedup
+
+        # TODO: ugly to have this here
+        if rhos is not None:
+            self.rhos = rhos.loc[self.returns.index]
+        else:
+            self.rhos = rhos
 
         if portfolio_type == "eq_weighted":
             ws = np.ones((self.T, self.n)) / self.n
@@ -383,11 +394,9 @@ class Trader:
             # risk = cp.norm(L_inv_param @ w[:-1], 2)
             risk = cp.norm2(cp.sum(cp.multiply(L_inv_param, w[:-1].T), axis=1))
 
-            robust_mean = False
-            if robust_mean:
+            if self.rhos is not None:
                 rho_param = cp.Parameter((self.n, 1), nonneg=True)
                 ret = r_hat_param.T @ w - rho_param.T @ cp.abs(w[:-1])
-                Rhos = construct_rho(self.r_hats)
             else:
                 ret = r_hat_param.T @ w
 
@@ -409,9 +418,10 @@ class Trader:
             # Solve problem with random inputs once to speed up later solves
             L_inv_param.value = [*self.L_inv_hats.values()][0]
             r_hat_param.value = np.vstack([self.r_hats.values[0].reshape(-1, 1), 0])
-            if robust_mean:
-                rho_param.value = Rhos.values[0].reshape(-1, 1)
-                prob.solve()
+
+            if self.rhos is not None:
+                rho_param.value = self.rhos.values[0].reshape(-1, 1)
+            # prob.solve() TODO: uncomment if using dpp
 
             # solve the problem for each date
             all_w = [w for _ in range(self.T)]
@@ -419,12 +429,12 @@ class Trader:
             all_r_hat_param = [r_hat_param for _ in range(self.T)]
             all_prob = [prob for _ in range(self.T)]
 
-            if robust_mean:
+            if self.rhos is not None:
                 all_rho_param = [rho_param for _ in range(self.T)]
-                Rhos = Rhos.values
+                rhos = self.rhos.values
             else:
                 all_rho_param = [None for _ in range(self.T)]
-                Rhos = [None for _ in range(self.T)]
+                rhos = [None for _ in range(self.T)]
 
             pool = mp.Pool()
             ws_and_obj = pool.starmap(
@@ -437,7 +447,7 @@ class Trader:
                     [*self.L_inv_hats.values()],
                     self.r_hats.values,
                     all_rho_param,
-                    Rhos,
+                    rhos,
                 ),
             )
             pool.close()
@@ -569,7 +579,7 @@ class Trader:
         rets = []
         for t in range(self.T):
             w_t = self.ws[t]
-            r_t = self.R.iloc[t].values.reshape(-1, 1)
+            r_t = self.returns.iloc[t].values.reshape(-1, 1)
             if (
                 self.portfolio_type == "vol_cont"
                 or self.portfolio_type == "mean_variance"
