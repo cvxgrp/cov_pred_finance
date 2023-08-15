@@ -24,7 +24,7 @@ jupyter-book = "0.15.1"
 pyyaml = "6.0.0"
 
 [tool.poetry.group.linting.dependencies]
-ruff = "0.0.277"
+ruff = "0.0.284"
 pre-commit = "*"
 
 [tool.poetry.dev-dependencies]
