@@ -26,11 +26,7 @@ test: install ## Run tests
 
 .PHONY: clean
 clean:  ## Clean up caches and build artifacts
-	@rm -rf .pytest_cache/
-	@rm -rf .ruff_cache/
-	@rm -f .coverage
-	@rm -rf htmlcov
-	@find . -type f -name '*.py[co]' -delete -or -type d -name __pycache__ -delete
+	@git clean -X -d -f
 
 
 .PHONY: coverage
