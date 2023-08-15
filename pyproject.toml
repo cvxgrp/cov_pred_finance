@@ -27,7 +27,7 @@ pyyaml = "6.0.0"
 pylint = "*"
 ruff = "0.0.277"
 pre-commit = "*"
-black = "23.3.0"
+black = "23.7.0"
 
 [tool.poetry.dev-dependencies]
 seaborn = "*"
