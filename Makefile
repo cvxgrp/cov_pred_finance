@@ -3,18 +3,10 @@
 SHELL=/bin/bash
 
 UNAME=$(shell uname -s)
-KERNEL=$(shell poetry version | cut -d' ' -f1)
 
 .PHONY: install
 install:  ## Install a virtual environment
 	@poetry install -vv
-
-.PHONY: kernel
-kernel: install ## Create a kernel for jupyter lab
-	@echo ${KERNEL}
-	@poetry run pip install ipykernel
-	@poetry run python -m ipykernel install --user --name=${KERNEL}
-
 
 .PHONY: fmt
 fmt:  ## Run autoformatting and linting
@@ -50,6 +42,6 @@ help:  ## Display this help screen
 	@grep -E '^[a-z.A-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' | sort
 
 .PHONY: jupyter
-jupyter: kernel ## Run jupyter lab
+jupyter: install ## Run jupyter lab
 	@poetry run pip install jupyterlab
 	@poetry run jupyter lab
