@@ -22,8 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: cvxgrp/.github/actions/jupyter@main
-        with:
-          kernel: "covariance"
 
   book:
     runs-on: "ubuntu-latest"
