@@ -1,4 +1,4 @@
-# [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance)
+# [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance/book)
 
 [![Coverage Status](https://coveralls.io/repos/github/cvxgrp/cov_pred_finance/badge.svg)](https://coveralls.io/github/cvxgrp/cov_pred_finance)
 [![PyPI version](https://badge.fury.io/py/cvxcovariance.svg)](https://badge.fury.io/py/cvxcovariance)
