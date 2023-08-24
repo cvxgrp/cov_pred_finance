@@ -5,16 +5,20 @@ on:
     types: [published]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: cvxgrp/.github/actions/build@main
+
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     environment: release
 
     permissions:
       # This permission is required for trusted publishing.
       id-token: write
-      contents: read
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: cvxgrp/.github/actions/release@main
+      - uses: cvxgrp/.github/actions/publish@main
