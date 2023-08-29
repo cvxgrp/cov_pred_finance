@@ -143,17 +143,6 @@ Once you have installed poetry you can perform
 make install
 ```
 
-to replicate the virtual environment we have defined in pyproject.toml.
-
-## Poetry
-
-We assume you share already the love for [Poetry](https://python-poetry.org).
-Once you have installed poetry you can perform
-
-```bash
-make install
-```
-
 to replicate the virtual environment we have defined in [pyproject.toml](pyproject.toml)
 and locked in [poetry.lock](poetry.lock).
 
