@@ -41,4 +41,4 @@ repos:
     rev: '1.6.1'  # add version here
     hooks:
       - id: poetry-check
-      - id: poetry-lock
+      # - id: poetry-lock
