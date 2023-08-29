@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import pandas as pd
@@ -73,4 +72,4 @@ def test_assets(combinator):
     """
     Tests the assets
     """
-    assert set(combinator.assets) == set(["GOOG", "AAPL", "FB"])
+    assert set(combinator.assets) == {"GOOG", "AAPL", "FB"}

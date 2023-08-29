@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from collections import namedtuple
@@ -130,7 +129,7 @@ def _ewma_low_rank(data, halflife, min_periods=0, rank=5):
 
 
 def _low_rank_sum(F, d, r):
-    """
+    r"""
     D = diag(d)
 
     Approximates sum FF^T + D + rr^T as low rank plus diagonal matrix:
@@ -155,7 +154,7 @@ def _low_rank_sum(F, d, r):
         ).reshape(shape)
 
     def _get_new_diag(F_hat):
-        """
+        r"""
         returns diag(\hat{D})
         """
 
@@ -194,8 +193,8 @@ def _low_rank_sum(F, d, r):
 def _general_low_rank(
     y,
     times,
-    halflife: Union[float, TimedeltaConvertibleTypes, None] = None,
-    alpha: Union[float, None] = None,
+    halflife: float | TimedeltaConvertibleTypes | None = None,
+    alpha: float | None = None,
     rank=5,
     min_periods=0,
 ):

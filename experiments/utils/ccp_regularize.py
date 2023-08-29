@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import cvxpy as cp
@@ -75,7 +74,7 @@ class _State:
         """
         e_inv = 1 / self.ek.reshape(-1, 1)
         Lamda = np.linalg.cholesky(
-            np.linalg.inv((np.eye(self.rank) - self.Gk.T @ (e_inv * self.Gk)))
+            np.linalg.inv(np.eye(self.rank) - self.Gk.T @ (e_inv * self.Gk))
         )
         F = e_inv * (self.Gk @ Lamda)
         d = e_inv.flatten()
@@ -131,7 +130,7 @@ class _State2:
         """
         e_inv = 1 / self.ek.reshape(-1, 1)
         Lamda = np.linalg.cholesky(
-            np.linalg.inv((np.eye(self.rank) - self.Gk.T @ (e_inv * self.Gk)))
+            np.linalg.inv(np.eye(self.rank) - self.Gk.T @ (e_inv * self.Gk))
         )
         F = e_inv * (self.Gk @ Lamda)
         d = e_inv.flatten()

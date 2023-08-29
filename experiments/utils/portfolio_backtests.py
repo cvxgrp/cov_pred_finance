@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 import warnings
@@ -37,7 +36,7 @@ def _create_table_helper(metrics, prescient=True):
     for name, metric in metrics.items():
         if name != "PRESCIENT":
             print(
-                "   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
+                "   {} & {:.1f}\\% & {:.1f}\\% & {:.1f} & {:.0f}\\% \\\\".format(
                     name,
                     metric.mean_return * 100,
                     metric.risk * 100,
@@ -49,7 +48,7 @@ def _create_table_helper(metrics, prescient=True):
     if prescient:
         metric = metrics["PRESCIENT"]
         print(
-            "   {} & {:.1f}\% & {:.1f}\% & {:.1f} & {:.0f}\% \\\\".format(
+            "   {} & {:.1f}\\% & {:.1f}\\% & {:.1f} & {:.0f}\\% \\\\".format(
                 name,
                 metric.mean_return * 100,
                 metric.risk * 100,
