@@ -71,9 +71,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for covariance.ewma</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -95,12 +97,13 @@
 <span class="sd">    param min_periods: minimum number of observations to start EWMA (optional)</span>
 <span class="sd">    param clip_at: clip y_last at  +- clip_at*EWMA (optional)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">yield from</span> <span class="n">_ewma_mean</span><span class="p">(</span>
+    <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">variance</span> <span class="ow">in</span> <span class="n">_ewma_mean</span><span class="p">(</span>
         <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
         <span class="n">halflife</span><span class="o">=</span><span class="n">halflife</span><span class="p">,</span>
         <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span>
         <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">variance</span>
 
 
 <div class="viewcode-block" id="volatility"><a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma.volatility">[docs]</a><span class="k">def</span> <span class="nf">volatility</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -266,8 +269,8 @@
     <span class="n">times</span><span class="p">,</span>
     <span class="c1"># com: Union[float, None] = None,</span>
     <span class="c1"># span: Union[float, None] = None,</span>
-    <span class="n">halflife</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">TimedeltaConvertibleTypes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">halflife</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">TimedeltaConvertibleTypes</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fct</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
     <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
