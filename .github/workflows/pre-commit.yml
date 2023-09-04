@@ -13,3 +13,16 @@ jobs:
       with:
         extra_args: '--verbose --all-files'
 
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: cvxgrp/.github/actions/test@main
+
+    # uncomment once the repo is public
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2
+      with:
+        files: artifacts/tests/coverage/coverage.info
+        format: lcov
+
