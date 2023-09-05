@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """global fixtures"""
 from __future__ import annotations
 

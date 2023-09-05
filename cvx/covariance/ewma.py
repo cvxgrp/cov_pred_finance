@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -24,13 +22,12 @@ def _variance(returns, halflife, min_periods=0, clip_at=None):
     param min_periods: minimum number of observations to start EWMA (optional)
     param clip_at: clip y_last at  +- clip_at*EWMA (optional)
     """
-    for time, variance in _ewma_mean(
+    yield from _ewma_mean(
         np.power(returns, 2),
         halflife=halflife,
         min_periods=min_periods,
         clip_at=clip_at,
-    ):
-        yield time, variance
+    )
 
 
 def volatility(returns, halflife, min_periods=0, clip_at=None):
@@ -196,8 +193,8 @@ def _general(
     times,
     # com: Union[float, None] = None,
     # span: Union[float, None] = None,
-    halflife: Union[float, TimedeltaConvertibleTypes, None] = None,
-    alpha: Union[float, None] = None,
+    halflife: float | TimedeltaConvertibleTypes | None = None,
+    alpha: float | None = None,
     fct=lambda x: x,
     min_periods=0,
     clip_at=None,

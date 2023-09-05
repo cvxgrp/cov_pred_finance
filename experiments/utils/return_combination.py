@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from tqdm import trange
 import numpy as np
 import pandas as pd
