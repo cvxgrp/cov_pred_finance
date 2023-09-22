@@ -30,7 +30,7 @@ blended together by solving the convex optimization problems. In either case
 the result is returned as an iterator object over namedtuples:
 `Result = namedtuple("Result", ["time", "mean", "covariance", "weights"])`.
 
-Note: at time $t$ the user is provided with $\Sigma_{t+1}$,
+Note: at time $t$ the user is provided with $\hat\Sigma_{t+1}$,
 $\textit{i.e.}$, the covariance matrix for the next time step.
 So `Result.covariance` returns the covariance prediction for `time+1`.
 
