@@ -48,9 +48,7 @@ jupyter: install ## Run jupyter lab
 	@poetry run jupyter lab
 
 
-.PHONY: conduct
-conduct: ## Generete CODE of CONDUCT and Contributing
-	@poetry run pip install jinja2 toml
-	@gh gist clone a4a054e3e80a8021c351b027280d3b09 tmp
-	@poetry run python tmp/parse.py
-	@rm -rf tmp
+.PHONY: boil
+boil: ## Update the boilerplate code
+	@poetry run pip install cvxcooker
+	@poetry run cook pyproject.toml
