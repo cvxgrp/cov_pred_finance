@@ -18,7 +18,7 @@ cvxpy 1.3.2 A domain-specific language for modeling convex optimization problems
 │   └── scipy >=0.13.2 
 │       └── numpy >=1.21.6,<1.28.0 (circular dependency aborted here)
 └── setuptools >65.5.1
-pandas 2.1.0 Powerful data structures for data analysis, time series, and statistics
+pandas 2.1.1 Powerful data structures for data analysis, time series, and statistics
 ├── numpy >=1.22.4
 ├── numpy >=1.23.2
 ├── python-dateutil >=2.8.2
