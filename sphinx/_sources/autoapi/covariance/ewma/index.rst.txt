@@ -13,10 +13,15 @@ Functions
 
 .. autoapisummary::
 
+   covariance.ewma._generator2frame
+   covariance.ewma._variance
    covariance.ewma.volatility
    covariance.ewma.center
    covariance.ewma.clip
    covariance.ewma.iterated_ewma
+   covariance.ewma._ewma_cov
+   covariance.ewma._ewma_mean
+   covariance.ewma._general
 
 
 
@@ -31,6 +36,19 @@ Attributes
 .. py:data:: IEWMA
 
    
+
+.. py:function:: _generator2frame(generator)
+
+
+.. py:function:: _variance(returns, halflife, min_periods=0, clip_at=None)
+
+   Estimate variance from returns using an exponentially weighted moving average (EWMA)
+
+   param returns: 1 dim. numpy array of returns
+   param halflife: EWMA half life
+   param min_periods: minimum number of observations to start EWMA (optional)
+   param clip_at: clip y_last at  +- clip_at*EWMA (optional)
+
 
 .. py:function:: volatility(returns, halflife, min_periods=0, clip_at=None)
 
@@ -63,5 +81,26 @@ Attributes
 
 
 .. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, mu_halflife1=None, mu_halflife2=None, clip_at=None)
+
+
+.. py:function:: _ewma_cov(data, halflife, min_periods=0)
+
+   param data: Txn pandas DataFrame of returns
+   param halflife: float, halflife of the EWMA
+
+
+.. py:function:: _ewma_mean(data, halflife, min_periods=0, clip_at=None)
+
+
+.. py:function:: _general(y, times, halflife: float | pandas._typing.TimedeltaConvertibleTypes | None = None, alpha: float | None = None, fct=lambda x: x, min_periods=0, clip_at=None)
+
+   y: frame with measurements for times t=t_1,t_2,...,T
+   halflife: EWMA half life
+
+   returns: list of EWMAs for times t=t_1,t_2,...,T
+   serving as predictions for the following timestamp
+
+   The function returns a generator over
+   t_i, EWMA of fct(y_i)
 
 

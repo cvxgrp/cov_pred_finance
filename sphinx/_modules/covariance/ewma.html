@@ -8,7 +8,6 @@
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/logo.jpeg"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -33,7 +32,6 @@
           
           <a href="../../index.html" class="icon icon-home">
             cvxcovariance
-              <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -89,10 +87,15 @@
 
 
 
+<div class="viewcode-block" id="_generator2frame">
+<a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma._generator2frame">[docs]</a>
 <span class="k">def</span> <span class="nf">_generator2frame</span><span class="p">(</span><span class="n">generator</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">generator</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">generator</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
 
 
+
+<div class="viewcode-block" id="_variance">
+<a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma._variance">[docs]</a>
 <span class="k">def</span> <span class="nf">_variance</span><span class="p">(</span><span class="n">returns</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate variance from returns using an exponentially weighted moving average (EWMA)</span>
@@ -107,7 +110,8 @@
         <span class="n">halflife</span><span class="o">=</span><span class="n">halflife</span><span class="p">,</span>
         <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span>
         <span class="n">clip_at</span><span class="o">=</span><span class="n">clip_at</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="volatility">
@@ -251,6 +255,8 @@
 
 
 
+<div class="viewcode-block" id="_ewma_cov">
+<a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma._ewma_cov">[docs]</a>
 <span class="k">def</span> <span class="nf">_ewma_cov</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param data: Txn pandas DataFrame of returns</span>
@@ -264,9 +270,12 @@
         <span class="n">min_periods</span><span class="o">=</span><span class="n">min_periods</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ewma</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ewma</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ewma</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="_ewma_mean">
+<a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma._ewma_mean">[docs]</a>
 <span class="k">def</span> <span class="nf">_ewma_mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">halflife</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">ewma</span> <span class="ow">in</span> <span class="n">_general</span><span class="p">(</span>
         <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
@@ -277,9 +286,12 @@
     <span class="p">):</span>
         <span class="c1"># converting back into a series costs some performance but adds robustness</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ewma</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ewma</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ewma</span><span class="p">)</span></div>
 
 
+
+<div class="viewcode-block" id="_general">
+<a class="viewcode-back" href="../../autoapi/covariance/ewma/index.html#covariance.ewma._general">[docs]</a>
 <span class="k">def</span> <span class="nf">_general</span><span class="p">(</span>
     <span class="n">y</span><span class="p">,</span>
     <span class="n">times</span><span class="p">,</span>
@@ -335,7 +347,8 @@
                 <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">)</span>
 
-        <span class="k">yield</span> <span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

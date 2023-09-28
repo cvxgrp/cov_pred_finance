@@ -9,7 +9,6 @@
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../../_static/logo.jpeg"/>
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -35,7 +34,6 @@
           
           <a href="../../../index.html" class="icon icon-home">
             cvxcovariance
-              <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -97,8 +95,20 @@
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.regularize_covariance" title="covariance.regularization.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(sigmas, r[, low_rank_format])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization._regularize_correlation" title="covariance.regularization._regularize_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_regularize_correlation</span></code></a>(R, r)</p></td>
+<td><p>param Rs: nxn numpy array of correlation matrices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.regularize_covariance" title="covariance.regularization.regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">regularize_covariance</span></code></a>(sigmas, r[, low_rank_format])</p></td>
 <td><p>param Sigmas: dictionary of covariance matrices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization._e_step" title="covariance.regularization._e_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_e_step</span></code></a>(Sigma, F, d)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization._m_step" title="covariance.regularization._m_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_m_step</span></code></a>(Cxx, Cxs, Css)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization._em_low_rank_approximation" title="covariance.regularization._em_low_rank_approximation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_em_low_rank_approximation</span></code></a>(sigma, initial_sigma)</p></td>
+<td><p>param sigma: one covariance matrices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.em_regularize_covariance" title="covariance.regularization.em_regularize_covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">em_regularize_covariance</span></code></a>(sigmas, initial_sigmas)</p></td>
 <td><p>param sigmas: dictionary of covariance matrices</p></td>
@@ -129,12 +139,42 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="covariance.regularization._regularize_correlation">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">_regularize_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#_regularize_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization._regularize_correlation" title="Link to this definition"></a></dt>
+<dd><p>param Rs: nxn numpy array of correlation matrices
+param r: float, rank of low rank component</p>
+<dl class="simple">
+<dt>returns: low rank + diag approximation of R        R_hat = sum_i^r lambda_i q_i q_i’ + E, where E is diagonal,</dt><dd><p>defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues
+and eigenvectors of R (the r first, in descending order)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="covariance.regularization.regularize_covariance">
 <span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">regularize_covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_rank_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#regularize_covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.regularize_covariance" title="Link to this definition"></a></dt>
 <dd><p>param Sigmas: dictionary of covariance matrices
 param r: float, rank of low rank component</p>
 <p>returns: regularized covariance matrices according to “Factor form
 regularization.” of Section 7.2 in the paper “A Simple Method for Predicting Covariance Matrices of Financial Returns”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.regularization._e_step">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">_e_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#_e_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization._e_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.regularization._m_step">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">_m_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Cxx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Css</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#_m_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization._m_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="covariance.regularization._em_low_rank_approximation">
+<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">_em_low_rank_approximation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/regularization.html#_em_low_rank_approximation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization._em_low_rank_approximation" title="Link to this definition"></a></dt>
+<dd><p>param sigma: one covariance matrices
+param rank: float, rank of low rank component</p>
+<p>returns: regularized covariance matrices</p>
 </dd></dl>
 
 <dl class="py function">

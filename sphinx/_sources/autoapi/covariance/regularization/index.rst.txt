@@ -13,7 +13,11 @@ Functions
 
 .. autoapisummary::
 
+   covariance.regularization._regularize_correlation
    covariance.regularization.regularize_covariance
+   covariance.regularization._e_step
+   covariance.regularization._m_step
+   covariance.regularization._em_low_rank_approximation
    covariance.regularization.em_regularize_covariance
 
 
@@ -35,6 +39,16 @@ Attributes
 
    
 
+.. py:function:: _regularize_correlation(R, r)
+
+   param Rs: nxn numpy array of correlation matrices
+   param r: float, rank of low rank component
+
+   returns: low rank + diag approximation of R        R_hat = sum_i^r lambda_i q_i q_i' + E, where E is diagonal,
+       defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues
+       and eigenvectors of R (the r first, in descending order)
+
+
 .. py:function:: regularize_covariance(sigmas, r, low_rank_format=False)
 
    param Sigmas: dictionary of covariance matrices
@@ -42,6 +56,20 @@ Attributes
 
    returns: regularized covariance matrices according to "Factor form
    regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
+
+
+.. py:function:: _e_step(Sigma, F, d)
+
+
+.. py:function:: _m_step(Cxx, Cxs, Css)
+
+
+.. py:function:: _em_low_rank_approximation(sigma, initial_sigma)
+
+   param sigma: one covariance matrices
+   param rank: float, rank of low rank component
+
+   returns: regularized covariance matrices
 
 
 .. py:function:: em_regularize_covariance(sigmas, initial_sigmas)

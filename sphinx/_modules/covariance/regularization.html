@@ -8,7 +8,6 @@
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="../../_static/logo.jpeg"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -33,7 +32,6 @@
           
           <a href="../../index.html" class="icon icon-home">
             cvxcovariance
-              <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -95,6 +93,8 @@
 
 
 
+<div class="viewcode-block" id="_regularize_correlation">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._regularize_correlation">[docs]</a>
 <span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param Rs: nxn numpy array of correlation matrices</span>
@@ -124,7 +124,8 @@
     <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">R_lo</span><span class="p">))</span>
 
     <span class="c1"># Create low rank approximation</span>
-    <span class="k">return</span> <span class="n">LowRank</span><span class="p">(</span><span class="n">Loading</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">=</span><span class="n">lamda</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">Approximation</span><span class="o">=</span><span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">LowRank</span><span class="p">(</span><span class="n">Loading</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">=</span><span class="n">lamda</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">Approximation</span><span class="o">=</span><span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span><span class="p">)</span></div>
+
     <span class="c1"># return R_lo + D</span>
 
 
@@ -160,6 +161,8 @@
 <span class="c1">##### Expectation-Maximization algorithm proposed by Emmanuel Candes #####</span>
 
 
+<div class="viewcode-block" id="_e_step">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._e_step">[docs]</a>
 <span class="k">def</span> <span class="nf">_e_step</span><span class="p">(</span><span class="n">Sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">@</span> <span class="n">F</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">L</span> <span class="o">=</span> <span class="n">G</span> <span class="o">@</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -167,16 +170,22 @@
     <span class="n">Cxs</span> <span class="o">=</span> <span class="n">Sigma</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span>
     <span class="n">Css</span> <span class="o">=</span> <span class="n">L</span> <span class="o">@</span> <span class="p">(</span><span class="n">Sigma</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">G</span>
 
-    <span class="k">return</span> <span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span>
+    <span class="k">return</span> <span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span></div>
 
 
+
+<div class="viewcode-block" id="_m_step">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._m_step">[docs]</a>
 <span class="k">def</span> <span class="nf">_m_step</span><span class="p">(</span><span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span><span class="p">):</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">Cxs</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Css</span><span class="p">)</span>
     <span class="c1"># d = np.diag(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Cxx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Cxs</span> <span class="o">*</span> <span class="n">F</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="p">(</span><span class="n">F</span> <span class="o">@</span> <span class="n">Css</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div>
 
 
+
+<div class="viewcode-block" id="_em_low_rank_approximation">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._em_low_rank_approximation">[docs]</a>
 <span class="k">def</span> <span class="nf">_em_low_rank_approximation</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">initial_sigma</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    param sigma: one covariance matrices</span>
@@ -192,7 +201,8 @@
         <span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span> <span class="o">=</span> <span class="n">_e_step</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
         <span class="n">F</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">_m_step</span><span class="p">(</span><span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">),</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">),</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">))</span></div>
+
 
 
 <div class="viewcode-block" id="em_regularize_covariance">
