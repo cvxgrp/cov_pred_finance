@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>covariance.ewma &mdash; cvxcovariance Documentation</title>
@@ -14,11 +14,11 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -31,12 +31,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> cvxcovariance
-            <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            cvxcovariance
+              <img src="../../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,10 +77,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">API Reference</a> &raquo;</li>
-          <li><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a> &raquo;</li>
-      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance</span></code></a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/autoapi/covariance/ewma/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,39 +91,31 @@
            <div itemprop="articleBody">
              
   <section id="module-covariance.ewma">
-<span id="covariance-ewma"></span><h1><a class="reference internal" href="#module-covariance.ewma" title="covariance.ewma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a><a class="headerlink" href="#module-covariance.ewma" title="Permalink to this heading"></a></h1>
+<span id="covariance-ewma"></span><h1><a class="reference internal" href="#module-covariance.ewma" title="covariance.ewma"><code class="xref py py-mod docutils literal notranslate"><span class="pre">covariance.ewma</span></code></a><a class="headerlink" href="#module-covariance.ewma" title="Link to this heading"></a></h1>
 <section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.volatility" title="covariance.ewma.volatility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volatility</span></code></a>(returns, halflife, min_periods=0, clip_at=None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.volatility" title="covariance.ewma.volatility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volatility</span></code></a>(returns, halflife[, min_periods, clip_at])</p></td>
 <td><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.center" title="covariance.ewma.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a>(returns, halflife, min_periods=0, mean_adj=False)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.center" title="covariance.ewma.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a>(returns, halflife[, min_periods, mean_adj])</p></td>
 <td><p>Center returns by subtracting their exponentially weighted moving average (EWMA)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.clip" title="covariance.ewma.clip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clip</span></code></a>(data, clip_at=None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.clip" title="covariance.ewma.clip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clip</span></code></a>(data[, clip_at])</p></td>
 <td><p>Clip data +- clip_at</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.iterated_ewma" title="covariance.ewma.iterated_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterated_ewma</span></code></a>(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, mu_halflife1=None, mu_halflife2=None, clip_at=None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.ewma.iterated_ewma" title="covariance.ewma.iterated_ewma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iterated_ewma</span></code></a>(returns, vola_halflife, cov_halflife[, ...])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading"></a></h3>
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.ewma.IEWMA" title="covariance.ewma.IEWMA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IEWMA</span></code></a></p></td>
 <td><p></p></td>
@@ -128,12 +124,12 @@
 </table>
 <dl class="py data">
 <dt class="sig sig-object py" id="covariance.ewma.IEWMA">
-<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">IEWMA</span></span><a class="reference internal" href="../../../_modules/covariance/ewma.html#IEWMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.IEWMA" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">IEWMA</span></span><a class="reference internal" href="../../../_modules/covariance/ewma.html#IEWMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.IEWMA" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.volatility">
-<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">volatility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#volatility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.volatility" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">volatility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#volatility"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.volatility" title="Link to this definition"></a></dt>
 <dd><p>Estimate volatility from returns using an exponentially weighted moving average (EWMA)</p>
 <p>param returns: 1 dim. numpy array of returns
 param halflife: EWMA half life
@@ -143,7 +139,7 @@ param clip_at: clip y_last at  +- clip_at*EWMA (optional)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.center">
-<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.center" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_adj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.center" title="Link to this definition"></a></dt>
 <dd><p>Center returns by subtracting their exponentially weighted moving average (EWMA)</p>
 <p>param returns: Frame of returns
 param halflife: EWMA half life
@@ -154,7 +150,7 @@ param mean_adj: subtract EWMA mean from returns (optional), otherwise function r
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.clip">
-<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.clip" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.clip" title="Link to this definition"></a></dt>
 <dd><p>Clip data +- clip_at</p>
 <p>param data: Frame of data
 param clip_at: clip data at  +- clip_at</p>
@@ -162,7 +158,7 @@ param clip_at: clip data at  +- clip_at</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.ewma.iterated_ewma">
-<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">iterated_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vola_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_halflife1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_halflife2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#iterated_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.iterated_ewma" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">covariance.ewma.</span></span><span class="sig-name descname"><span class="pre">iterated_ewma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vola_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cov_halflife</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_vola</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_periods_cov</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_halflife1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_halflife2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/ewma.html#iterated_ewma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.ewma.iterated_ewma" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>

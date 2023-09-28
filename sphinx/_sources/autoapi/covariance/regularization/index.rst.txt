@@ -28,12 +28,10 @@ Attributes
 
 
 .. py:data:: LowRank
-   
 
    
 
 .. py:data:: LowRankDiag
-   
 
    
 

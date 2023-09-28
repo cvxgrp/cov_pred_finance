@@ -13,11 +13,11 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -28,12 +28,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> cvxcovariance
-            <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            cvxcovariance
+              <img src="../../_static/logo.jpeg" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -59,9 +63,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>covariance.combination</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">covariance.combination</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -144,7 +148,10 @@
 
 
 <span class="c1"># Declaring namedtuple()</span>
-<div class="viewcode-block" id="Result"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.Result">[docs]</a><span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">])</span></div>
+<div class="viewcode-block" id="Result">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.Result">[docs]</a>
+<span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;covariance&quot;</span><span class="p">,</span> <span class="s2">&quot;weights&quot;</span><span class="p">])</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_CombinationProblem</span><span class="p">:</span>
@@ -180,7 +187,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prob</span><span class="o">.</span><span class="n">status</span>
 
 
-<div class="viewcode-block" id="from_ewmas"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_ewmas">[docs]</a><span class="k">def</span> <span class="nf">from_ewmas</span><span class="p">(</span>
+<div class="viewcode-block" id="from_ewmas">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_ewmas">[docs]</a>
+<span class="k">def</span> <span class="nf">from_ewmas</span><span class="p">(</span>
     <span class="n">returns</span><span class="p">,</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">min_periods_vola</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_periods_cov</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">clip_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -221,8 +230,12 @@
     <span class="k">return</span> <span class="n">_CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">means</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="from_sigmas"><a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_sigmas">[docs]</a><span class="k">def</span> <span class="nf">from_sigmas</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="from_sigmas">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination.from_sigmas">[docs]</a>
+<span class="k">def</span> <span class="nf">from_sigmas</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_CovarianceCombination</span><span class="p">(</span><span class="n">sigmas</span><span class="o">=</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="n">returns</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">means</span><span class="p">)</span></div>
+
 
 
 <span class="k">class</span> <span class="nc">_CovarianceCombination</span><span class="p">:</span>
