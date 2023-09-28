@@ -11,12 +11,8 @@ execute:
 
 parse:
   myst_enable_extensions:
-    - substitution
     - linkify
     - dollarmath
-  myst_substitutions:
-    book_url: http://www.cvxgrp.org/cov_pred_finance
-
 
 # needed for plotly
 sphinx:
