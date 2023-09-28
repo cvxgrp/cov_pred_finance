@@ -11,15 +11,14 @@ source_suffix = {
 extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
-    "autoapi.extension",
     "sphinx.ext.napoleon",
-    "recommonmark",
+    "autoapi.extension"
 ]
 
 
 source_dirs = "cvx"
 autoapi_type = "python"
-autoapi_dirs = ["../../%s" % d for d in source_dirs.split()]
+autoapi_dirs = [f"../../{source_dirs}"]
 autoapi_options = [
     "members",
     "undoc-members",
