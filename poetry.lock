@@ -24,28 +24,37 @@ files = [
 
 [[package]]
 name = "arch"
-version = "6.1.0"
+version = "6.2.0"
 description = "ARCH for Python"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "arch-6.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:39f0cd192ba5de57a8321ee7a7768e6e5e67c271197851cc99f9bd7d9eee9460"},
-    {file = "arch-6.1.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:550ffecd8351246bda864877b83de555da5f02b3ed14a4e2f516e166b2c84a7f"},
-    {file = "arch-6.1.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:da500933eeede1d30169bbcf2b034dba3d4e505ba0288a24a985cfd372f2d74c"},
-    {file = "arch-6.1.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:52612676b02591cc1a286a06c228874338ad70f2dfb9cc92de9195550e49068e"},
-    {file = "arch-6.1.0-cp310-cp310-win_amd64.whl", hash = "sha256:d3e8f04247553f75eab94e72e3d0f774f7a74adbf480165fd4685fcb58c784b2"},
-    {file = "arch-6.1.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:3c35e269f2b973f925e5c6459c306256c8bda2bf5659e0a95fd867150c23e7a4"},
-    {file = "arch-6.1.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:2292bc4707fde5e0559799c8d0aa9654ccf2d2a9ab23177c4e9b50970c49e919"},
-    {file = "arch-6.1.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c0a3fac27261132af305ef7ffe23046cbb447043aed9a9d5d1dc5b0ef5827ba1"},
-    {file = "arch-6.1.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d66c35762782811de8eadce0cde609531b62939765b5f6d4d1788f4cdfec57c4"},
-    {file = "arch-6.1.0-cp311-cp311-win_amd64.whl", hash = "sha256:59661080e063b82c69da6707d166d5172dda50d0c8e1b521f9502bd4dad823df"},
-    {file = "arch-6.1.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:70e2f8fee941808df8f82e4891f543306299e2f5a5baa98aa18a1b9ce63d9f7b"},
-    {file = "arch-6.1.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:5279b0ebd1bc6b8f9c6474e9f53c4032147f38e2f2a19e166dae118fbe205c1a"},
-    {file = "arch-6.1.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:458cfe6730c90badc9f2d6149aa6df2cabccda20b987a6671c3a317b9d87237f"},
-    {file = "arch-6.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1644c0e0658dbf2b9b3c676852f0746cf0a0ce28c90b8a9e5f0eedd289708c6c"},
-    {file = "arch-6.1.0-cp39-cp39-win32.whl", hash = "sha256:f406d9dabc93679e85eede940f04279481404e31a022e7e114425bca6cb68fc6"},
-    {file = "arch-6.1.0-cp39-cp39-win_amd64.whl", hash = "sha256:c4f5d88514088c891061e86edb17183f0e1c45cb8355b67f55cc08f30a86c707"},
-    {file = "arch-6.1.0.tar.gz", hash = "sha256:c398f1fd89e23911ca65f04b17a1cc67e87df14bb1a0478b5cd05dde772eb996"},
+    {file = "arch-6.2.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:27c4548cdd0f91b4fc301dc40a04c751217db0c54180dad54a2c19952a7fac2c"},
+    {file = "arch-6.2.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:7f19d482a624a9d47b810cb8b1b7b75cdec04ce6ab82459f46b0271122f936bf"},
+    {file = "arch-6.2.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d6ff0cceba026d193d3e9224418b54d651d31162cb1bafdae2f7b6f93fd19364"},
+    {file = "arch-6.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:51a7a48b142bafca32df0e1bd768510eb66141b42ca07dfff667486310d2ff04"},
+    {file = "arch-6.2.0-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:36851f8b14defb21af2c94741706d6f425be156987b13409d0edd01e9a3c3e01"},
+    {file = "arch-6.2.0-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:e8032caa4bcd16406ad4736feeee7bdeab6777508e34c20b8adee85d7a68ef7a"},
+    {file = "arch-6.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:7df1009689335788fa66da4f0718cb4aa1099e1d1b38f93e5d4ee360ef5ad5b1"},
+    {file = "arch-6.2.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:c070ec407f45410f6fc824b22f402f974e09abd0f856d556af6a7cc76ea8dfc4"},
+    {file = "arch-6.2.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:6d035cc59ed4561c20d12185ac2c3a2675d27f6d535aace1666880776a72a291"},
+    {file = "arch-6.2.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:215ddd5a3c9848c082e4cf98f7934d4d81dfebbb1e3d5a604041588e44c814ea"},
+    {file = "arch-6.2.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ab3b6867da6fd2b26d81eaaac04f67ea82e3e6c1d8626f13adc9ce0d373ae19d"},
+    {file = "arch-6.2.0-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:d4102d6f276348fe7838652153949bf0b5f305f3d0c797d2e740fa593e419875"},
+    {file = "arch-6.2.0-cp311-cp311-win_amd64.whl", hash = "sha256:39c42f734b31decc852ad8cbbe43631b0a4ccb6c9312add442edd97832a1b50c"},
+    {file = "arch-6.2.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:2af8066e252a3f33bf429c093b204e7943ab54d856875ec4c9cd20feddfc159b"},
+    {file = "arch-6.2.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:897c78db14587ca775a1ea60b83c30da9808725b05b8dfcd09451ee74a643cee"},
+    {file = "arch-6.2.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fcc32d0e5e2a777b5a004aedebb63b9be15952608d5d4d9fbd3bf31b1012b70c"},
+    {file = "arch-6.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d6a82f098e37a17b301444e63e4fc07db353d2662b0455477f72efaae828b9af"},
+    {file = "arch-6.2.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:499a80160a3f0161d5d1432a76ffbf704e9855dbcc969b93255f753da73046c7"},
+    {file = "arch-6.2.0-cp312-cp312-win_amd64.whl", hash = "sha256:32336d682be9d7effc865f442a268e64ad45b9b7e7158a6615c114475f303a4c"},
+    {file = "arch-6.2.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:2ea22286b5a93716096dd4b7670963b2ede54abf24f6f2e939b3013584977ae3"},
+    {file = "arch-6.2.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:880ac06ef1cc2cc58c88f7019b157efcaf4e00bb44526838d5c0e503673c6257"},
+    {file = "arch-6.2.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a58a898dbc7c300feae7e5dd4ce935784d8d8aaca06dbff0a7f4f2f8f5053b0c"},
+    {file = "arch-6.2.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3367fed66367af6b5090e1ded4186f019b84368b21f158736cde9e647647b78a"},
+    {file = "arch-6.2.0-cp39-cp39-win32.whl", hash = "sha256:cd31cfdfaa23bb1250c6a0d62199f6fee31e0e564e8f99a1753ad3f0bc8a6a90"},
+    {file = "arch-6.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:3cbce34f0eedfd9a8533eef2a792dc90c1012d544ac477262de098bfd993c29b"},
+    {file = "arch-6.2.0.tar.gz", hash = "sha256:1b973418e5e672023748a164eada49e3b2374d20d126fae945fecbe75944fe0d"},
 ]
 
 [package.dependencies]
