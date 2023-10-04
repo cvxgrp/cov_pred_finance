@@ -25,5 +25,5 @@ pandas 2.1.1 Powerful data structures for data analysis, time series, and statis
 │   └── six >=1.5 
 ├── pytz >=2020.1
 └── tzdata >=2022.1
-scipy 1.11.2 Fundamental algorithms for scientific computing in Python
+scipy 1.11.3 Fundamental algorithms for scientific computing in Python
 └── numpy >=1.21.6,<1.28.0
