@@ -42,7 +42,7 @@ Python versions and different platforms. If these tests start failing, please
 fix your code and send another commit, which will re-trigger the tests.
 
 If you'd like to add a new feature to cvxcovariance, please do propose your
-change on a Github issue, to make sure that your priorities align with ours.
+change on a GitHub issue, to make sure that your priorities align with ours.
 
 If you'd like to contribute code but don't know where to start, try one of the
 following:

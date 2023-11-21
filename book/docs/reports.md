@@ -2,8 +2,8 @@
 
 ## Timing
 
-{{ '[Report]({url}/tests/html-report/report.html)'.format(url=book_url) }}
+[Report](https://www.cvxgrp.org/cvxcovariance/tests/html-report/report.html)
 
 ## Coverage
 
-{{ '[Coverage]({url}/tests/html-coverage/index.html)'.format(url=book_url) }}
+[Coverage](https://www.cvxgrp.org/cvxcovariance/tests/html-coverage/index.html)

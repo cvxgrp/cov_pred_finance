@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-master_doc = "index"
 project = "cvxcovariance"
+
+master_doc = "index"
 
 source_suffix = {
     ".rst": "restructuredtext",
@@ -11,19 +12,19 @@ source_suffix = {
 extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
-    "autoapi.extension",
     "sphinx.ext.napoleon",
-    "recommonmark",
+    "autoapi.extension",
 ]
 
 
-source_dirs = "cvx"
+source_dir = "cvx"
 autoapi_type = "python"
-autoapi_dirs = ["../../%s" % d for d in source_dirs.split()]
+autoapi_dirs = [f"../../{source_dir}"]
 autoapi_options = [
     "members",
     "undoc-members",
     "show-inheritance",
+    "private-members",
     "show-module-summary",
     "special-members",
     "imported-members",
@@ -33,8 +34,8 @@ napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 
 # HTML -----------------------------------------------------------------
-html_favicon = "_static/logo.jpeg"
-html_logo = "_static/logo.jpeg"
+# html_favicon = "_static/logo.jpeg"
+# html_logo = "_static/logo.jpeg"
 html_title = "cvxcovariance Documentation"
 html_show_sourcelink = True
 html_css_files = [
