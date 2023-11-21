@@ -285,6 +285,8 @@
 <span class="sd">        param sigmas: dictionary of covariance matrices {key: {time: sigma}}</span>
 <span class="sd">        param returns: pandas DataFrame of returns</span>
 <span class="sd">        param means: dictionary of means {key: {time: mu}}, optional</span>
+
+<span class="sd">        Note: sigmas[key][time] is a covariance matrix prediction for time+1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Assert Sigmas and means have same keys if means not None</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
