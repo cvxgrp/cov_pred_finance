@@ -26,7 +26,6 @@ htmlcov
 after_comb_covariance_no_reg.csv
 HF_Returns_Stocks.csv
 Intraday_Overnight_Stock_Returns.xlsx
-
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
 *.aux

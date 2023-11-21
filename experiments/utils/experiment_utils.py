@@ -6,6 +6,44 @@ import pandas as pd
 
 from cvx.covariance.regularization import em_regularize_covariance
 from cvx.covariance.regularization import regularize_covariance
+from experiments.utils.iterated_ewma_vec import ewma
+
+
+def _realized_covariance(returns):
+    for time in returns.index.unique():
+        returns_temp = returns.loc[time]
+        T_temp = len(returns_temp)
+
+        yield time, returns_temp.cov(ddof=0) * T_temp
+
+
+def realized_ewma(returns, halflife, clip_at=None, min_periods=None):
+    realized_covariances = dict(_realized_covariance(returns))
+
+    return ewma(
+        realized_covariances,
+        halflife,
+        clip_at=clip_at,
+        min_periods=min_periods,
+    )
+
+
+def realized_volas(returns):
+    for time in returns.index.unique():
+        yield time, np.sqrt((returns.loc[time] ** 2).sum(axis=0))
+
+
+def MSE(returns, covariances):
+    returns_shifted = returns.shift(-1)
+
+    MSEs = []
+    for time, cov in covariances.items():
+        realized_cov = returns_shifted.loc[time].values.reshape(
+            -1, 1
+        ) @ returns_shifted.loc[time].values.reshape(1, -1)
+        MSEs.append(np.linalg.norm(cov - realized_cov) ** 2)
+
+    return pd.Series(MSEs, index=covariances.keys())
 
 
 def yearly_SR(trader, plot=True, regression_line=True):
