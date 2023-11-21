@@ -160,6 +160,8 @@ class _CovarianceCombination:
         param sigmas: dictionary of covariance matrices {key: {time: sigma}}
         param returns: pandas DataFrame of returns
         param means: dictionary of means {key: {time: mu}}, optional
+
+        Note: sigmas[key][time] is a covariance matrix prediction for time+1
         """
         # Assert Sigmas and means have same keys if means not None
         n = returns.shape[1]

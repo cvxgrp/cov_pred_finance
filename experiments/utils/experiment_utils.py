@@ -6,14 +6,26 @@ import pandas as pd
 
 from cvx.covariance.regularization import em_regularize_covariance
 from cvx.covariance.regularization import regularize_covariance
+from experiments.utils.iterated_ewma_vec import ewma
 
 
-def realized_covariance(returns):
+def _realized_covariance(returns):
     for time in returns.index.unique():
         returns_temp = returns.loc[time]
         T_temp = len(returns_temp)
 
-        yield time, returns_temp.cov(ddof=0)
+        yield time, returns_temp.cov(ddof=0) * T_temp
+
+
+def realized_ewma(returns, halflife, clip_at=None, min_periods=None):
+    realized_covariances = dict(_realized_covariance(returns))
+
+    return ewma(
+        realized_covariances,
+        halflife,
+        clip_at=clip_at,
+        min_periods=min_periods,
+    )
 
 
 def realized_volas(returns):
