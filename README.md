@@ -173,6 +173,10 @@ doi = {10.1561/0800000047},
 issn = {1551-3076},
 number = {4},
 pages = {324-407},
-author = {Kasper Johansson and Mehmet G. Ogut and Markus Pelger and Thomas Schmelzer and Stephen Boyd}
+author = {Kasper Johansson
+and Mehmet G. Ogut
+and Markus Pelger
+and Thomas Schmelzer
+and Stephen Boyd}
 }
 ```
