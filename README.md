@@ -163,12 +163,20 @@ If you want to reference our paper in your research,
 please consider citing us by using the following BibTeX:
 
 ```BibTeX
-@misc{johansson2023covariance,
-      title={A Simple Method for Predicting Covariance Matrices of Financial Returns},
-      author={Kasper Johansson and Mehmet Giray Ogut and Markus Pelger
-      and Thomas Schmelzer and Stephen Boyd},
-      year={2023},
-      eprint={2305.19484},
-      archivePrefix={arXiv},
+@article{johansson2023covariance,
+url = {http://dx.doi.org/10.1561/0800000047},
+year = {2023},
+volume = {12},
+journal = {Foundations and Trends® in Econometrics},
+title = {A Simple Method for Predicting Covariance Matrices of Financial Returns},
+doi = {10.1561/0800000047},
+issn = {1551-3076},
+number = {4},
+pages = {324-407},
+author = {Kasper Johansson
+and Mehmet G. Ogut
+and Markus Pelger
+and Thomas Schmelzer
+and Stephen Boyd}
 }
 ```
