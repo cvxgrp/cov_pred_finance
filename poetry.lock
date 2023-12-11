@@ -406,13 +406,13 @@ resolved_reference = "407f2165afea50fd6336143b3ac5c675f78acd43"
 
 [[package]]
 name = "cvxsimulator"
-version = "0.8.11"
+version = "0.8.12"
 description = "Simple simulator for investors"
 optional = false
 python-versions = ">=3.9,<3.12"
 files = [
-    {file = "cvxsimulator-0.8.11-py3-none-any.whl", hash = "sha256:e22d681fff6b6fd6420230aa94fdcea9c26d1a80e28a85dd651d094d17a23a67"},
-    {file = "cvxsimulator-0.8.11.tar.gz", hash = "sha256:675746cc0808695aba27dd427dddb18394e2ca274f1bde3a803eadc87516b158"},
+    {file = "cvxsimulator-0.8.12-py3-none-any.whl", hash = "sha256:e9186b274328da64990019f2d6c1261051dff25195472aabe9069d348ec7d616"},
+    {file = "cvxsimulator-0.8.12.tar.gz", hash = "sha256:a55d99af7f13307509352cb112023f513466484b0e64ae13a6535ff4c76aa8b9"},
 ]
 
 [package.dependencies]
