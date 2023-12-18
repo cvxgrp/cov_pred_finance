@@ -1778,13 +1778,13 @@ yfinance = ">=0.1.70"
 
 [[package]]
 name = "refinitiv-data"
-version = "1.5.0"
+version = "1.5.1"
 description = "Client for Refinitiv Data Platform API's"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "refinitiv-data-1.5.0.tar.gz", hash = "sha256:bddafcd5e83c8ccc814ce231854162bf8593cda27e48e82869f70e6377aecd1a"},
-    {file = "refinitiv_data-1.5.0-py3-none-any.whl", hash = "sha256:8ed0c594222fe89bfe28fe769f281a3fa6d0861a02658323aa620fb3590e2210"},
+    {file = "refinitiv-data-1.5.1.tar.gz", hash = "sha256:9f531f44d3f224e4cd466581078d5571bcc43306bb601b25491e088355f7966c"},
+    {file = "refinitiv_data-1.5.1-py3-none-any.whl", hash = "sha256:a8d9c426af067ffe2111bd1aabe5397f7688e4080fea26cd4b7be0484727d846"},
 ]
 
 [package.dependencies]
