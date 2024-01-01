@@ -15,25 +15,26 @@ cvxpy = "*"
 scipy = "*"
 
 [tool.poetry.group.test.dependencies]
-pytest = "7.4.3"
-pytest-cov = "4.1.0"
-mock = "*"
+pytest = "*"
+pytest-cov = "*"
+pre-commit = "*"
+#mock = "*"
 
 [tool.poetry.dev-dependencies]
-seaborn = "*"
+#seaborn = "*"
 arch = "*"
 tqdm = "*"
 scikit-learn = "*"
-matplotlib = "*"
+#matplotlib = "*"
 loguru = "*"
 plotly = "*"
 cvxsimulator = "*"
-cvxbacktest = { git = "https://github.com/cvxgrp/cvxbacktest", branch = "main"}
-cvxrisk = { git = "https://github.com/cvxgrp/cvxrisk", branch = "main"}
-yfinance = "*"
+#cvxbacktest = { git = "https://github.com/cvxgrp/cvxbacktest", branch = "main"}
+#cvxrisk = { git = "https://github.com/cvxgrp/cvxrisk", branch = "main"}
+#yfinance = "*"
 statsmodels = "*"
-refinitiv-data = "*"
-openpyxl = "*"
+#refinitiv-data = "*"
+#openpyxl = "*"
 
 [build-system]
 requires = ["poetry>=1.6.0"]
