@@ -9,7 +9,7 @@ packages = [{include = "cvx"}]
 homepage = "https://www.cvxgrp.org/cvxcovariance"
 
 [tool.poetry.dependencies]
-python = ">=3.9.0,<3.12"
+python = ">=3.9.0"
 pandas = "*"
 cvxpy = "*"
 scipy = "*"
@@ -19,7 +19,7 @@ pytest = "*"
 pytest-cov = "*"
 pre-commit = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 arch = "*"
 tqdm = "*"
 scikit-learn = "*"
