@@ -1,0 +1,161 @@
+:py:mod:`covariance.combination`
+================================
+
+.. py:module:: covariance.combination
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   covariance.combination._CombinationProblem
+   covariance.combination._CovarianceCombination
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.combination._map_nested_dicts
+   covariance.combination._cholesky_precision
+   covariance.combination._B_t_col
+   covariance.combination._diag_part
+   covariance.combination._A
+   covariance.combination._nu
+   covariance.combination.from_ewmas
+   covariance.combination.from_sigmas
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   covariance.combination.Result
+
+
+.. py:function:: _map_nested_dicts(ob, func)
+
+   Recursively applies a function to a nested dictionary
+
+
+.. py:function:: _cholesky_precision(cov)
+
+   Computes Cholesky factor of the inverse of each covariance matrix in cov
+
+   param cov: dictionary of covariance matrices {time: Sigma}
+
+
+.. py:function:: _B_t_col(Ls, nus, returns)
+
+   Computes L.T @ return for each L factor in Ls and corresponding
+   return in returns
+
+
+.. py:function:: _diag_part(cholesky)
+
+
+.. py:function:: _A(diags_interval, K)
+
+   param diags_interval: NxK pandas DataFrame where each entry is diagonal
+   of an expert Cholesky factor matrix
+   param K: number of expert predictors
+
+   returns: nNxK matrix where each column is a vector of stacked diagonals
+
+
+.. py:function:: _nu(Ls, means)
+
+   Computes L.T @ mu for each L factor in Ls and corresponding
+   mu in means
+
+
+.. py:data:: Result
+
+   
+
+.. py:class:: _CombinationProblem(keys, n, window)
+
+
+   .. py:property:: _constraints
+
+
+   .. py:property:: _objective
+
+
+   .. py:property:: weights
+
+
+   .. py:property:: status
+
+
+   .. py:method:: _construct_problem()
+
+
+   .. py:method:: solve(**kwargs)
+
+
+
+.. py:function:: from_ewmas(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False)
+
+   Estimate a series of covariance matrices using the iterated EWMA method
+
+   param returns: Frame of returns
+   param pairs: list of pairs of EWMA half lives, e.g. [(20, 20), (10, 50), (20, 60)],
+               pair[0] is the half life for volatility estimation
+               pair[1] is the half life for covariance estimation
+   param min_periods_vola: minimum number of observations to start EWMA for volatility estimation (optional)
+   param min_periods_cov: minimum number of observations to start EWMA for covariance estimation (optional)
+   param clip_at: clip volatility adjusted returns at +- clip_at (optional)
+   param mean: subtract EWMA mean from returns and volatility adjusted returns (optional)
+
+   return: Yields tuples with time, mean, covariance matrix, weights
+
+
+.. py:function:: from_sigmas(sigmas, returns, means=None)
+
+
+.. py:class:: _CovarianceCombination(sigmas, returns, means=None)
+
+
+   .. py:property:: sigmas
+
+
+   .. py:property:: means
+
+
+   .. py:property:: returns
+
+
+   .. py:property:: K
+
+      Returns the number of expert predictors
+
+   .. py:property:: assets
+
+      Returns the assets in the covariance combination problem
+
+   .. py:method:: solve(window=None, **kwargs)
+
+      The size of the window is crucial to specify the size of the parameters
+      for the cvxpy problem. Hence those computations are not in the __init__ method
+
+      Solves the covariance combination problem at a given time, i.e.,
+      finds the prediction for the covariance matrix at 'time+1'
+
+      param window: number of previous time steps to use in the covariance combination
+
+
+   .. py:method:: _solve(time, problem, **kwargs)
+
+      Solves the covariance combination problem at a given time t
+
+
+

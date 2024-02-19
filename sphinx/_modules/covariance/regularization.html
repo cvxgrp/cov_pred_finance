@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>covariance.regularization &mdash; cvxcovariance Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c267ad58" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            cvxcovariance
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">cvxcovariance</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">covariance.regularization</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for covariance.regularization</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sc</span>
+
+<span class="c1"># from tqdm import tqdm</span>
+
+<div class="viewcode-block" id="LowRank">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.LowRank">[docs]</a>
+<span class="n">LowRank</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;LowRank&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Loading&quot;</span><span class="p">,</span> <span class="s2">&quot;Lambda&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;Approximation&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="LowRankDiag">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.LowRankDiag">[docs]</a>
+<span class="n">LowRankDiag</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;LowRankCovariance&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="_regularize_correlation">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._regularize_correlation">[docs]</a>
+<span class="k">def</span> <span class="nf">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param Rs: nxn numpy array of correlation matrices</span>
+<span class="sd">    param r: float, rank of low rank component</span>
+
+<span class="sd">    returns: low rank + diag approximation of R\</span>
+<span class="sd">        R_hat = sum_i^r lambda_i q_i q_i&#39; + E, where E is diagonal,</span>
+<span class="sd">        defined so that R_hat has unit diagonal; lamda_i, q_i are eigenvalues</span>
+<span class="sd">        and eigenvectors of R (the r first, in descending order)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># number of rows and columns in R</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># ascending order of the largest r eigenvalues</span>
+    <span class="n">lamda</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">subset_by_index</span><span class="o">=</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="n">r</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># Sort eigenvalues in descending order</span>
+    <span class="n">lamda</span> <span class="o">=</span> <span class="n">lamda</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># reshuffle the eigenvectors accordingly</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Get low rank component</span>
+    <span class="n">R_lo</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">lamda</span><span class="p">)</span> <span class="o">@</span> <span class="n">Q</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Get diagonal component</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">R_lo</span><span class="p">))</span>
+
+    <span class="c1"># Create low rank approximation</span>
+    <span class="k">return</span> <span class="n">LowRank</span><span class="p">(</span><span class="n">Loading</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">=</span><span class="n">lamda</span><span class="p">,</span> <span class="n">D</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">Approximation</span><span class="o">=</span><span class="n">R_lo</span> <span class="o">+</span> <span class="n">D</span><span class="p">)</span></div>
+
+    <span class="c1"># return R_lo + D</span>
+
+
+<div class="viewcode-block" id="regularize_covariance">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.regularize_covariance">[docs]</a>
+<span class="k">def</span> <span class="nf">regularize_covariance</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">low_rank_format</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param Sigmas: dictionary of covariance matrices</span>
+<span class="sd">    param r: float, rank of low rank component</span>
+
+<span class="sd">    returns: regularized covariance matrices according to &quot;Factor form</span>
+<span class="sd">    regularization.&quot; of Section 7.2 in the paper &quot;A Simple Method for Predicting Covariance Matrices of Financial Returns&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">vola</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># R = sigma / np.outer(vola, vola)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">vola</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">vola</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">_regularize_correlation</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="c1"># todo: requires some further work</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">low_rank_format</span><span class="p">:</span>
+            <span class="n">cov</span> <span class="o">=</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">Approximation</span> <span class="o">*</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cov</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">Loading</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">Lambda</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">R</span><span class="o">.</span><span class="n">D</span> <span class="o">*</span> <span class="n">vola</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">LowRankDiag</span><span class="p">(</span>
+                <span class="n">F</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+                <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">sigma</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>
+            <span class="p">)</span></div>
+
+
+
+<span class="c1">##### Expectation-Maximization algorithm proposed by Emmanuel Candes #####</span>
+
+
+<div class="viewcode-block" id="_e_step">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._e_step">[docs]</a>
+<span class="k">def</span> <span class="nf">_e_step</span><span class="p">(</span><span class="n">Sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">((</span><span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">@</span> <span class="n">F</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">G</span> <span class="o">@</span> <span class="n">F</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">Cxx</span> <span class="o">=</span> <span class="n">Sigma</span>
+    <span class="n">Cxs</span> <span class="o">=</span> <span class="n">Sigma</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">Css</span> <span class="o">=</span> <span class="n">L</span> <span class="o">@</span> <span class="p">(</span><span class="n">Sigma</span> <span class="o">@</span> <span class="n">L</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">G</span>
+
+    <span class="k">return</span> <span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span></div>
+
+
+
+<div class="viewcode-block" id="_m_step">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._m_step">[docs]</a>
+<span class="k">def</span> <span class="nf">_m_step</span><span class="p">(</span><span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span><span class="p">):</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">Cxs</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Css</span><span class="p">)</span>
+    <span class="c1"># d = np.diag(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">Cxx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Cxs</span> <span class="o">*</span> <span class="n">F</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="p">(</span><span class="n">F</span> <span class="o">@</span> <span class="n">Css</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">index</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="_em_low_rank_approximation">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization._em_low_rank_approximation">[docs]</a>
+<span class="k">def</span> <span class="nf">_em_low_rank_approximation</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">initial_sigma</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param sigma: one covariance matrices</span>
+<span class="sd">    param rank: float, rank of low rank component</span>
+
+<span class="sd">    returns: regularized covariance matrices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">assets</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">initial_sigma</span><span class="o">.</span><span class="n">F</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">initial_sigma</span><span class="o">.</span><span class="n">d</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span> <span class="o">=</span> <span class="n">_e_step</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">F</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">_m_step</span><span class="p">(</span><span class="n">Cxx</span><span class="p">,</span> <span class="n">Cxs</span><span class="p">,</span> <span class="n">Css</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">LowRankDiag</span><span class="p">(</span><span class="n">F</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">),</span> <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">assets</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="em_regularize_covariance">
+<a class="viewcode-back" href="../../autoapi/covariance/regularization/index.html#covariance.regularization.em_regularize_covariance">[docs]</a>
+<span class="k">def</span> <span class="nf">em_regularize_covariance</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">initial_sigmas</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    param sigmas: dictionary of covariance matrices</span>
+<span class="sd">    param  initial_sigmas: dictionary of initial low rank + diagonal approximations; these</span>
+<span class="sd">    are namedtuples with fields F and d, with F nxk and d length n</span>
+
+<span class="sd">    returns: regularized covariance matrices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># for time, sigma in tqdm(sigmas.items()):</span>
+    <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">yield</span> <span class="n">time</span><span class="p">,</span> <span class="n">_em_low_rank_approximation</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">initial_sigmas</span><span class="p">[</span><span class="n">time</span><span class="p">])</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
