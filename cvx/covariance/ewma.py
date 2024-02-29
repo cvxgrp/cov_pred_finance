@@ -129,17 +129,20 @@ def iterated_ewma(
         clip_at=clip_at,
     )
 
+    # wherever vola is not zero: adj = clip((returns / vola), clip_at=clip_at)
+    # wherever vola is zero: adj = NaN
+
+    # adj = returns / vola
+
     # adj the returns
+    # make sure adj is NaN where vola is zero or returns are
+    # NaN. This handles NaNs (which in some sense is the same as a constant
+    # return series, i.e., vola = 0)
     adj = clip((returns / vola), clip_at=clip_at)
+    adj[vola == 0] = np.nan
 
-    # center the adj returns again? Yes, I think so
-    # TODO: Check if this is correct half life
-
+    # center the adj returns again
     adj, adj_mean = center(adj, halflife=mu_halflife2, min_periods=0, mean_adj=mean)
-    # if mean:
-    #     print(adj)
-    #     print(adj_mean)
-    #     assert False
 
     m = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
 
@@ -233,13 +236,20 @@ def _general(
 
     # iterate through all the remaining rows of y. Start in the 2nd row
     for n, row in enumerate(y[1:], start=1):
+        # replace NaNs NaNs in row with non-NaN values from _ewma and vice versa
+        next_val = fct(row)
+        mask = np.isnan(next_val)
+        next_val[mask] = _ewma[mask]
+        mask = np.isnan(_ewma)
+        _ewma[mask] = next_val[mask]
+
         # update the moving average
         if clip_at and n >= min_periods + 1:
             _ewma = _ewma + (1 - beta) * (
-                np.clip(fct(row), -clip_at * _ewma, clip_at * _ewma) - _ewma
+                np.clip(next_val, -clip_at * _ewma, clip_at * _ewma) - _ewma
             ) / (1 - np.power(beta, n + 1))
         else:
-            _ewma = _ewma + (1 - beta) * (fct(row) - _ewma) / (
+            _ewma = _ewma + (1 - beta) * (next_val - _ewma) / (
                 1 - np.power(beta, n + 1)
             )
 
