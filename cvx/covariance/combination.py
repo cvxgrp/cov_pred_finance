@@ -218,15 +218,16 @@ class _CovarianceCombination:
         """
         return self.returns.columns
 
-    def solve(self, window=None, **kwargs):
+    def solve(self, window=None, times=None, **kwargs):
         """
         The size of the window is crucial to specify the size of the parameters
         for the cvxpy problem. Hence those computations are not in the __init__ method
 
-        Solves the covariance combination problem at a given time, i.e.,
-        finds the prediction for the covariance matrix at 'time+1'
+        Solves the covariance combination problem at a time steps given in times
 
-        param window: number of previous time steps to use in the covariance combination
+        param window: number of previous time steps to use in the covariance
+        combination problem
+        param times: list of time steps to solve the problem at; if None, solve at all available time steps
         """
         # If window is None, use all available data; cap window at length of data
         window = window or len(self.__Ls_shifted)
@@ -240,9 +241,29 @@ class _CovarianceCombination:
             }
         )
 
-        Bs = {time: np.column_stack(Lts_at_r.loc[time]) for time in Lts_at_r.index}
+        # time steps to solve the problem at
+        all_available_times = Lts_at_r.index
+
+        if times is None:
+            times = Lts_at_r.index
+        else:
+            times = list(times)
+
+            # assert times are consecutive in all_available_times
+            zero_index = all_available_times.get_loc(times[0])
+            assert list(
+                all_available_times[zero_index : zero_index + len(times)]
+            ) == list(times)
+            "times must be consecutive"
+
+            # add window - 1 previous time steps to times
+            times = (
+                list(all_available_times[zero_index - window + 1 : zero_index]) + times
+            )
+
+        Bs = {time: np.column_stack(Lts_at_r.loc[time]) for time in times}
         prod_Bs = pd.Series({time: B.T @ B for time, B in Bs.items()})
-        times = prod_Bs.index
+        # times = prod_Bs.index
         P = {
             times[i]: sum(prod_Bs.loc[times[i - window + 1] : times[i]])
             for i in range(window - 1, len(times))
@@ -281,9 +302,6 @@ class _CovarianceCombination:
         Solves the covariance combination problem at a given time t
         """
         problem.solve(**kwargs)
-
-        # if problem.status != "optimal":
-        #     raise cvx.SolverError
 
         weights = problem.weights
 
