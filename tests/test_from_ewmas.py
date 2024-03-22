@@ -57,6 +57,8 @@ def test_covariance_estimator_mean(prices):
         atol=1e-3,
     )
 
+    print(results[pd.Timestamp("2018-04-11")])
+
 
 def test_covariance_estimator_no_clipping(prices):
     # Frame of returns

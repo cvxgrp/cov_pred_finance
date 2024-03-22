@@ -22,6 +22,7 @@ np.random.seed(0)
 mask = np.random.choice([False, True], size=returns.shape, p=[0.9, 0.1])
 returns[mask] = np.nan
 
+
 # Iterated EWWMA covariance prediction
 iewma_pair = (63, 125)
 iewma = list(
