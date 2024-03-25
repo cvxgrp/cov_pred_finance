@@ -38,6 +38,7 @@ def test_iewma_nans(returns, resource_dir):
             cov_halflife=iewma_pair[1],
             min_periods_vola=0,
             min_periods_cov=0,
+            nan_to_num=True,
         )
     )
     iewma = {iterate.time: iterate.covariance for iterate in iewma}

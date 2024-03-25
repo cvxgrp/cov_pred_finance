@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import warnings
 from collections import namedtuple
 
 import numpy as np
@@ -14,7 +13,7 @@ def _generator2frame(generator):
     return pd.DataFrame(dict(generator)).transpose()
 
 
-def _variance(returns, halflife, min_periods=0, clip_at=None, nan_to_num=False):
+def _variance(returns, halflife, min_periods=0, clip_at=None):
     """
     Estimate variance from returns using an exponentially weighted moving average (EWMA)
 
@@ -28,7 +27,6 @@ def _variance(returns, halflife, min_periods=0, clip_at=None, nan_to_num=False):
         halflife=halflife,
         min_periods=min_periods,
         clip_at=clip_at,
-        nan_to_num=nan_to_num,
     )
 
 
@@ -53,7 +51,7 @@ def volatility(returns, halflife, min_periods=0, clip_at=None):
     )
 
 
-def center(returns, halflife, min_periods=0, mean_adj=False, nan_to_num=False):
+def center(returns, halflife, min_periods=0, mean_adj=False):
     """
     Center returns by subtracting their exponentially weighted moving average (EWMA)
 
@@ -70,7 +68,6 @@ def center(returns, halflife, min_periods=0, mean_adj=False, nan_to_num=False):
                 data=returns,
                 halflife=halflife,
                 min_periods=min_periods,
-                nan_to_num=nan_to_num,
             )
         )
         return (returns - mean).dropna(how="all", axis=0), mean
@@ -101,8 +98,25 @@ def iterated_ewma(
     mu_halflife1=None,
     mu_halflife2=None,
     clip_at=None,
-    nan_to_num="default",
+    nan_to_num=True,
 ):
+    """
+    param returns: pandas dataframe with returns for each asset
+    param vola_halflife: half life for volatility
+    param cov_halflife: half life for covariance
+    param min_preiods_vola: minimum number of periods to use for volatility
+    ewma estimate
+    param min_periods_cov: minimum number of periods to use for covariance
+    ewma estimate
+    param mean: whether to estimate mean; if False, assumes zero mean data
+    param mu_halflife1: half life for the first mean adjustment; if None, it is
+    set to vola_halflife; only applies if mean=True
+    param mu_halflife2: half life for the second mean adjustment; if None, it is
+    set to cov_halflife; only applies if mean=True
+    param clip_at: winsorizes ewma update at +-clip_at*(current ewma) in ewma;
+    if None, no winsorization is performed
+    nan_to_num: if True, replace NaNs in returns with 0.0
+    """
     mu_halflife1 = mu_halflife1 or vola_halflife
     mu_halflife2 = mu_halflife2 or cov_halflife
 
@@ -112,7 +126,13 @@ def iterated_ewma(
         matrix = matrix.values
 
         # Convert (covariance) matrix to correlation matrix
-        v = 1 / np.sqrt(np.diagonal(matrix)).reshape(-1, 1)
+        # v = 1 / np.sqrt(np.diagonal(matrix)).reshape(-1, 1)
+        diag = np.diagonal(matrix).copy()
+        one_inds = np.where(diag == 0)[0]
+        if one_inds.size > 0:
+            diag[one_inds] = 1  # temporarily, to avoid division by zero
+        v = 1 / np.sqrt(diag).reshape(-1, 1)
+        v[one_inds] = np.nan
         matrix = v * matrix * v.T
 
         cov = vola.reshape(-1, 1) * matrix * vola.reshape(1, -1)
@@ -122,14 +142,18 @@ def iterated_ewma(
     def scale_mean(vola, vec1, vec2):
         return vec1 + vola * vec2
 
+    if nan_to_num:
+        if returns.isna().any().any():
+            returns = returns.fillna(0.0)
+
     # compute the moving mean of the returns
 
-    # TODO: Check if this is correct half life
     returns, returns_mean = center(
         returns=returns, halflife=mu_halflife1, min_periods=0, mean_adj=mean
     )
 
-    # estimate the volatility, clip some returns before they enter the estimation
+    # estimate the volatility, clip some returns before they enter the
+    # estimation
     vola = volatility(
         returns=returns,
         halflife=vola_halflife,
@@ -137,18 +161,12 @@ def iterated_ewma(
         clip_at=clip_at,
     )
 
-    # wherever vola is not zero: adj = clip((returns / vola), clip_at=clip_at)
-    # wherever vola is zero: adj = NaN
-
-    # adj = returns / vola
-
     # adj the returns
     # make sure adj is NaN where vola is zero or returns are
     # NaN. This handles NaNs (which in some sense is the same as a constant
     # return series, i.e., vola = 0)
     adj = clip((returns / vola), clip_at=clip_at)  # if vola is zero, adj is NaN
-    # print((adj.isna()).sum())
-    # adj[vola == 0] = np.nan
+    adj = adj.fillna(0.0)
 
     # center the adj returns again
     adj, adj_mean = center(adj, halflife=mu_halflife2, min_periods=0, mean_adj=mean)
@@ -157,7 +175,6 @@ def iterated_ewma(
         data=adj,
         halflife=cov_halflife,
         min_periods=min_periods_cov,
-        nan_to_num=nan_to_num,
     ):
         if mean:
             m = scale_mean(
@@ -173,7 +190,7 @@ def iterated_ewma(
         )
 
 
-def _ewma_cov(data, halflife, min_periods=0, nan_to_num=True):
+def _ewma_cov(data, halflife, min_periods=0):
     """
     param data: Txn pandas DataFrame of returns
     param halflife: float, halflife of the EWMA
@@ -185,20 +202,18 @@ def _ewma_cov(data, halflife, min_periods=0, nan_to_num=True):
         halflife=halflife,
         fct=lambda x: np.outer(x, x),
         min_periods=min_periods,
-        nan_to_num=nan_to_num,
     ):
         if not np.isnan(ewma).all():
             yield t, pd.DataFrame(index=data.columns, columns=data.columns, data=ewma)
 
 
-def _ewma_mean(data, halflife, min_periods=0, clip_at=None, nan_to_num=False):
+def _ewma_mean(data, halflife, min_periods=0, clip_at=None):
     for t, ewma in _general(
         data.values,
         times=data.index,
         halflife=halflife,
         min_periods=min_periods,
         clip_at=clip_at,
-        nan_to_num=nan_to_num,
     ):
         # converting back into a series costs some performance but adds robustness
         if not np.isnan(ewma).all():
@@ -213,7 +228,6 @@ def _general(
     fct=lambda x: x,
     min_periods=0,
     clip_at=None,
-    nan_to_num="default",
 ):
     """
     y: frame with measurements for times t=t_1,t_2,...,T
@@ -222,8 +236,6 @@ def _general(
     fct: function to apply to y
     min_periods: minimum number of observations to start EWMA
     clip_at: clip y_last at  +- clip_at*EWMA (optional)
-    nan_to_num: if True, replace NaNs in y with 0.0; "default" means True if
-    y[i] is 2D and False otherwise
 
     returns: a generator over (t_i, EWMA of fct(y_i))
     """
@@ -233,13 +245,6 @@ def _general(
             return times[k], _ewma * np.nan
 
         return times[k], _ewma
-
-    if nan_to_num == "default":
-        if y[0].ndim == 2:
-            nan_to_num = True
-            y = np.nan_to_num(y)  # ensures covariances are PSD
-        else:
-            nan_to_num = False
 
     if halflife:
         alpha = 1 - np.exp(-np.log(2) / halflife)
@@ -256,16 +261,6 @@ def _general(
 
         next_val = fct(row)
 
-        # ### Merge NaNs from next_val and _ewma
-        nans = False
-        mask_next_val = np.isnan(next_val)
-        mask_ewma = np.isnan(_ewma)
-
-        if (mask_next_val != mask_ewma).any():
-            nans = True
-            next_val[mask_next_val] = _ewma[mask_next_val]
-            _ewma[mask_ewma] = next_val[mask_ewma]
-
         # update the moving average
         if clip_at and n >= min_periods + 1:
             _ewma = _ewma + (1 - beta) * (
@@ -274,27 +269,6 @@ def _general(
         else:
             _ewma = _ewma + (1 - beta) * (next_val - _ewma) / (
                 1 - np.power(beta, n + 1)
-            )
-
-        # if nans and _ewma.ndim == 2: # project _ewma onto PSD cone
-        #     nan_entries = np.isnan(_ewma).all(axis=0)
-        #     _ewma_clean = _ewma[~nan_entries][:, ~nan_entries]
-
-        #     print(pd.DataFrame(_ewma_clean))
-
-        #     eigvals, eigvecs = np.linalg.eigh(_ewma_clean)
-        #     eigvals = np.maximum(eigvals, 0)
-        #     _ewma_clean = eigvecs @ np.diag(eigvals) @ eigvecs.T
-
-        #     # Update _ewma with the cleaned data
-        #     non_nan_indices = np.where(~nan_entries)[0]  # Get indices of non-NaN entries
-        #     _ewma[np.ix_(non_nan_indices, non_nan_indices)] = _ewma_clean
-        if nans:
-            warnings.warn(
-                f"A new asset entered at time {times[n]} (or the first time "
-                f"the return of this asset changed). This may result in "
-                f"non-PSD covariance matrices. Consider using nan_to_num=True.",
-                Warning,
             )
 
         yield f(k=n)
