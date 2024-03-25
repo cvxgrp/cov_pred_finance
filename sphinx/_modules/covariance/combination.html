@@ -362,15 +362,16 @@
 
 <div class="viewcode-block" id="_CovarianceCombination.solve">
 <a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">times</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The size of the window is crucial to specify the size of the parameters</span>
 <span class="sd">        for the cvxpy problem. Hence those computations are not in the __init__ method</span>
 
-<span class="sd">        Solves the covariance combination problem at a given time, i.e.,</span>
-<span class="sd">        finds the prediction for the covariance matrix at &#39;time+1&#39;</span>
+<span class="sd">        Solves the covariance combination problem at a time steps given in times</span>
 
-<span class="sd">        param window: number of previous time steps to use in the covariance combination</span>
+<span class="sd">        param window: number of previous time steps to use in the covariance</span>
+<span class="sd">        combination problem</span>
+<span class="sd">        param times: list of time steps to solve the problem at; if None, solve at all available time steps</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># If window is None, use all available data; cap window at length of data</span>
         <span class="n">window</span> <span class="o">=</span> <span class="n">window</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span><span class="p">)</span>
@@ -384,9 +385,29 @@
             <span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="n">Bs</span> <span class="o">=</span> <span class="p">{</span><span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">Lts_at_r</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">time</span><span class="p">])</span> <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">Lts_at_r</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+        <span class="c1"># time steps to solve the problem at</span>
+        <span class="n">all_available_times</span> <span class="o">=</span> <span class="n">Lts_at_r</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="k">if</span> <span class="n">times</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">Lts_at_r</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+            <span class="c1"># assert times are consecutive in all_available_times</span>
+            <span class="n">zero_index</span> <span class="o">=</span> <span class="n">all_available_times</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">all_available_times</span><span class="p">[</span><span class="n">zero_index</span> <span class="p">:</span> <span class="n">zero_index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)]</span>
+            <span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+            <span class="s2">&quot;times must be consecutive&quot;</span>
+
+            <span class="c1"># add window - 1 previous time steps to times</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">all_available_times</span><span class="p">[</span><span class="n">zero_index</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">zero_index</span><span class="p">])</span> <span class="o">+</span> <span class="n">times</span>
+            <span class="p">)</span>
+
+        <span class="n">Bs</span> <span class="o">=</span> <span class="p">{</span><span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">Lts_at_r</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">time</span><span class="p">])</span> <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">times</span><span class="p">}</span>
         <span class="n">prod_Bs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="n">time</span><span class="p">:</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">B</span> <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">B</span> <span class="ow">in</span> <span class="n">Bs</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
-        <span class="n">times</span> <span class="o">=</span> <span class="n">prod_Bs</span><span class="o">.</span><span class="n">index</span>
+        <span class="c1"># times = prod_Bs.index</span>
         <span class="n">P</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">prod_Bs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">times</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">window</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span>
@@ -428,9 +449,6 @@
 <span class="sd">        Solves the covariance combination problem at a given time t</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># if problem.status != &quot;optimal&quot;:</span>
-        <span class="c1">#     raise cvx.SolverError</span>
 
         <span class="n">weights</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">weights</span>
 

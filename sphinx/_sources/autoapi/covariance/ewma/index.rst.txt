@@ -80,7 +80,23 @@ Attributes
    param clip_at: clip data at  +- clip_at
 
 
-.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, mu_halflife1=None, mu_halflife2=None, clip_at=None)
+.. py:function:: iterated_ewma(returns, vola_halflife, cov_halflife, min_periods_vola=20, min_periods_cov=20, mean=False, mu_halflife1=None, mu_halflife2=None, clip_at=None, nan_to_num=True)
+
+   param returns: pandas dataframe with returns for each asset
+   param vola_halflife: half life for volatility
+   param cov_halflife: half life for covariance
+   param min_preiods_vola: minimum number of periods to use for volatility
+   ewma estimate
+   param min_periods_cov: minimum number of periods to use for covariance
+   ewma estimate
+   param mean: whether to estimate mean; if False, assumes zero mean data
+   param mu_halflife1: half life for the first mean adjustment; if None, it is
+   set to vola_halflife; only applies if mean=True
+   param mu_halflife2: half life for the second mean adjustment; if None, it is
+   set to cov_halflife; only applies if mean=True
+   param clip_at: winsorizes ewma update at +-clip_at*(current ewma) in ewma;
+   if None, no winsorization is performed
+   nan_to_num: if True, replace NaNs in returns with 0.0
 
 
 .. py:function:: _ewma_cov(data, halflife, min_periods=0)
@@ -96,11 +112,11 @@ Attributes
 
    y: frame with measurements for times t=t_1,t_2,...,T
    halflife: EWMA half life
+   alpha: EWMA alpha
+   fct: function to apply to y
+   min_periods: minimum number of observations to start EWMA
+   clip_at: clip y_last at  +- clip_at*EWMA (optional)
 
-   returns: list of EWMAs for times t=t_1,t_2,...,T
-   serving as predictions for the following timestamp
-
-   The function returns a generator over
-   t_i, EWMA of fct(y_i)
+   returns: a generator over (t_i, EWMA of fct(y_i))
 
 

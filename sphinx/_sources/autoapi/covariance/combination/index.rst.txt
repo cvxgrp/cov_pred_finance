@@ -142,15 +142,16 @@ Attributes
 
       Returns the assets in the covariance combination problem
 
-   .. py:method:: solve(window=None, **kwargs)
+   .. py:method:: solve(window=None, times=None, **kwargs)
 
       The size of the window is crucial to specify the size of the parameters
       for the cvxpy problem. Hence those computations are not in the __init__ method
 
-      Solves the covariance combination problem at a given time, i.e.,
-      finds the prediction for the covariance matrix at 'time+1'
+      Solves the covariance combination problem at a time steps given in times
 
-      param window: number of previous time steps to use in the covariance combination
+      param window: number of previous time steps to use in the covariance
+      combination problem
+      param times: list of time steps to solve the problem at; if None, solve at all available time steps
 
 
    .. py:method:: _solve(time, problem, **kwargs)
