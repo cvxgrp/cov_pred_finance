@@ -71,7 +71,7 @@ import pandas as pd
 from cvx.covariance.combination import from_ewmas
 
 # Load return data
-returns = pd.read_csv("data/ff5.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
+returns = pd.read_csv("data/ff5_no_rf.csv", index_col=0, header=0, parse_dates=True).iloc[:1000]
 n = returns.shape[1]
 
 # Define half-life pairs for K=3 experts, (halflife_vola, halflife_cov)
@@ -107,7 +107,7 @@ import pandas as pd
 from cvx.covariance.combination import from_sigmas
 
 # Load return data
-returns = pd.read_csv("data/ff5.csv", index_col=0,
+returns = pd.read_csv("data/ff5_no_rf.csv", index_col=0,
                       header=0, parse_dates=True).iloc[:1000]
 n = returns.shape[1]
 
