@@ -92,8 +92,8 @@ def iterated_ewma(
     returns,
     vola_halflife,
     cov_halflife,
-    min_periods_vola=20,
-    min_periods_cov=20,
+    min_periods_vola=None,
+    min_periods_cov=None,
     mean=False,
     mu_halflife1=None,
     mu_halflife2=None,
@@ -117,8 +117,14 @@ def iterated_ewma(
     if None, no winsorization is performed
     nan_to_num: if True, replace NaNs in returns with 0.0
     """
+    n = returns.shape[1]
     mu_halflife1 = mu_halflife1 or vola_halflife
     mu_halflife2 = mu_halflife2 or cov_halflife
+
+    if min_periods_vola is None:
+        min_periods_vola = n
+    if min_periods_cov is None:
+        min_periods_cov = min_periods_cov or 3 * n
 
     def scale_cov(vola, matrix):
         index = matrix.index
