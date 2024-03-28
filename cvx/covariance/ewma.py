@@ -223,7 +223,6 @@ def _ewma_mean(data, halflife, min_periods=0, clip_at=None):
     ):
         # converting back into a series costs some performance but adds
         # robustness
-        print(ewma.dtype)
         if not np.isnan(ewma).all():
             yield t, pd.Series(index=data.columns, data=ewma)
 

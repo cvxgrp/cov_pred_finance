@@ -91,7 +91,7 @@ class _CombinationProblem:
             elif smoother == "sum_squares":
                 self.smooth_penalty = cvx.sum_squares(self._weight - self._weight_prev)
             else:
-                raise ValueError("smoother must be None, 'l2' or 'l1'")
+                raise ValueError("smoother must be None, 'l2', 'l1' or 'sum_squares'")
 
         self.smoother = smoother
         self.gamma = gamma

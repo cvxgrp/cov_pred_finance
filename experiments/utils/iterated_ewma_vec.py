@@ -204,7 +204,7 @@ def iterated_ewma(
             each key (time step) in the dictionary corresponds to the
             prediction for the following (next) key (time step)
         """
-    returns = returns.astype(np.float64)
+    # returns = returns.astype(np.float64)
 
     # Need at least one period for EWMA estimate
     min_periods_vola = max(1, min_periods_vola)
