@@ -27,6 +27,7 @@ loguru = "*"
 plotly = "*"
 cvxsimulator = "*"
 statsmodels = "*"
+snakeviz = "*"
 
 [build-system]
 requires = ["poetry>=1.6.0"]

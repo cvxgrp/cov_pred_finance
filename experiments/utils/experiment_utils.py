@@ -4,7 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.regularization import em_regularize_covariance
+from cvx.covariance.regularization import (
+    em_regularize_covariance,
+    ccp_regularize_covariance,
+)
 from cvx.covariance.regularization import regularize_covariance
 from experiments.utils.iterated_ewma_vec import ewma
 
@@ -333,3 +336,71 @@ def em_low_rank_log_likelihood(returns, Sigmas, rank):
     Sigmas_em = dict(em_regularize_covariance(Sigmas, Sigmas_low_rank))
 
     return log_likelihood_low_rank(returns, Sigmas_em)
+
+
+def ccp_low_rank_log_likelihood(
+    returns,
+    Sigmas,
+    rank,
+    rho=1,
+    max_iter=1000,
+    eps_abs=1e-6,
+    eps_rel=1e-4,
+    alpha=1,
+    max_iter_ccp=10,
+):
+    """
+    Returns series of log-likelihoods for low rank regularized covariance
+    matrices, using the CCP algorithm
+    """
+
+    Sigmas_low_rank = dict(regularize_covariance(Sigmas, r=rank, low_rank_format=True))
+
+    Sigmas_ccp = dict(
+        ccp_regularize_covariance(
+            Sigmas,
+            Sigmas_low_rank,
+            rho=rho,
+            max_iter=max_iter,
+            eps_abs=eps_abs,
+            eps_rel=eps_rel,
+            alpha=alpha,
+            max_iter_ccp=max_iter_ccp,
+        )
+    )
+
+    return log_likelihood_low_rank(returns, Sigmas_ccp)
+
+
+def _log_likelihood_from_sample_cov(Sigma_hat, S):
+    """
+    param Sigma_hat: covariance predictor
+    param S: sample covariance
+
+    returns: log-likelihood of Sigma_hat given sample covariance S
+    """
+
+    n = Sigma_hat.shape[0]
+    Sigma_hat_inv = np.linalg.inv(Sigma_hat)
+    det = np.linalg.det(Sigma_hat)
+
+    return (
+        -n / 2 * np.log(2 * np.pi)
+        - 1 / 2 * np.log(det)
+        - 1 / 2 * (S @ Sigma_hat_inv).trace()
+    )
+
+
+def log_likelihoods_from_sample_cov(Sigmas, sample_covs):
+    """
+    param Sigmas: dictionary of covariance matrices
+    param sample_covs: dictionary of sample covariance matrices
+
+    returns: log-likelihoods of Sigmas given sample covariances
+    """
+    ll = []
+    for time, Sigma in Sigmas.items():
+        S = sample_covs[time]
+        ll.append(_log_likelihood_from_sample_cov(Sigma.values, S.values))
+
+    return pd.Series(ll, index=Sigmas.keys())
