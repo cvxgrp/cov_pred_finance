@@ -1,15 +1,19 @@
-:py:mod:`covariance.ewma`
-=========================
+covariance.ewma
+===============
 
 .. py:module:: covariance.ewma
 
 
-Module Contents
----------------
+Attributes
+----------
+
+.. autoapisummary::
+
+   covariance.ewma.IEWMA
 
 
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -24,21 +28,12 @@ Functions
    covariance.ewma._general
 
 
-
-Attributes
-~~~~~~~~~~
-
-.. autoapisummary::
-
-   covariance.ewma.IEWMA
-
+Module Contents
+---------------
 
 .. py:data:: IEWMA
 
-   
-
 .. py:function:: _generator2frame(generator)
-
 
 .. py:function:: _variance(returns, halflife, min_periods=0, clip_at=None)
 
@@ -106,7 +101,6 @@ Attributes
 
 
 .. py:function:: _ewma_mean(data, halflife, min_periods=0, clip_at=None)
-
 
 .. py:function:: _general(y, times, halflife: float | pandas._typing.TimedeltaConvertibleTypes | None = None, alpha: float | None = None, fct=lambda x: x, min_periods=0, clip_at=None)
 

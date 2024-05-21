@@ -1,15 +1,20 @@
-:py:mod:`covariance.regularization`
-===================================
+covariance.regularization
+=========================
 
 .. py:module:: covariance.regularization
 
 
-Module Contents
----------------
+Attributes
+----------
+
+.. autoapisummary::
+
+   covariance.regularization.LowRank
+   covariance.regularization.LowRankDiag
 
 
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -21,23 +26,12 @@ Functions
    covariance.regularization.em_regularize_covariance
 
 
-
-Attributes
-~~~~~~~~~~
-
-.. autoapisummary::
-
-   covariance.regularization.LowRank
-   covariance.regularization.LowRankDiag
-
+Module Contents
+---------------
 
 .. py:data:: LowRank
 
-   
-
 .. py:data:: LowRankDiag
-
-   
 
 .. py:function:: _regularize_correlation(R, r)
 
@@ -60,9 +54,7 @@ Attributes
 
 .. py:function:: _e_step(Sigma, F, d)
 
-
 .. py:function:: _m_step(Cxx, Cxs, Css)
-
 
 .. py:function:: _em_low_rank_approximation(sigma, initial_sigma)
 

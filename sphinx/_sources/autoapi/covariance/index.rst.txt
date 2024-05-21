@@ -1,17 +1,17 @@
-:py:mod:`covariance`
-====================
+covariance
+==========
 
 .. py:module:: covariance
 
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   combination/index.rst
-   ewma/index.rst
-   regularization/index.rst
+   /autoapi/covariance/combination/index
+   /autoapi/covariance/ewma/index
+   /autoapi/covariance/regularization/index
 
 
