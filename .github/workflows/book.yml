@@ -15,7 +15,7 @@ jobs:
   test:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/test@main
+      - uses: cvxgrp/.github/actions/coverage@main
 
   jupyter:
     runs-on: "ubuntu-latest"
