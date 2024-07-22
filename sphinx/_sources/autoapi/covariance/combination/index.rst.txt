@@ -78,6 +78,21 @@ Module Contents
 
 .. py:class:: _CombinationProblem(keys, n, window)
 
+   .. py:attribute:: keys
+
+
+   .. py:attribute:: K
+
+
+   .. py:attribute:: _weight
+
+
+   .. py:attribute:: A_param
+
+
+   .. py:attribute:: P_chol_param
+
+
    .. py:property:: _constraints
 
 
@@ -115,6 +130,30 @@ Module Contents
 .. py:function:: from_sigmas(sigmas, returns, means=None)
 
 .. py:class:: _CovarianceCombination(sigmas, returns, means=None)
+
+   .. py:attribute:: n
+
+
+   .. py:attribute:: __means
+
+
+   .. py:attribute:: __sigmas
+
+
+   .. py:attribute:: __returns
+
+
+   .. py:attribute:: __Ls
+
+
+   .. py:attribute:: __Ls_shifted
+
+
+   .. py:attribute:: __nus
+
+
+   .. py:attribute:: __nus_shifted
+
 
    .. py:property:: sigmas
 

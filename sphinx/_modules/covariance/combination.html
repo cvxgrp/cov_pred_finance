@@ -176,11 +176,26 @@
 <a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem">[docs]</a>
 <span class="k">class</span> <span class="nc">_CombinationProblem</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;weights&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">A_param</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Parameter</span><span class="p">((</span><span class="n">n</span> <span class="o">*</span> <span class="n">window</span><span class="p">,</span> <span class="n">K</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">P_chol_param</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Parameter</span><span class="p">((</span><span class="n">K</span><span class="p">,</span> <span class="n">K</span><span class="p">))</span>
+<div class="viewcode-block" id="_CombinationProblem.keys">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.keys">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span></div>
+
+<div class="viewcode-block" id="_CombinationProblem.K">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.K">[docs]</a>
+        <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="_CombinationProblem._weight">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem._weight">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;weights&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="_CombinationProblem.A_param">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.A_param">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A_param</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Parameter</span><span class="p">((</span><span class="n">n</span> <span class="o">*</span> <span class="n">window</span><span class="p">,</span> <span class="n">K</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="_CombinationProblem.P_chol_param">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.P_chol_param">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">P_chol_param</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Parameter</span><span class="p">((</span><span class="n">K</span><span class="p">,</span> <span class="n">K</span><span class="p">))</span></div>
+
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_CombinationProblem._constraints">
@@ -291,7 +306,10 @@
 <span class="sd">        Note: sigmas[key][time] is a covariance matrix prediction for time+1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Assert Sigmas and means have same keys if means not None</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<div class="viewcode-block" id="_CovarianceCombination.n">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.n">[docs]</a>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
         <span class="k">if</span> <span class="n">means</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># Assert sigmas and means have same keys</span>
@@ -305,19 +323,40 @@
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__means</span> <span class="o">=</span> <span class="n">means</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__sigmas</span> <span class="o">=</span> <span class="n">sigmas</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__returns</span> <span class="o">=</span> <span class="n">returns</span>
+<div class="viewcode-block" id="_CovarianceCombination.__means">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__means">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__means</span> <span class="o">=</span> <span class="n">means</span></div>
+
+<div class="viewcode-block" id="_CovarianceCombination.__sigmas">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__sigmas">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__sigmas</span> <span class="o">=</span> <span class="n">sigmas</span></div>
+
+<div class="viewcode-block" id="_CovarianceCombination.__returns">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__returns">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__returns</span> <span class="o">=</span> <span class="n">returns</span></div>
+
 
         <span class="c1"># all those quantities don&#39;t depend on the window size</span>
+<div class="viewcode-block" id="_CovarianceCombination.__Ls">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__Ls">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_cholesky_precision</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="_CovarianceCombination.__Ls_shifted">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__Ls_shifted">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Ls_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="_CovarianceCombination.__nus">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__nus">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">__nus</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">_nu</span><span class="p">(</span><span class="n">Ls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">Ls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Ls</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__nus_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nus</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="_CovarianceCombination.__nus_shifted">
+<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.__nus_shifted">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__nus_shifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nus</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span></div>
+
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="_CovarianceCombination.sigmas">

@@ -197,7 +197,32 @@ mu in means</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="covariance.combination._CombinationProblem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.combination.</span></span><span class="sig-name descname"><span class="pre">_CombinationProblem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem" title="Link to this definition"></a></dt>
-<dd><dl class="py property">
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CombinationProblem.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem.keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem.keys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CombinationProblem.K">
+<span class="sig-name descname"><span class="pre">K</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem.K"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem.K" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CombinationProblem._weight">
+<span class="sig-name descname"><span class="pre">_weight</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem._weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem._weight" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CombinationProblem.A_param">
+<span class="sig-name descname"><span class="pre">A_param</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem.A_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem.A_param" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CombinationProblem.P_chol_param">
+<span class="sig-name descname"><span class="pre">P_chol_param</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem.P_chol_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem.P_chol_param" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="covariance.combination._CombinationProblem._constraints">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_constraints</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CombinationProblem._constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CombinationProblem._constraints" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -254,7 +279,47 @@ param mean: subtract EWMA mean from returns and volatility adjusted returns (opt
 <dl class="py class">
 <dt class="sig sig-object py" id="covariance.combination._CovarianceCombination">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.combination.</span></span><span class="sig-name descname"><span class="pre">_CovarianceCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination" title="Link to this definition"></a></dt>
-<dd><dl class="py property">
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.n">
+<span class="sig-name descname"><span class="pre">n</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.n" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__means">
+<span class="sig-name descname"><span class="pre">__means</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__means" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__sigmas">
+<span class="sig-name descname"><span class="pre">__sigmas</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__sigmas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__sigmas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__returns">
+<span class="sig-name descname"><span class="pre">__returns</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__returns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__returns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__Ls">
+<span class="sig-name descname"><span class="pre">__Ls</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__Ls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__Ls" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__Ls_shifted">
+<span class="sig-name descname"><span class="pre">__Ls_shifted</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__Ls_shifted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__Ls_shifted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__nus">
+<span class="sig-name descname"><span class="pre">__nus</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__nus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__nus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__nus_shifted">
+<span class="sig-name descname"><span class="pre">__nus_shifted</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__nus_shifted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__nus_shifted" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.sigmas">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sigmas</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.sigmas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.sigmas" title="Link to this definition"></a></dt>
 <dd></dd></dl>
