@@ -228,13 +228,13 @@ xpress = ["xpress"]
 
 [[package]]
 name = "cvxsimulator"
-version = "0.9.19"
+version = "1.0.0"
 description = "Simple simulator for investors"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "cvxsimulator-0.9.19-py3-none-any.whl", hash = "sha256:196d7c8d00d451dc48effcdabb81100be2a02bb607d98cf86bc609a248307148"},
-    {file = "cvxsimulator-0.9.19.tar.gz", hash = "sha256:658f2d3db572a0e31fc1c1a398300648c1839d775068856afd7bc262f0bbe2b7"},
+    {file = "cvxsimulator-1.0.0-py3-none-any.whl", hash = "sha256:594f1971af796523e02fb4fc07533210d1f990240f1c54583e9d662e98f0cbeb"},
+    {file = "cvxsimulator-1.0.0.tar.gz", hash = "sha256:ef8329229538d7b6fb17ee8850372cfb57e4728bba46e6e11caf765a3421f098"},
 ]
 
 [package.dependencies]
