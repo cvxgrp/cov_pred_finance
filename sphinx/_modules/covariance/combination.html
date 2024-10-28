@@ -178,10 +178,7 @@
 <a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.keys">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span></div>
 
-<div class="viewcode-block" id="_CombinationProblem.K">
-<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem.K">[docs]</a>
-        <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
-
+        <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
 <div class="viewcode-block" id="_CombinationProblem._weight">
 <a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CombinationProblem._weight">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;weights&quot;</span><span class="p">)</span></div>
@@ -304,10 +301,7 @@
 <span class="sd">        Note: sigmas[key][time] is a covariance matrix prediction for time+1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Assert Sigmas and means have same keys if means not None</span>
-<div class="viewcode-block" id="_CovarianceCombination.n">
-<a class="viewcode-back" href="../../autoapi/covariance/combination/index.html#covariance.combination._CovarianceCombination.n">[docs]</a>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
-
+        <span class="n">n</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">means</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">sigma</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># Assert sigmas and means have same keys</span>

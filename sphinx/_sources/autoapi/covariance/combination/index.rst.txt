@@ -81,9 +81,6 @@ Module Contents
    .. py:attribute:: keys
 
 
-   .. py:attribute:: K
-
-
    .. py:attribute:: _weight
 
 
@@ -131,9 +128,6 @@ Module Contents
 
 .. py:class:: _CovarianceCombination(sigmas, returns, means=None)
 
-   .. py:attribute:: n
-
-
    .. py:attribute:: __means
 
 
@@ -165,10 +159,12 @@ Module Contents
 
 
    .. py:property:: K
+
       Returns the number of expert predictors
 
 
    .. py:property:: assets
+
       Returns the assets in the covariance combination problem
 
 
