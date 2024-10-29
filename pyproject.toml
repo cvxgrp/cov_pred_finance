@@ -9,6 +9,7 @@ packages = [{include = "cvx"}]
 
 [tool.poetry.dependencies]
 python = ">=3.9.0"
+numpy = "*"
 pandas = "*"
 cvxpy-base = "*"
 clarabel = "*"
