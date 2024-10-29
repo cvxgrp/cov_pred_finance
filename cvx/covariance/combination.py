@@ -7,7 +7,7 @@ import cvxpy as cvx
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.ewma import iterated_ewma
+from .covariance.ewma import iterated_ewma
 
 # from tqdm import trange
 
