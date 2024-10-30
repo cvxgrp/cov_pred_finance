@@ -42,3 +42,6 @@ exclude = [
     "experiments"
 ]
 namespace-packages = ["cvx/covariance"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["clarabel"]
