@@ -8,7 +8,7 @@ repository = "https://github.com/cvxgrp/cov_pred_finance"
 packages = [{include = "cvx"}]
 
 [tool.poetry.dependencies]
-python = ">=3.9.0"
+python = ">=3.10"
 numpy = "*"
 pandas = "*"
 cvxpy-base = "*"
@@ -26,7 +26,6 @@ tqdm = "*"
 scikit-learn = "*"
 loguru = "*"
 plotly = "*"
-#cvxsimulator = "*"
 statsmodels = "*"
 
 [build-system]
