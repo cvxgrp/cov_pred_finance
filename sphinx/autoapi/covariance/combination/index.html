@@ -90,24 +90,17 @@
              
   <section id="module-covariance.combination">
 <span id="covariance-combination"></span><h1>covariance.combination<a class="headerlink" href="#module-covariance.combination" title="Link to this heading"></a></h1>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.combination.Result" title="covariance.combination.Result"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Result</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-</tbody>
-</table>
-</section>
-<section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.combination._CombinationProblem" title="covariance.combination._CombinationProblem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_CombinationProblem</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.combination._CombinationProblem" title="covariance.combination._CombinationProblem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_CombinationProblem</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#covariance.combination._CovarianceCombination" title="covariance.combination._CovarianceCombination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_CovarianceCombination</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#covariance.combination._CovarianceCombination" title="covariance.combination._CovarianceCombination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_CovarianceCombination</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -187,10 +180,31 @@ param K: number of expert predictors</p>
 mu in means</p>
 </dd></dl>
 
-<dl class="py data">
+<dl class="py class">
 <dt class="sig sig-object py" id="covariance.combination.Result">
-<span class="sig-prename descclassname"><span class="pre">covariance.combination.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.combination.</span></span><span class="sig-name descname"><span class="pre">Result</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination.Result.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result.time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result.time" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination.Result.mean">
+<span class="sig-name descname"><span class="pre">mean</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result.mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result.mean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination.Result.covariance">
+<span class="sig-name descname"><span class="pre">covariance</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result.covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result.covariance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.combination.Result.weights">
+<span class="sig-name descname"><span class="pre">weights</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#Result.weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination.Result.weights" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="covariance.combination._CombinationProblem">
@@ -274,7 +288,7 @@ param mean: subtract EWMA mean from returns and volatility adjusted returns (opt
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.combination.</span></span><span class="sig-name descname"><span class="pre">_CovarianceCombination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">means</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination" title="Link to this definition"></a></dt>
 <dd><dl class="py attribute">
 <dt class="sig sig-object py" id="covariance.combination._CovarianceCombination.__means">
-<span class="sig-name descname"><span class="pre">__means</span></span><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__means" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__means</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/covariance/combination.html#_CovarianceCombination.__means"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.combination._CovarianceCombination.__means" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

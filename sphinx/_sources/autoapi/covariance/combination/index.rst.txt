@@ -4,19 +4,12 @@ covariance.combination
 .. py:module:: covariance.combination
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   covariance.combination.Result
-
-
 Classes
 -------
 
 .. autoapisummary::
 
+   covariance.combination.Result
    covariance.combination._CombinationProblem
    covariance.combination._CovarianceCombination
 
@@ -74,7 +67,22 @@ Module Contents
    mu in means
 
 
-.. py:data:: Result
+.. py:class:: Result
+
+   Bases: :py:obj:`tuple`
+
+
+   .. py:attribute:: time
+
+
+   .. py:attribute:: mean
+
+
+   .. py:attribute:: covariance
+
+
+   .. py:attribute:: weights
+
 
 .. py:class:: _CombinationProblem(keys, n, window)
 
@@ -129,6 +137,8 @@ Module Contents
 .. py:class:: _CovarianceCombination(sigmas, returns, means=None)
 
    .. py:attribute:: __means
+      :value: None
+
 
 
    .. py:attribute:: __sigmas

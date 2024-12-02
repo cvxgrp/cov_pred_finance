@@ -89,14 +89,14 @@
              
   <section id="module-covariance.regularization">
 <span id="covariance-regularization"></span><h1>covariance.regularization<a class="headerlink" href="#module-covariance.regularization" title="Link to this heading"></a></h1>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#covariance.regularization.LowRank" title="covariance.regularization.LowRank"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRank</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.LowRankDiag" title="covariance.regularization.LowRankDiag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRankDiag</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#covariance.regularization.LowRankCovariance" title="covariance.regularization.LowRankCovariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LowRankCovariance</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -129,15 +129,47 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
-<dl class="py data">
+<dl class="py class">
 <dt class="sig sig-object py" id="covariance.regularization.LowRank">
-<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRank</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRank</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRank.Loading">
+<span class="sig-name descname"><span class="pre">Loading</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank.Loading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank.Loading" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="covariance.regularization.LowRankDiag">
-<span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRankDiag</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRankDiag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRankDiag" title="Link to this definition"></a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRank.Lambda">
+<span class="sig-name descname"><span class="pre">Lambda</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank.Lambda"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank.Lambda" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRank.D">
+<span class="sig-name descname"><span class="pre">D</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank.D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank.D" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRank.Approximation">
+<span class="sig-name descname"><span class="pre">Approximation</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRank.Approximation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRank.Approximation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="covariance.regularization.LowRankCovariance">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">covariance.regularization.</span></span><span class="sig-name descname"><span class="pre">LowRankCovariance</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRankCovariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRankCovariance" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRankCovariance.F">
+<span class="sig-name descname"><span class="pre">F</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRankCovariance.F"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRankCovariance.F" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="covariance.regularization.LowRankCovariance.d">
+<span class="sig-name descname"><span class="pre">d</span></span><a class="reference internal" href="../../../_modules/covariance/regularization.html#LowRankCovariance.d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#covariance.regularization.LowRankCovariance.d" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="covariance.regularization._regularize_correlation">

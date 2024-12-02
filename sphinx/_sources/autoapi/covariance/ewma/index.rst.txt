@@ -4,8 +4,8 @@ covariance.ewma
 .. py:module:: covariance.ewma
 
 
-Attributes
-----------
+Classes
+-------
 
 .. autoapisummary::
 
@@ -31,7 +31,22 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: IEWMA
+.. py:class:: IEWMA
+
+   Bases: :py:obj:`tuple`
+
+
+   .. py:attribute:: time
+
+
+   .. py:attribute:: mean
+
+
+   .. py:attribute:: covariance
+
+
+   .. py:attribute:: volatility
+
 
 .. py:function:: _generator2frame(generator)
 

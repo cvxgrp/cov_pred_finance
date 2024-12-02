@@ -4,13 +4,13 @@ covariance.regularization
 .. py:module:: covariance.regularization
 
 
-Attributes
-----------
+Classes
+-------
 
 .. autoapisummary::
 
    covariance.regularization.LowRank
-   covariance.regularization.LowRankDiag
+   covariance.regularization.LowRankCovariance
 
 
 Functions
@@ -29,9 +29,33 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: LowRank
+.. py:class:: LowRank
 
-.. py:data:: LowRankDiag
+   Bases: :py:obj:`tuple`
+
+
+   .. py:attribute:: Loading
+
+
+   .. py:attribute:: Lambda
+
+
+   .. py:attribute:: D
+
+
+   .. py:attribute:: Approximation
+
+
+.. py:class:: LowRankCovariance
+
+   Bases: :py:obj:`tuple`
+
+
+   .. py:attribute:: F
+
+
+   .. py:attribute:: d
+
 
 .. py:function:: _regularize_correlation(R, r)
 
