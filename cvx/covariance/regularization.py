@@ -86,7 +86,6 @@ def _e_step(Sigma, F, d):
 
 def _m_step(Cxx, Cxs, Css):
     F = Cxs @ np.linalg.inv(Css)
-    # d = np.diag(Cxx - 2 * Cxs @ F.T + F @ Css @ F.T)
     d = np.diag(Cxx) - 2 * np.sum(Cxs * F, axis=1) + np.sum(F * (F @ Css), axis=1)
     return LowRankDiag(F=F, d=pd.Series(d, index=F.index))
 

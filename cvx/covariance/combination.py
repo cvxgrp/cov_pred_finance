@@ -75,12 +75,26 @@ Result = namedtuple("Result", ["time", "mean", "covariance", "weights"])
 
 
 class _CombinationProblem:
-    def __init__(self, keys, n, window):
+    def __init__(self, keys, n, window, smoother, gamma):
         self.keys = keys
         K = len(keys)
         self._weight = cvx.Variable(len(keys), name="weights")
         self.A_param = cvx.Parameter((n * window, K))
         self.P_chol_param = cvx.Parameter((K, K))
+
+        if smoother:
+            self._weight_prev = cvx.Parameter(len(keys), name="weights_prev")
+            if smoother == "l2":
+                self.smooth_penalty = cvx.norm(self._weight - self._weight_prev, 2)
+            elif smoother == "l1":
+                self.smooth_penalty = cvx.norm(self._weight - self._weight_prev, 1)
+            elif smoother == "sum_squares":
+                self.smooth_penalty = cvx.sum_squares(self._weight - self._weight_prev)
+            else:
+                raise ValueError("smoother must be None, 'l2', 'l1' or 'sum_squares'")
+
+        self.smoother = smoother
+        self.gamma = gamma
 
     @property
     def _constraints(self):
@@ -88,9 +102,16 @@ class _CombinationProblem:
 
     @property
     def _objective(self):
-        return cvx.sum(cvx.log(self.A_param @ self._weight)) - 0.5 * cvx.sum_squares(
-            self.P_chol_param.T @ self._weight
-        )
+        if self.smoother:
+            return (
+                cvx.sum(cvx.log(self.A_param @ self._weight))
+                - 0.5 * cvx.sum_squares(self.P_chol_param.T @ self._weight)
+                - self.gamma * self.smooth_penalty
+            )
+        else:
+            return cvx.sum(
+                cvx.log(self.A_param @ self._weight)
+            ) - 0.5 * cvx.sum_squares(self.P_chol_param.T @ self._weight)
 
     def _construct_problem(self):
         self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
@@ -218,7 +239,15 @@ class _CovarianceCombination:
         """
         return self.returns.columns
 
-    def solve(self, window=None, times=None, **kwargs):
+    def solve(
+        self,
+        window=None,
+        times=None,
+        smoother=None,
+        gamma=None,
+        weight_init=None,
+        **kwargs,
+    ):
         """
         The size of the window is crucial to specify the size of the parameters
         for the cvxpy problem. Hence those computations are not in the __init__ method
@@ -227,7 +256,19 @@ class _CovarianceCombination:
 
         param window: number of previous time steps to use in the covariance
         combination problem
-        param times: list of time steps to solve the problem at; if None, solve at all available time steps
+        param times: list of time steps to solve the problem at; if None, solve
+        at all available time steps
+        param smoother: smoothing parameter for the covariance combination
+        problem; None, 'l2', 'l1', or 'sum_squares'. 'l2' yields piecewise
+        constant weights; 'l1' yields sparese weight updates; 'sum_squares'
+        yields smooth weight updates
+        param gamma: regularization parameter for the covariance combination;
+        only applicable if smoother is not None; penalty becomes gamma *
+        ||w||_2,  gamma * ||w||_1, or gamma * ||w||_2^2 depending on the value
+        of the 'smoother' parameter
+        param weight_init: initial weights for the covariance combination
+        problem; if None, use the default uniform initialization; only
+        applicable if smoother is not None
         """
         # If window is None, use all available data; cap window at length of data
         window = window or len(self.__Ls_shifted)
@@ -282,10 +323,16 @@ class _CovarianceCombination:
         }
 
         problem = _CombinationProblem(
-            keys=self.sigmas.keys(), n=len(self.assets), window=window
+            keys=self.sigmas.keys(),
+            n=len(self.assets),
+            window=window,
+            smoother=smoother,
+            gamma=gamma,
         )
 
         problem._construct_problem()
+        if smoother and not weight_init:
+            problem._weight_prev.value = np.ones(self.K) / self.K
 
         for time, AA in A.items():
             problem.A_param.value = AA
@@ -293,6 +340,8 @@ class _CovarianceCombination:
 
             try:
                 yield self._solve(time=time, problem=problem, **kwargs)
+                if smoother:
+                    problem._weight_prev.value = problem._weight.value
             except cvx.SolverError:
                 print(f"Solver did not converge at time {time}")
                 yield None

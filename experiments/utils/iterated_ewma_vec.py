@@ -81,23 +81,15 @@ def ewma(y, halflife, clip_at=None, min_periods=None):
     """
 
     beta = np.exp(-np.log(2) / halflife)
-    # EWMAs = np.zeros_like(y)
-    # EWMAs[0] = y[0]
 
     EWMA_old = list(y.values())[0]
     for t, time in enumerate(y.keys()):
         if t == 0:
             continue
-        # for t in range(1, y.shape[0]):  # First EWMA is for t=2
-        # y_last = y[t-1] # Note zero-indexing
-        # EWMA_t = get_next_ewma(EWMA_t, y_last, t, beta, clip_at, min_periods)
+
         EWMA_old = get_next_ewma(EWMA_old, y[time], t + 1, beta, clip_at, min_periods)
 
         yield time, EWMA_old
-
-        # EWMAs[t] = get_next_ewma(EWMAs[t - 1], y[t], t + 1, beta, clip_at, min_periods)
-
-        # EWMAs.append(EWMA_t)
 
 
 def _get_realized_covs(returns):
@@ -212,6 +204,8 @@ def iterated_ewma(
             each key (time step) in the dictionary corresponds to the
             prediction for the following (next) key (time step)
         """
+    # returns = returns.astype(np.float64)
+
     # Need at least one period for EWMA estimate
     min_periods_vola = max(1, min_periods_vola)
     min_periods_cov = max(1, min_periods_cov)

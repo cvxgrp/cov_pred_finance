@@ -244,6 +244,8 @@ def log_likelihood_sequential(returns, Sigmas, means=None, scale=1):
             - 1 / 2 * (r - m).T @ Sigma_inv @ (r - m)
         )
 
+    return ll
+
 
 def rolling_window(returns, memory, min_periods=20):
     min_periods = max(min_periods, 1)
