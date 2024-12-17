@@ -6,6 +6,7 @@
 # website: http://jupyter.org/
 
 .idea
+.task
 .pytest_cache
 .coverage
 
