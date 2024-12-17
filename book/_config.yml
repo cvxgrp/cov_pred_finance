@@ -5,11 +5,6 @@ title: cvxcovariance
 author: Kasper Johansson
 only_build_toc_files: true
 
-parse:
-  myst_enable_extensions:
-    - linkify
-    - dollarmath
-
 # needed for plotly
 sphinx:
   config:
