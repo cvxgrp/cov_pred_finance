@@ -13,10 +13,11 @@ def _(mo):
 @app.cell
 def _(__file__):
     from pathlib import Path
+
     path = Path(__file__).parent
 
-
     import pandas as pd
+
     pd.options.plotting.backend = "plotly"
     return Path, path, pd
 
@@ -24,7 +25,9 @@ def _(__file__):
 @app.cell
 def _(path, pd):
     # Load historic price data of 20 stocks
-    prices=pd.read_csv(path / "data" / "stock_prices.csv", header=0, index_col=0, parse_dates=True)
+    prices = pd.read_csv(
+        path / "data" / "stock_prices.csv", header=0, index_col=0, parse_dates=True
+    )
     return (prices,)
 
 
@@ -38,6 +41,7 @@ def _(prices):
 @app.cell
 def _():
     from cvx.covariance.combination import from_ewmas
+
     return (from_ewmas,)
 
 
@@ -46,14 +50,11 @@ def _(from_ewmas, pd, returns):
     # Pairs of halflife volatility vs halflife covariances
     pairs = [(10, 10), (21, 21), (21, 63)]
 
-    combinations = from_ewmas(
-        returns,
-        pairs,
-        clip_at=4.2,
-        mean=True
-    )
+    combinations = from_ewmas(returns, pairs, clip_at=4.2, mean=True)
 
-    weights = pd.DataFrame({result.time : result.weights for result in combinations.solve(window=10)}).transpose()
+    weights = pd.DataFrame(
+        {result.time: result.weights for result in combinations.solve(window=10)}
+    ).transpose()
     weights
     return combinations, pairs, weights
 
@@ -67,6 +68,7 @@ def _(weights):
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
