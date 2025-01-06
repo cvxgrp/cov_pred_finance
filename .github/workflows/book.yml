@@ -10,17 +10,17 @@ jobs:
   sphinx:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/sphinx@v1.1.0
+      - uses: cvxgrp/.github/actions/sphinx@v2.0.0
 
   test:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/coverage@v1.1.0
+      - uses: cvxgrp/.github/actions/coverage@v2.0.0
 
   jupyter:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/jupyter@v1.1.0
+      - uses: cvxgrp/.github/actions/jupyter@v2.0.0
 
   book:
     runs-on: "ubuntu-latest"
@@ -30,4 +30,4 @@ jobs:
       contents: write
 
     steps:
-      - uses: cvxgrp/.github/actions/book@v1.1.0
+      - uses: cvxgrp/.github/actions/book@v2.0.0
