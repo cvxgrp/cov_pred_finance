@@ -19,6 +19,8 @@ Before sending a pull request, make sure you do the following:
 ## Building cvxcovariance from source
 
 You'll need to build cvxcovariance locally in order to start editing code.
+Please install [task](https://taskfile.dev).
+
 To install cvxcovariance from source, clone the Github
 repository, navigate to its root, and run the following command:
 
