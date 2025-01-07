@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: cvxgrp/.github/actions/coverage@v2.0.0
+    - uses: cvxgrp/.github/actions/coverage@v1.4.0
 
     # uncomment once the repo is public
     - name: Coveralls GitHub Action
@@ -25,8 +25,3 @@ jobs:
       with:
         files: artifacts/tests/coverage/coverage.info
         format: lcov
-
-  deptry:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: cvxgrp/.github/actions/deptry@v2.0.0
