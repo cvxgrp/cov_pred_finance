@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: cvxgrp/.github/actions/coverage@v1.4.0
+    - uses: cvxgrp/.github/actions/coverage@v2.0.3
 
     # uncomment once the repo is public
     - name: Coveralls GitHub Action
