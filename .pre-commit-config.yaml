@@ -6,8 +6,8 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.8.4'
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.9.1'
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]
@@ -24,7 +24,7 @@ repos:
       - id: pyupgrade
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.30.0
+    rev: 0.31.0
     hooks:
       - id: check-dependabot
         args: [ "--verbose" ]
@@ -33,7 +33,7 @@ repos:
         args: ["--verbose"]
 
   - repo: https://github.com/python-poetry/poetry
-    rev: '1.6.1'  # add version here
+    rev: '2.0.1'  # add version here
     hooks:
       - id: poetry-check
       # - id: poetry-lock
