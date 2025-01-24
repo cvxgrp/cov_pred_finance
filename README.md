@@ -6,6 +6,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/cvxcovariance?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/cvxcovariance)
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/cvxgrp/cov_pred_finance)
 
 The `cvxcovariance` package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance
