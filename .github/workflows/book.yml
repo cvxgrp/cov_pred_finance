@@ -10,18 +10,18 @@ jobs:
   test:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/coverage@v1.4.0
+      - uses: cvxgrp/.github/actions/coverage@v2.0.8
 
   pdoc:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/pdoc@v1.4.0
+      - uses: cvxgrp/.github/actions/pdoc@v2.0.8
 
 
   jupyter:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: cvxgrp/.github/actions/jupyter@v1.4.0
+      - uses: cvxgrp/.github/actions/jupyter@v2.0.8
 
   book:
     runs-on: "ubuntu-latest"
@@ -31,4 +31,4 @@ jobs:
       contents: write
 
     steps:
-      - uses: cvxgrp/.github/actions/book@v1.4.0
+      - uses: cvxgrp/.github/actions/book@v2.0.8
