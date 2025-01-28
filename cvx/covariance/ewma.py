@@ -58,7 +58,8 @@ def center(returns, halflife, min_periods=0, mean_adj=False):
     param returns: Frame of returns
     param halflife: EWMA half life
     param min_periods: minimum number of observations to start EWMA (optional)
-    param mean_adj: subtract EWMA mean from returns (optional), otherwise function returns original returns and 0.0 as mean
+    param mean_adj: subtract EWMA mean from returns (optional),
+                    otherwise function returns original returns and 0.0 as mean
 
     return: the centered returns and their mean
     """
