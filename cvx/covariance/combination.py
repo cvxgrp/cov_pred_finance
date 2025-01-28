@@ -31,10 +31,7 @@ def _cholesky_precision(cov):
 
     param cov: dictionary of covariance matrices {time: Sigma}
     """
-    return {
-        time: np.linalg.cholesky(np.linalg.inv(item.values))
-        for time, item in cov.items()
-    }
+    return {time: np.linalg.cholesky(np.linalg.inv(item.values)) for time, item in cov.items()}
 
 
 def _B_t_col(Ls, nus, returns):
@@ -57,9 +54,7 @@ def _A(diags_interval, K):
 
     returns: nNxK matrix where each column is a vector of stacked diagonals
     """
-    return np.column_stack(
-        [np.vstack(diags_interval.iloc[:, i]).flatten() for i in range(K)]
-    )
+    return np.column_stack([np.vstack(diags_interval.iloc[:, i]).flatten() for i in range(K)])
 
 
 def _nu(Ls, means):
@@ -88,9 +83,7 @@ class _CombinationProblem:
 
     @property
     def _objective(self):
-        return cvx.sum(cvx.log(self.A_param @ self._weight)) - 0.5 * cvx.sum_squares(
-            self.P_chol_param.T @ self._weight
-        )
+        return cvx.sum(cvx.log(self.A_param @ self._weight)) - 0.5 * cvx.sum_squares(self.P_chol_param.T @ self._weight)
 
     def _construct_problem(self):
         self.prob = cvx.Problem(cvx.Maximize(self._objective), self._constraints)
@@ -107,9 +100,7 @@ class _CombinationProblem:
         return self.prob.status
 
 
-def from_ewmas(
-    returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False
-):
+def from_ewmas(returns, pairs, min_periods_vola=20, min_periods_cov=20, clip_at=None, mean=False):
     """
     Estimate a series of covariance matrices using the iterated EWMA method
 
@@ -168,28 +159,19 @@ class _CovarianceCombination:
         if means is not None:
             for key, sigma in sigmas.items():
                 # Assert sigmas and means have same keys
-                assert (
-                    sigma.keys() == means[key].keys()
-                ), "sigmas and means must have same keys"
+                assert sigma.keys() == means[key].keys(), "sigmas and means must have same keys"
         else:
             # Set means to zero if not provided
-            means = {
-                k: {time: np.zeros(n) for time in sigma.keys()}
-                for k, sigma in sigmas.items()
-            }
+            means = {k: {time: np.zeros(n) for time in sigma.keys()} for k, sigma in sigmas.items()}
 
         self.__means = means
         self.__sigmas = sigmas
         self.__returns = returns
 
         # all those quantities don't depend on the window size
-        self.__Ls = pd.DataFrame(
-            {k: _cholesky_precision(sigma) for k, sigma in self.sigmas.items()}
-        )
+        self.__Ls = pd.DataFrame({k: _cholesky_precision(sigma) for k, sigma in self.sigmas.items()})
         self.__Ls_shifted = self.__Ls.shift(1).dropna()
-        self.__nus = pd.DataFrame(
-            {key: _nu(Ls, self.means[key]) for key, Ls in self.__Ls.items()}
-        )
+        self.__nus = pd.DataFrame({key: _nu(Ls, self.means[key]) for key, Ls in self.__Ls.items()})
         self.__nus_shifted = self.__nus.shift(1).dropna()
 
     @property
@@ -235,10 +217,7 @@ class _CovarianceCombination:
 
         # Compute P matrix and its Cholesky factor
         Lts_at_r = pd.DataFrame(
-            {
-                key: _B_t_col(Ls, self.__nus_shifted[key], self.returns)
-                for key, Ls in self.__Ls_shifted.items()
-            }
+            {key: _B_t_col(Ls, self.__nus_shifted[key], self.returns) for key, Ls in self.__Ls_shifted.items()}
         )
 
         # time steps to solve the problem at
@@ -251,23 +230,16 @@ class _CovarianceCombination:
 
             # assert times are consecutive in all_available_times
             zero_index = all_available_times.get_loc(times[0])
-            assert list(
-                all_available_times[zero_index : zero_index + len(times)]
-            ) == list(times)
+            assert list(all_available_times[zero_index : zero_index + len(times)]) == list(times)
             "times must be consecutive"
 
             # add window - 1 previous time steps to times
-            times = (
-                list(all_available_times[zero_index - window + 1 : zero_index]) + times
-            )
+            times = list(all_available_times[zero_index - window + 1 : zero_index]) + times
 
         Bs = {time: np.column_stack(Lts_at_r.loc[time]) for time in times}
         prod_Bs = pd.Series({time: B.T @ B for time, B in Bs.items()})
         # times = prod_Bs.index
-        P = {
-            times[i]: sum(prod_Bs.loc[times[i - window + 1] : times[i]])
-            for i in range(window - 1, len(times))
-        }
+        P = {times[i]: sum(prod_Bs.loc[times[i - window + 1] : times[i]]) for i in range(window - 1, len(times))}
 
         P_chol = {time: np.linalg.cholesky(matrix) for time, matrix in P.items()}
 
@@ -275,15 +247,11 @@ class _CovarianceCombination:
         Ls_diag = pd.DataFrame({k: _diag_part(L) for k, L in self.__Ls_shifted.items()})
 
         A = {
-            times[i]: _A(
-                Ls_diag.truncate(before=times[i - window + 1], after=times[i]), self.K
-            )
+            times[i]: _A(Ls_diag.truncate(before=times[i - window + 1], after=times[i]), self.K)
             for i in range(window - 1, len(times))
         }
 
-        problem = _CombinationProblem(
-            keys=self.sigmas.keys(), n=len(self.assets), window=window
-        )
+        problem = _CombinationProblem(keys=self.sigmas.keys(), n=len(self.assets), window=window)
 
         problem._construct_problem()
 
@@ -310,13 +278,9 @@ class _CovarianceCombination:
         nu = sum(self.__nus.loc[time] * weights.values)  # prediction for time+1
 
         mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-        sigma = pd.DataFrame(
-            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-        )
+        sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T))
 
         mean = pd.Series(index=self.assets, data=np.linalg.inv(L.T) @ nu)
-        sigma = pd.DataFrame(
-            index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T)
-        )
+        sigma = pd.DataFrame(index=self.assets, columns=self.assets, data=np.linalg.inv(L @ L.T))
 
         return Result(time=time, mean=mean, covariance=sigma, weights=weights)

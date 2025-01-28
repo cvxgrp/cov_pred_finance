@@ -10,9 +10,7 @@ from cvx.covariance.ewma import iterated_ewma
 # import test data
 resource_dir = Path(__file__).parent / "resources"
 returns = (
-    pd.read_csv(
-        resource_dir / "stock_prices.csv", index_col=0, header=0, parse_dates=True
-    )
+    pd.read_csv(resource_dir / "stock_prices.csv", index_col=0, header=0, parse_dates=True)
     .ffill()
     .pct_change()
     .iloc[1:]

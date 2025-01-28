@@ -15,9 +15,7 @@ def returns(resource_dir):
     prices fixture
     """
     returns = (
-        pd.read_csv(
-            resource_dir / "stock_prices.csv", index_col=0, header=0, parse_dates=True
-        )
+        pd.read_csv(resource_dir / "stock_prices.csv", index_col=0, header=0, parse_dates=True)
         .ffill()
         .pct_change()
         .iloc[1:]
@@ -44,8 +42,6 @@ def test_iewma_nans(returns, resource_dir):
     iewma = {iterate.time: iterate.covariance for iterate in iewma}
 
     covariance = iewma[returns.index[-1]]
-    covariance_reference = pd.read_csv(
-        resource_dir / "cov_iewma_nan.csv", index_col=0, header=0
-    )
+    covariance_reference = pd.read_csv(resource_dir / "cov_iewma_nan.csv", index_col=0, header=0)
 
     pd.testing.assert_frame_equal(covariance, covariance_reference)

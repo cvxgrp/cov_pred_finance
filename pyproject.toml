@@ -20,9 +20,11 @@ repository = "https://github.com/cvxgrp/cov_pred_finance"
 [tool.ruff]
 line-length = 120
 target-version = "py310"
+include = ["cvx/**/*", "tests/**/*"]
 exclude = [
-    "*__init__.py"
+    "*__init__.py", "experiments/**/*"
 ]
+
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]

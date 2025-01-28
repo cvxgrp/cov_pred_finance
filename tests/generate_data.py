@@ -31,10 +31,7 @@ sigma.to_csv("resources/Sigma_iewma.csv")
 # Combination of covariance matrix valued time series
 pairs = [(10, 10), (21, 21), (21, 63)]
 
-results = {
-    result.time: result
-    for result in covariance_estimator(returns, pairs, clip_at=4.2, window=None)
-}
+results = {result.time: result for result in covariance_estimator(returns, pairs, clip_at=4.2, window=None)}
 
 weights = results[returns.index[-1]].weights
 sigma = results[returns.index[-1]].covariance

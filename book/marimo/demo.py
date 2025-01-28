@@ -25,9 +25,7 @@ def _(__file__):
 @app.cell
 def _(path, pd):
     # Load historic price data of 20 stocks
-    prices = pd.read_csv(
-        path / "data" / "stock_prices.csv", header=0, index_col=0, parse_dates=True
-    )
+    prices = pd.read_csv(path / "data" / "stock_prices.csv", header=0, index_col=0, parse_dates=True)
     return (prices,)
 
 
@@ -52,9 +50,7 @@ def _(from_ewmas, pd, returns):
 
     combinations = from_ewmas(returns, pairs, clip_at=4.2, mean=True)
 
-    weights = pd.DataFrame(
-        {result.time: result.weights for result in combinations.solve(window=10)}
-    ).transpose()
+    weights = pd.DataFrame({result.time: result.weights for result in combinations.solve(window=10)}).transpose()
     weights
     return combinations, pairs, weights
 

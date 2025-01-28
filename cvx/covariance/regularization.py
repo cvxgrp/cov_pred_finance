@@ -65,9 +65,12 @@ def regularize_covariance(sigmas, r, low_rank_format=False):
         else:
             F = vola.reshape(-1, 1) * R.Loading * np.sqrt(R.Lambda)
             d = np.diag(vola.reshape(-1, 1) * R.D * vola.reshape(1, -1))
-            yield time, LowRankDiag(
-                F=pd.DataFrame(F, index=sigma.columns),
-                d=pd.Series(d, index=sigma.columns),
+            yield (
+                time,
+                LowRankDiag(
+                    F=pd.DataFrame(F, index=sigma.columns),
+                    d=pd.Series(d, index=sigma.columns),
+                ),
             )
 
 
