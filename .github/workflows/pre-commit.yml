@@ -7,13 +7,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: cvxgrp/.github/actions/coverage@v1.4.0
+      - name: Checkout [${{ github.repository }}]
+        uses: actions/checkout@v4
 
-    # uncomment once the repo is public
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2
-      with:
-        files: artifacts/tests/coverage/coverage.info
-        format: lcov
+      - uses: cvxgrp/.github/actions/uv/coverage@v2.0.9
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2
+        with:
+          files: artifacts/tests/coverage/coverage.info
+          format: lcov
+
+  deptry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.repository }}]
+        uses: actions/checkout@v4
+
+      - uses: cvxgrp/.github/actions/uv/deptry@v2.0.9
