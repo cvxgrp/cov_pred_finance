@@ -17,15 +17,6 @@ dependencies = [
 [project.urls]
 repository = "https://github.com/cvxgrp/cov_pred_finance"
 
-[tool.poetry]
-name = "cvxcovariance"
-version = "0.0.0"             # Don't touch, leave at 0.0.0
-description = "..."
-authors = ["Kasper Johansson", "Thomas Schmelzer"]
-readme = "README.md"
-repository = "https://github.com/cvxgrp/cov_pred_finance"
-packages = [{include = "cvx"}]
-
 [tool.ruff]
 line-length = 120
 target-version = "py310"
