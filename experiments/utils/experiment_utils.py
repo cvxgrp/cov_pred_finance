@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from cvx.covariance.regularization import em_regularize_covariance
-from cvx.covariance.regularization import regularize_covariance
+from cvx.covariance.regularization import em_regularize_covariance, regularize_covariance
 from experiments.utils.iterated_ewma_vec import ewma
 
 

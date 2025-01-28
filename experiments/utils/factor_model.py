@@ -9,8 +9,7 @@ from tqdm import trange
 from cvx.covariance.combination import from_sigmas
 from cvx.covariance.ewma import iterated_ewma
 from cvx.linalg import pca
-from experiments.utils.experiment_utils import _single_log_likelihood
-from experiments.utils.experiment_utils import add_to_diagonal
+from experiments.utils.experiment_utils import _single_log_likelihood, add_to_diagonal
 
 
 def construct_factor_covariance(factors, cm_iewma_pairs, start_date):
