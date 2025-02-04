@@ -51,6 +51,9 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["cvx"]
 
+[tool.hatch.files]
+include = ["cvx/**/*.py", "README.md", "LICENSE"]
+exclude = ["tests/*", "experiments/*"]
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["clarabel"]
