@@ -55,5 +55,13 @@ packages = ["cvx"]
 include = ["cvx/**/*.py", "README.md", "LICENSE"]
 exclude = ["tests/*", "experiments/*"]
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.git",
+    "/.github",
+    "/experiments",
+    "/tests"
+]
+
 [tool.deptry.per_rule_ignores]
 DEP002 = ["clarabel"]
