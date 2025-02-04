@@ -50,8 +50,8 @@ def regularize_covariance(sigmas, r, low_rank_format=False):
     param Sigmas: dictionary of covariance matrices
     param r: float, rank of low rank component
 
-    returns: regularized covariance matrices according to "Factor form
-    regularization." of Section 7.2 in the paper "A Simple Method for Predicting Covariance Matrices of Financial Returns"
+    returns: regularized covariance matrices according to "Factor form regularization." of Section 7.2 in the paper
+    'A Simple Method for Predicting Covariance Matrices of Financial Returns'
     """
     for time, sigma in sigmas.items():
         vola = np.sqrt(np.diag(sigma)).reshape(-1, 1)
@@ -65,9 +65,12 @@ def regularize_covariance(sigmas, r, low_rank_format=False):
         else:
             F = vola.reshape(-1, 1) * R.Loading * np.sqrt(R.Lambda)
             d = np.diag(vola.reshape(-1, 1) * R.D * vola.reshape(1, -1))
-            yield time, LowRankDiag(
-                F=pd.DataFrame(F, index=sigma.columns),
-                d=pd.Series(d, index=sigma.columns),
+            yield (
+                time,
+                LowRankDiag(
+                    F=pd.DataFrame(F, index=sigma.columns),
+                    d=pd.Series(d, index=sigma.columns),
+                ),
             )
 
 

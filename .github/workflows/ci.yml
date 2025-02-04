@@ -15,7 +15,10 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: cvxgrp/.github/actions/test@v1.4.0
+      - name: Checkout [${{ github.repository }}]
+        uses: actions/checkout@v4
+
+      - uses: cvxgrp/.github/actions/uv/test@v2.0.9
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}

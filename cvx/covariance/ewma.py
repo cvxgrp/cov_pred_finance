@@ -44,11 +44,7 @@ def volatility(returns, halflife, min_periods=0, clip_at=None):
     else:
         clip_at_var = None
 
-    return np.sqrt(
-        _generator2frame(
-            _variance(returns, halflife, min_periods=min_periods, clip_at=clip_at_var)
-        )
-    )
+    return np.sqrt(_generator2frame(_variance(returns, halflife, min_periods=min_periods, clip_at=clip_at_var)))
 
 
 def center(returns, halflife, min_periods=0, mean_adj=False):
@@ -58,7 +54,8 @@ def center(returns, halflife, min_periods=0, mean_adj=False):
     param returns: Frame of returns
     param halflife: EWMA half life
     param min_periods: minimum number of observations to start EWMA (optional)
-    param mean_adj: subtract EWMA mean from returns (optional), otherwise function returns original returns and 0.0 as mean
+    param mean_adj: subtract EWMA mean from returns (optional),
+                    otherwise function returns original returns and 0.0 as mean
 
     return: the centered returns and their mean
     """
@@ -148,9 +145,7 @@ def iterated_ewma(
 
     # compute the moving mean of the returns
 
-    returns, returns_mean = center(
-        returns=returns, halflife=mu_halflife1, min_periods=0, mean_adj=mean
-    )
+    returns, returns_mean = center(returns=returns, halflife=mu_halflife1, min_periods=0, mean_adj=mean)
 
     # estimate the volatility, clip some returns before they enter the
     # estimation
@@ -177,9 +172,7 @@ def iterated_ewma(
         min_periods=min_periods_cov,
     ):
         if mean:
-            m = scale_mean(
-                vola=vola.loc[t].values, vec1=returns_mean.loc[t], vec2=adj_mean.loc[t]
-            )
+            m = scale_mean(vola=vola.loc[t].values, vec1=returns_mean.loc[t], vec2=adj_mean.loc[t])
         else:
             m = pd.Series(np.zeros_like(returns.shape[1]), index=returns.columns)
         yield IEWMA(
@@ -263,12 +256,10 @@ def _general(
 
         # update the moving average
         if clip_at and n >= min_periods + 1:
-            _ewma = _ewma + (1 - beta) * (
-                np.clip(next_val, -clip_at * _ewma, clip_at * _ewma) - _ewma
-            ) / (1 - np.power(beta, n + 1))
-        else:
-            _ewma = _ewma + (1 - beta) * (next_val - _ewma) / (
+            _ewma = _ewma + (1 - beta) * (np.clip(next_val, -clip_at * _ewma, clip_at * _ewma) - _ewma) / (
                 1 - np.power(beta, n + 1)
             )
+        else:
+            _ewma = _ewma + (1 - beta) * (next_val - _ewma) / (1 - np.power(beta, n + 1))
 
         yield f(k=n)

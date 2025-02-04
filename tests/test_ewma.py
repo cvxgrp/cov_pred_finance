@@ -24,9 +24,7 @@ def test_center_active():
     halflife = 1
     min_periods = 0
     mean_adj = True
-    expected_mean = pd.DataFrame(
-        {"a": [1.0, 1.666667, 2.428571], "b": [4.0, 4.666667, 5.4285715]}
-    )
+    expected_mean = pd.DataFrame({"a": [1.0, 1.666667, 2.428571], "b": [4.0, 4.666667, 5.4285715]})
     expected_centered_returns = returns.sub(expected_mean)
 
     centered_returns, mean = center(returns, halflife, min_periods, mean_adj)

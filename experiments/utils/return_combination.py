@@ -1,9 +1,6 @@
-from tqdm import trange
+import cvxpy as cp
 import numpy as np
 import pandas as pd
-
-import cvxpy as cp
-
 from tqdm import trange
 
 

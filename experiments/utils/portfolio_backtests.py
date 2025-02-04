@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 import pandas as pd
 from tqdm import trange

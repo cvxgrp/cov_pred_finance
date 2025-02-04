@@ -1,47 +1,56 @@
-[tool.poetry]
+[project]
 name = "cvxcovariance"
-version = "0.0.0"             # Don't touch, leave at 0.0.0
-description = "..."
-authors = ["Kasper Johansson", "Thomas Schmelzer"]
+version = "0.0.0"
+description = "Estimating covariance matrices of financial returns"
+authors = [ {name = "Kasper Johansson", email = "kasper@stanford.edu"},
+            {name = "Thomas Schmelzer", email = "thomas.schmelzer@gmail.com"}]
 readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "clarabel>=0.9.0",
+    "cvxpy-base>=1.6.0",
+    "numpy>=2",
+    "pandas>=2",
+    "scipy>=1.15.1",
+]
+
+[project.urls]
 repository = "https://github.com/cvxgrp/cov_pred_finance"
-packages = [{include = "cvx"}]
-
-
-[tool.poetry.dependencies]
-python = ">=3.10"
-numpy = "*"
-pandas = "*"
-cvxpy-base = "*"
-clarabel = "*"
-scipy = "*"
-
-[tool.poetry.group.test.dependencies]
-pytest = "*"
-pytest-cov = "*"
-pre-commit = "*"
-
-[tool.poetry.group.dev.dependencies]
-arch = "*"
-tqdm = "*"
-scikit-learn = "*"
-loguru = "*"
-plotly = "*"
-statsmodels = "*"
-
-[build-system]
-requires = ["poetry>=1.6.0"]
-build-backend = "poetry.masonry.api"
 
 [tool.ruff]
-select = ["E", "F", "I"]
-line-length = 125
+line-length = 120
 target-version = "py310"
+include = ["cvx/**/*", "tests/**/*"]
 exclude = [
-    "*__init__.py",
-    "experiments"
+    "*__init__.py", "experiments/**/*"
 ]
-namespace-packages = ["cvx/covariance"]
+
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "arch>=7.2.0",
+    "loguru>=0.7.3",
+    "matplotlib>=3.10.0",
+    "plotly>=5.24.1",
+    "pre-commit>=4.1.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "scikit-learn>=1.6.1",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.4",
+    "tqdm>=4.67.1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["cvx"]
+
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["clarabel"]

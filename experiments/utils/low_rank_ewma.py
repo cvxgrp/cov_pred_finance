@@ -1,17 +1,13 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import Union
 
 import numpy as np
 import pandas as pd
 from pandas._typing import TimedeltaConvertibleTypes
-from scipy.sparse.linalg import eigsh
-from scipy.sparse.linalg import LinearOperator
+from scipy.sparse.linalg import LinearOperator, eigsh
 
-from cvx.covariance.ewma import center
-from cvx.covariance.ewma import clip
-from cvx.covariance.ewma import volatility
+from cvx.covariance.ewma import center, clip, volatility
 
 LowRankCovariance = namedtuple("LowRankCovariance", ["F", "d"])
 IEWMA = namedtuple("IEWMA", ["time", "mean", "covariance", "volatility"])

@@ -13,18 +13,12 @@ def test_covariance_estimator_mean(prices):
     pairs = [(10, 10), (21, 21), (21, 63)]
 
     combinator = from_ewmas(returns, pairs, clip_at=4.2, min_periods_cov=21)
-    results_full = {
-        result.time: result.weights
-        for result in combinator.solve(window=10)
-        if result is not None
-    }
+    results_full = {result.time: result.weights for result in combinator.solve(window=10) if result is not None}
 
     # test times
     times = returns.index[-20:-10]
     results_test = {
-        result.time: result.weights
-        for result in combinator.solve(window=10, times=times)
-        if result is not None
+        result.time: result.weights for result in combinator.solve(window=10, times=times) if result is not None
     }
 
     assert list(times) == list(results_test.keys())
