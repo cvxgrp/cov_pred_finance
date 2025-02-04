@@ -18,7 +18,7 @@ jobs:
       - name: Checkout [${{ github.repository }}]
         uses: actions/checkout@v4
 
-      - uses: cvxgrp/.github/actions/uv/test@v2.0.9
+      - uses: cvxgrp/.github/actions/uv/test@v2.1.1
         with:
           os: ${{ matrix.os }}
           python-version: ${{ matrix.python-version }}
