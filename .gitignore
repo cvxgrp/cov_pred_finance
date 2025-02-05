@@ -9,6 +9,7 @@
 .task
 .pytest_cache
 .coverage
+.venv
 
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
