@@ -1,5 +1,3 @@
 #!/bin/bash
-pipx install poetry
-poetry config virtualenvs.in-project true
-poetry install
-poetry run pre-commit install
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync -vv --frozen
