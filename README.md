@@ -5,7 +5,29 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 [![Downloads](https://static.pepy.tech/personalized-badge/cvxcovariance?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/cvxcovariance)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)
+## 🚀 Quick Start in Online IDEs
+
+### GitHub Codespaces  
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)  
+Start coding instantly in a pre-configured cloud development environment.
+
+### Codeanywhere  
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/cvxgrp/cov_pred_finance)  
+Run and edit the project in **Codeanywhere**, a cloud-based development environment.
+
+---
+
+## 📌 About Codeanywhere  
+[Codeanywhere](https://codeanywhere.com/) is a cloud-based IDE that supports various programming languages and provides:  
+- ✅ **Instant cloud-based development**  
+- ✅ **Pre-configured environments**  
+- ✅ **Collaboration tools for teams**  
+- ✅ **SSH, FTP, and Git integration**  
+
+**Click the **"Open in Codeanywhere"** button above to start working in the cloud with minimal setup!**
+
+---
+
 
 The `cvxcovariance` package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance
