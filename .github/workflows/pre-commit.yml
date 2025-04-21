@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: cvxgrp/.github/actions/uv/environment@v2.1.1
+        uses: cvxgrp/.github/actions/uv/environment@v2.2.8
 
-      - uses: cvxgrp/.github/actions/deptry@v2.1.1
+      - uses: cvxgrp/.github/actions/deptry@v2.2.8
 
 
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: cvxgrp/.github/actions/pre-commit@v2.1.1
+      - uses: cvxgrp/.github/actions/pre-commit@v2.2.8
