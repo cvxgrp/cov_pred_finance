@@ -8,7 +8,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: cvxgrp/.github/actions/uv/environment@v2.2.8
+        uses: cvxgrp/.github/actions/environment@v2.2.8
 
       - uses: cvxgrp/.github/actions/marimo@v2.2.8
 
@@ -16,7 +16,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: cvxgrp/.github/actions/uv/environment@v2.2.8
+        uses: cvxgrp/.github/actions/environment@v2.2.8
 
       - uses: cvxgrp/.github/actions/pdoc@v2.2.8
 
@@ -24,7 +24,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: cvxgrp/.github/actions/uv/environment@v2.2.8
+        uses: cvxgrp/.github/actions/environment@v2.2.8
 
       - uses: cvxgrp/.github/actions/coverage@v2.2.8
 
@@ -32,7 +32,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: cvxgrp/.github/actions/uv/environment@v2.2.8
+        uses: cvxgrp/.github/actions/environment@v2.2.8
 
       - uses: cvxgrp/.github/actions/jupyter@v2.2.8
 
