@@ -4,6 +4,7 @@
 [![PyPI version](https://badge.fury.io/py/cvxcovariance.svg)](https://badge.fury.io/py/cvxcovariance)
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 [![Downloads](https://static.pepy.tech/personalized-badge/cvxcovariance?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/cvxcovariance)
+[![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://github.com/renovatebot/renovate)
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)
 
