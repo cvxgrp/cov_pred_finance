@@ -10,7 +10,7 @@
 
 ### GitHub Codespaces
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)  
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)
 Start coding instantly in a pre-configured cloud development environment.
 
 The `cvxcovariance` package
