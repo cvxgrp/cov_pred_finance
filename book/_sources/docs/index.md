@@ -6,12 +6,7 @@
 [![Downloads](https://static.pepy.tech/personalized-badge/cvxcovariance?period=month&units=international_system&left_color=black&right_color=orange&left_text=PyPI%20downloads%20per%20month)](https://pepy.tech/project/cvxcovariance)
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://github.com/renovatebot/renovate)
 
-## 🚀 Quick Start in Online IDEs
-
-### GitHub Codespaces
-
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/cvxgrp/cov_pred_finance)
-Start coding instantly in a pre-configured cloud development environment.
 
 The `cvxcovariance` package
 provides simple tools for creating an estimate $\hat\Sigma_t$ of the covariance
