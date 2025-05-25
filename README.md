@@ -1,4 +1,4 @@
-# [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance/book)
+# 📊 [cvxcovariance](http://www.cvxgrp.org/cov_pred_finance/book)
 
 [![Coverage Status](https://coveralls.io/repos/github/cvxgrp/cov_pred_finance/badge.svg)](https://coveralls.io/github/cvxgrp/cov_pred_finance)
 [![PyPI version](https://badge.fury.io/py/cvxcovariance.svg)](https://badge.fury.io/py/cvxcovariance)
@@ -40,7 +40,7 @@ Note: at time $t$ the user is provided with $\hat\Sigma_{t+1}$,
 $\textit{i.e.}$, the covariance matrix for the next time step.
 So `Result.covariance` returns the covariance prediction for `time+1`.
 
-## Installation
+## 📥 Installation
 
 To install the package, run the following command in the terminal:
 
@@ -48,7 +48,7 @@ To install the package, run the following command in the terminal:
 pip install cvxcovariance
 ```
 
-## Usage
+## 📝 Usage
 
 There are two alternative ways to use the package. The first is to use the
 `from_ewmas` function to create a combined multiple IEWMA (CM-IEWMA) predictor.
@@ -57,7 +57,7 @@ and pass them to the `from_sigmas` function. Both functions return an object
 of the `_CovarianceCombination` class, which can be used to solve the covariance
 combination problem.
 
-### CM-IEWMA
+### 📈 CM-IEWMA
 
 The `from_ewmas` function takes as input a pandas DataFrame of
 returns and the IEWMA half-life pairs (each pair consists of one half-life for
@@ -100,7 +100,7 @@ for predictor in combinator.solve(window=10):  # lookback window for optimizatio
 Here `covariance_predictors[t]` is the covariance prediction for time $t+1$,
 $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
 
-### General covariance combination
+### 🔄 General covariance combination
 
 The `from_sigmas` function takes as input a pandas DataFrame of
 returns and a dictionary of covariance predictors `{key: {time:
@@ -140,7 +140,7 @@ for predictor in combinator.solve(window=10):
 Here `covariance_predictors[t]` is the covariance prediction for time
 $t+1$, $\textit{i.e.}$, it is uses knowledge of $r_1,\ldots,r_t$.
 
-## Poetry
+## 📚 Poetry
 
 We assume you share already the love for [Poetry](https://python-poetry.org).
 Once you have installed poetry you can perform
@@ -152,7 +152,7 @@ make install
 to replicate the virtual environment we have defined in [pyproject.toml](pyproject.toml)
 and locked in [poetry.lock](poetry.lock).
 
-## Jupyter
+## 🔬 Jupyter
 
 We install [JupyterLab](https://jupyter.org) on fly within the aforementioned
 virtual environment. Executing
@@ -163,7 +163,7 @@ make jupyter
 
 will install and start the jupyter lab.
 
-## Citing
+## 📄 Citing
 
 If you want to reference our paper in your research,
 please consider citing us by using the following BibTeX:
