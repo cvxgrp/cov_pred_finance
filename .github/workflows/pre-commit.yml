@@ -1,5 +1,9 @@
 name: pre-commit
 
+# This workflow runs code quality checks and dependency analysis
+# It runs automatically on every push to the repository
+# The workflow ensures code meets quality standards and has no dependency issues
+
 permissions:
   contents: read
 
@@ -7,6 +11,7 @@ on:
   push:
 
 jobs:
+  # Analyzes project dependencies to detect unused or missing dependencies
   deptry:
     runs-on: ubuntu-latest
 
@@ -17,6 +22,8 @@ jobs:
       - uses: cvxgrp/.github/actions/deptry@v2.2.8
 
 
+  # Runs pre-commit hooks on all files in the repository
+  # Checks code formatting, linting, and other quality checks
   pre-commit:
     runs-on: ubuntu-latest
     steps:

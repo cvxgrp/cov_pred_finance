@@ -1,9 +1,14 @@
 name: "book"
 
+# This workflow builds and publishes documentation for the cov_pred_finance repository
+# It runs automatically on every push to the repository
+# The workflow includes multiple documentation generation jobs and combines them into a final book
+
 on:
 - push
 
 jobs:
+  # Generates interactive Marimo notebooks for documentation
   marimo:
     runs-on: "ubuntu-latest"
     steps:
@@ -12,6 +17,7 @@ jobs:
 
       - uses: cvxgrp/.github/actions/marimo@v2.2.8
 
+  # Generates API documentation using pdoc
   pdoc:
     runs-on: "ubuntu-latest"
     steps:
@@ -20,6 +26,7 @@ jobs:
 
       - uses: cvxgrp/.github/actions/pdoc@v2.2.8
 
+  # Runs tests and generates coverage reports
   test:
     runs-on: "ubuntu-latest"
     steps:
@@ -28,6 +35,7 @@ jobs:
 
       - uses: cvxgrp/.github/actions/coverage@v2.2.8
 
+  # Processes Jupyter notebooks for documentation
   jupyter:
     runs-on: "ubuntu-latest"
     steps:
@@ -36,6 +44,8 @@ jobs:
 
       - uses: cvxgrp/.github/actions/jupyter@v2.2.8
 
+  # Combines all documentation outputs into a final book
+  # This job only runs after all other jobs have completed successfully
   book:
     runs-on: "ubuntu-latest"
     needs: [test, pdoc, jupyter, marimo]

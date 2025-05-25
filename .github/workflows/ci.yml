@@ -1,5 +1,9 @@
 name: "CI"
 
+# This workflow runs continuous integration tests across multiple platforms and Python versions
+# It runs automatically on every push to the repository
+# The workflow ensures the code works consistently across different environments
+
 on:
 - push
 
